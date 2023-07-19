@@ -1,0 +1,103 @@
+This is BibTeX, Version 0.99d (TeX Live 2023)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: /Users/vmakarevich/Documents/Science_VF2/PyIRI/PyIRI_Paper/agujournaltemplate.aux
+The style file: apacite.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: Forsythe.bib
+Warning--entry type for "Jon69" isn't style-file defined
+--line 7751 of file Forsythe.bib
+apacite.bst [2013/07/21 v6.03 APA bibliography style]
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5062 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5062 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5066 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5066 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5066 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5066 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5068 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5068 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5068 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5068 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5072 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5072 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5075 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5075 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5076 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5076 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5079 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5079 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Liu83
+while executing---line 5079 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5079 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5079 of file apacite.bst
+Too many commas in name 1 of "R. Ma, j. Xu, W. Wang, W. Yuan" for entry Ma09
+while executing---line 5079 of file apacite.bst
+You've used 11 entries,
+            6951 wiz_defined-function locations,
+            1399 strings with 13305 characters,
+and the built_in function-call counts, 23431 in all, are:
+= -- 2895
+> -- 179
+< -- 1245
++ -- 1317
+- -- 24
+* -- 1589
+:= -- 4571
+add.period$ -- 44
+call.type$ -- 11
+change.case$ -- 187
+chr.to.int$ -- 0
+cite$ -- 22
+duplicate$ -- 563
+empty$ -- 817
+format.name$ -- 305
+if$ -- 4265
+int.to.chr$ -- 0
+int.to.str$ -- 33
+missing$ -- 0
+newline$ -- 286
+num.names$ -- 88
+pop$ -- 278
+preamble$ -- 2
+purify$ -- 44
+quote$ -- 0
+skip$ -- 1483
+stack$ -- 0
+substring$ -- 1410
+swap$ -- 337
+text.length$ -- 23
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 952
+warning$ -- 0
+while$ -- 103
+width$ -- 0
+write$ -- 357
+(There were 22 error messages)

@@ -1,0 +1,286 @@
+\providecommand{\ddegrees}{\ensuremath{^\circ}}
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Alken%
+, Thébault%
+, Beggan%
+\BCBL {}\ \BBA {} et al.%
+}{%
+Alken%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2021}}%
+}]{%
+Alk21}
+\APACinsertmetastar {%
+Alk21}%
+\begin{APACrefauthors}%
+Alken, P.%
+, Thébault, E.%
+, Beggan, C\BPBI D.%
+\BCBL {}\ \BBA {} et al.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {International Geomagnetic Reference Field: the thirteenth generation} {International geomagnetic reference field: the thirteenth generation}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Earth, Planets and Space}{73}{49}{}.
+\newblock
+\begin{APACrefDOI} \doi{10.1186/s40623-020-01288-x} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bilitza%
+\ \protect \BOthers {.}}{%
+Bilitza%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2022}}%
+}]{%
+Bil22}
+\APACinsertmetastar {%
+Bil22}%
+\begin{APACrefauthors}%
+Bilitza, D.%
+, Pezzopane, M.%
+, Truhlik, V.%
+, Altadill, D.%
+, Reinisch, B\BPBI W.%
+\BCBL {}\ \BBA {} Pignalberi, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2022}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The International Reference Ionosphere Model: A Review and Description of an Ionospheric Benchmark} {The international reference ionosphere model: A review and description of an ionospheric benchmark}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Rev. Geophys.}{60}{4}{}.
+\newblock
+\begin{APACrefDOI} \doi{10.1029/2022RG000792} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bilitza%
+, Sheik%
+\BCBL {}\ \BBA {} Eyfrig%
+}{%
+Bilitza%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1979}}%
+}]{%
+Bil79}
+\APACinsertmetastar {%
+Bil79}%
+\begin{APACrefauthors}%
+Bilitza, D.%
+, Sheik, N.%
+\BCBL {}\ \BBA {} Eyfrig, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1979}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A global model for the height of the F2-peak using M3000 values from the CCIR numerical map} {A global model for the height of the f2-peak using m3000 values from the ccir numerical map}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{ITU Telecommunication Journal}{46}{}{549-553}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bradley%
+}{%
+Bradley%
+}{%
+{\protect \APACyear {2003}}%
+}]{%
+Bra03}
+\APACinsertmetastar {%
+Bra03}%
+\begin{APACrefauthors}%
+Bradley, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2003}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Ingesting a sporadic-E model to IRI} {Ingesting a sporadic-e model to iri}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Adv. Space Res.}{31(3)}{}{577-588}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Jones%
+\ \BBA {} Gallet%
+}{%
+Jones%
+\ \BBA {} Gallet%
+}{%
+{\protect \APACyear {1962}}%
+}]{%
+Jon62}
+\APACinsertmetastar {%
+Jon62}%
+\begin{APACrefauthors}%
+Jones, W\BPBI B.%
+\BCBT {}\ \BBA {} Gallet, R\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1962}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Representation of diurnal and geographical variations of ionospheric data by numerical methods} {Representation of diurnal and geographical variations of ionospheric data by numerical methods}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Research of the National Bureau of Standards}{66}{4}{129–147}.
+\newblock
+\begin{APACrefDOI} \doi{10.6028/jres.066D.043} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Jones%
+\ \BBA {} Gallet%
+}{%
+Jones%
+\ \BBA {} Gallet%
+}{%
+{\protect \APACyear {1965}}%
+}]{%
+Jon65}
+\APACinsertmetastar {%
+Jon65}%
+\begin{APACrefauthors}%
+Jones, W\BPBI B.%
+\BCBT {}\ \BBA {} Gallet, R\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1965}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Representation of diurnal and geographic variations of ionospheric data by numerical methods, II. Control of instability} {Representation of diurnal and geographic variations of ionospheric data by numerical methods, ii. control of instability}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{ITU Telecommunication Journal}{32}{1}{18–28}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Jones%
+, Graham%
+\BCBL {}\ \BBA {} Leftin%
+}{%
+Jones%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1969}}%
+}]{%
+Jon69}
+\APACinsertmetastar {%
+Jon69}%
+\begin{APACrefauthors}%
+Jones, W\BPBI B.%
+, Graham, R\BPBI P.%
+\BCBL {}\ \BBA {} Leftin, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1969}{}{}.
+\newblock
+\APACrefbtitle {Advances in ionospheric mapping by numerical methods.} {Advances in ionospheric mapping by numerical methods.}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{Liu}%
+\ \BBA {} {Chen}%
+}{%
+{Liu}%
+\ \BBA {} {Chen}%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+Liu09}
+\APACinsertmetastar {%
+Liu09}%
+\begin{APACrefauthors}%
+{Liu}, L.%
+\BCBT {}\ \BBA {} {Chen}, Y.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Statistical analysis of solar activity variations of total electron content derived at Jet Propulsion Laboratory from GPS observations}} {{Statistical analysis of solar activity variations of total electron content derived at Jet Propulsion Laboratory from GPS observations}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J. Geophys. Res.}{114}{}{}.
+\newblock
+\begin{APACrefDOI} \doi{10.1029/2009JA014533} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Nava%
+, Coïsson%
+\BCBL {}\ \BBA {} Radicella%
+}{%
+Nava%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2008}}%
+}]{%
+Nav08}
+\APACinsertmetastar {%
+Nav08}%
+\begin{APACrefauthors}%
+Nava, B.%
+, Coïsson, P.%
+\BCBL {}\ \BBA {} Radicella, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A new version of the NeQuick ionosphere electron density model} {A new version of the nequick ionosphere electron density model}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J. Atmos. Sol. Terr. Phys.}{70}{15}{1856-1862}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/j.jastp.2008.01.015} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+R.~Ma%
+}{%
+R.~Ma%
+}{%
+{\protect \APACyear {1983}}%
+}]{%
+Liu83}
+\APACinsertmetastar {%
+Liu83}%
+\begin{APACrefauthors}%
+R.~Ma, W\BPBI W\BPBI W\BPBI Y., j.~Xu.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1983}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A new solar index which leads to improved foF2 predictions using the CCIR atlas} {A new solar index which leads to improved fof2 predictions using the ccir atlas}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Telecommunication Journal}{50(8)}{}{408-414}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+R.~Ma%
+}{%
+R.~Ma%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+Ma09}
+\APACinsertmetastar {%
+Ma09}%
+\begin{APACrefauthors}%
+R.~Ma, W\BPBI W\BPBI W\BPBI Y., j.~Xu.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Seasonal and latitudinal differences of the saturation effect between ionospheric NmF2 and solar activity indices} {Seasonal and latitudinal differences of the saturation effect between ionospheric nmf2 and solar activity indices}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J. Geophys. Res.}{114(A10)}{}{}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
