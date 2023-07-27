@@ -1,16 +1,17 @@
-import numpy as np
+
 import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
+import numpy as np
+import os
+
 #--------------------------------------------------------------------------------------------
-dir='/Users/vmakarevich/Documents/Science_VF2/PyIRI/'
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d):
-    Figname=dir+'Fig/PyIRI_mag_dip_lat.pdf'
+def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir):
+    Figname=os.path.join(plot_dir, 'PyIRI_mag_dip_lat.pdf')
     fig, ax = plt.subplots(1, 1)
     ax.set_facecolor('grey')   
     ax.set_xlabel('Geo Lon ($^{\circ}$)')   
@@ -35,8 +36,8 @@ def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d):
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d):
-    Figname=dir+'Fig/PyIRI_inc.pdf'
+def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir):
+    Figname=os.path.join(plot_dir, 'PyIRI_inc.pdf')
     fig, ax = plt.subplots(1, 1)
     ax.set_facecolor('grey')   
     ax.set_xlabel('Geo Lon ($^{\circ}$)')   
@@ -59,8 +60,8 @@ def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d):
     return()
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d):
-    Figname=dir+'Fig/PyIRI_modip.pdf'
+def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir):
+    Figname=os.path.join(plot_dir, 'PyIRI_modip.pdf')
     fig, ax = plt.subplots(1, 1)
     ax.set_facecolor('grey')   
     ax.set_xlabel('Geo Lon ($^{\circ}$)')   
@@ -83,11 +84,11 @@ def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d):
     return()
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_B_F1_bot_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_B_F1_bot_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -122,11 +123,11 @@ def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_B_F2_bot_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_B_F2_bot_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -162,11 +163,11 @@ def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_B_F2_top_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_B_F2_top_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -202,11 +203,11 @@ def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_M3000_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_M3000_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -242,11 +243,11 @@ def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #--------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_hmF2_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_hmF2_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -283,11 +284,11 @@ def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_hmF1_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_hmF1_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -323,11 +324,11 @@ def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_foEs_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_foEs_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -364,11 +365,11 @@ def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_foE_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_foE_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -405,11 +406,11 @@ def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_foF2_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_foF2_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -444,11 +445,11 @@ def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     
     return()
 #-------------------------------------------------------------------------------------------- 
-def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_NmF2_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_NmF2_min_max.pdf')
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3), constrained_layout=True)
 
     plt.xlim([-180, 180])
@@ -484,11 +485,11 @@ def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
+def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
-    Figname=dir+'Fig/PyIRI_foF1_min_max.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_foF1_min_max.pdf')
     fig, ax = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(10, 3), constrained_layout=True)
     ax[0].set_facecolor('grey')   
     ax[0].set_xlabel('Geo Lon ($^{\circ}$)')   
@@ -547,7 +548,7 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun, UT):
     return()
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_3D_hm_limits(F2,F1,E, aUT, alon, alat, alon_2d, alat_2d, UT):
+def PyIRI_3D_hm_limits(F2,F1,E, aUT, alon, alat, alon_2d, alat_2d, UT, plot_dir):
     ind_time=np.where(aUT == UT)
     ind_grid=np.where(np.isfinite(alon))
     
@@ -557,7 +558,7 @@ def PyIRI_3D_hm_limits(F2,F1,E, aUT, alon, alat, alon_2d, alat_2d, UT):
     hmF1_2d=np.reshape(F1['hm'][ind_max], alon_2d.shape)
     hmE_2d=np.reshape(E['hm'][ind_max], alon_2d.shape)
     
-    Figname=dir+'Fig/PyIRI_3D_hm_limits.pdf'
+    Figname=os.path.join(plot_dir, 'PyIRI_3D_hm_limits.pdf')
     
     fig = plt.figure(figsize = (3, 3))
     ax = plt.axes(projection ="3d")
@@ -589,8 +590,8 @@ def PyIRI_3D_hm_limits(F2,F1,E, aUT, alon, alat, alon_2d, alat_2d, UT):
     
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT):   
-    Figname=dir+'Fig/PyIRI_EDP_sample.pdf'
+def PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT, plot_dir):   
+    Figname=os.path.join(plot_dir, 'PyIRI_EDP_sample.pdf')
     fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(3, 3), constrained_layout=True)
     plt.xlim([0, 2.5e12])
     plt.ylim([0, 700])
@@ -617,8 +618,8 @@ def PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT):
 
 #-------------------------------------------------------------------------------------------- 
 #--------------------------------------------------------------------------------------------
-def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT):   
-    Figname=dir+'Fig/PyIRI_EDP_sample.pdf'
+def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT, plot_dir):
+    Figname=os.path.join(plot_dir, 'PyIRI_EDP_sample.pdf')
     fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(3, 3), constrained_layout=True)
     plt.xlim([0, 2.5e12])
     plt.ylim([0, 700])
