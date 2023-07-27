@@ -4,13 +4,16 @@
 #      This work was supported by the Office of Naval Research
 ################################################################################
 
+from importlib import resources
 import main_library as ml
 import numpy as np
 import plotting as plot
 import os
 
-# Data directory: assign to current directory
-data_dir = os.curdir
+# Determine the coefficient and driver directories
+coeff_dir = str(resources.path(__package__, 'coefficients').__enter__())
+driver_dir = str(resources.path(__package__, 'solar_drivers').__enter__())
+
 #--------------------------------------------------------------------------------------------
 #Day of run:
 #--------------------------------------------------------------------------------------------
@@ -64,7 +67,7 @@ aUT, ahour, aminute, asecond, atime_frame_strings=ml.set_temporal_array(dUT)
 #Matrix size for all the output parameters is [N_T, N_G, 2], where 2 indicates min and max of the solar activity 
 #that corresponds to Ionospheric Global (IG) index levels of 0 and 100.
 
-F2, F1, E, Es, sun, mag=ml.IRI_monthly_mean_parameters(year, month, aUT, alon, alat, data_dir)  
+F2, F1, E, Es, sun, mag=ml.IRI_monthly_mean_parameters(year, month, aUT, alon, alat, coeff_dir)  
 
 #Plot all the parameters using PyIRI_Plotting_Library
 plot.PyIRI_3D_hm_limits(F2, F1, E, aUT, alon, alat, alon_2d, alat_2d, UT_plot)
@@ -109,7 +112,7 @@ plot.PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
 #If you need to run IRI for a particular day, you can just use this function
 F107_day=np.nan
 F2_1day, F1_1day, E_1day, Es_1day, sun_1day, mag_1day, EDP_1day=ml.IRI_density_1day(year, month, day, aUT, 
-                                                 alon, alat, aalt, F107_day, data_dir)
+                                                                                    alon, alat, aalt, F107_day, coeff_dir, driver_dir)
 
 #plot 1 profile
 plot.PyIRI_EDP_sample_1day(EDP_1day, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
