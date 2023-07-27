@@ -4,9 +4,9 @@
 #############################################################################################
 #!/usr/bin/env python3
 
-import numpy as np
-from datetime import datetime, date, timedelta
+import datetime as dt
 import math
+import numpy as np
 import os
 
 #************************************************************************************
@@ -118,7 +118,7 @@ def IRI_monthly_mean_parameters(year, mth, aUT, alon, alat, dir):
     
     # Date and time for the middle of the month (day=15) that will be used to find 
     # magnetic inclination
-    dtime = datetime(year, mth, 15)
+    dtime = dt.datetime(year, mth, 15)
     date_decimal=decimal_year(dtime)
     #--------------------------------------------------------------------------------------------
     # Calculating magnetic inclanation, modified dip angle, and magnetic dip latitude using 
@@ -276,7 +276,7 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, dir):
     print('Latitude = ', alat)
     
     #date and time python object for the time of interest 
-    dtime = datetime(year, month, day)
+    dtime = dt.datetime(year, month, day)
     #solar parameters for the day of interest, or provide your own F10.7
     if np.isfinite(F107) != 1:
         F107 = solar_parameter(dtime, dir)
@@ -782,16 +782,16 @@ def highest_power_of_extension():
 # Result:   sslat = Latitude of subsolar point (=solar declination)
 #           sslon = Longitude of subsolar point (=solar declination)
 #------------------------------------------------------------------------------------
-def subsol_apex(datetime):
+def subsol_apex(dtime):
 #------------------------------------------------------------------------------------
     # Convert to year, day of year and seconds since midnight
-    if isinstance(datetime, datetime):
-        year = np.asanyarray([datetime.year])
-        doy = np.asanyarray([datetime.timetuple().tm_yday])
-        ut = np.asanyarray([datetime.hour * 3600 + datetime.minute * 60 + datetime.second])
-    elif isinstance(datetime, np.ndarray):
+    if isinstance(dtime, dt.datetime):
+        year = np.asanyarray([dtime.year])
+        doy = np.asanyarray([dtime.timetuple().tm_yday])
+        ut = np.asanyarray([dtime.hour * 3600 + dtime.minute * 60 + dtime.second])
+    elif isinstance(dtime, np.ndarray):
         # This conversion works for datetime of wrong precision or unit epoch
-        times = datetime.astype('datetime64[s]')
+        times = dtime.astype('datetime64[s]')
         year_floor = times.astype('datetime64[Y]')
         day_floor = times.astype('datetime64[D]')
         year = year_floor.astype(int) + 1970
@@ -849,7 +849,7 @@ def subsol_apex(datetime):
     sslon = sslon - 360.0 * nrot
 
     # Return a single value from the output if the input was a single value
-    if isinstance(datetime, datetime):
+    if isinstance(dtime, dt.datetime):
         return sslon[0], sslat[0]
 #------------------------------------------------------------------------------------
     return sslon, sslat 
@@ -873,7 +873,7 @@ def subsol_apex(datetime):
 #------------------------------------------------------------------------------------
 def juldat(times):
 #------------------------------------------------------------------------------------
-    if isinstance(times, datetime):
+    if isinstance(times, dt.datetime):
         Y = times.year
         M = times.month
         D = times.day
@@ -903,10 +903,10 @@ def juldat(times):
 #
 # Result:  doy = day of year
 #------------------------------------------------------------------------------------
-def doy(datetime):
+def doy(dtime):
 #------------------------------------------------------------------------------------
-    if isinstance(datetime, datetime):
-        doy = datetime.timetuple().tm_yday
+    if isinstance(dtime, dt.datetime):
+        doy = dtime.timetuple().tm_yday
     else:
         raise ValueError("input must be datetime.datetime")    
 #------------------------------------------------------------------------------------
@@ -990,7 +990,7 @@ def subsolar_point(juliantime):
 def doy_2_date(year, day_num):
 #------------------------------------------------------------------------------------        
     # converting to date
-    res_date = datetime(int(year), 1, 1) + timedelta(days=int(day_num) - 1)
+    res_date = dt.datetime(int(year), 1, 1) + dt.timedelta(days=int(day_num) - 1)
 #------------------------------------------------------------------------------------  
     return(res_date)
 #------------------------------------------------------------------------------------
@@ -1082,7 +1082,7 @@ def solzen_timearray_grid(year, mth, day, T0, alon, alat):
         UT=T0[i]
         hour=np.fix(UT)
         minute=np.fix((UT-hour)*60.)
-        date_sd=datetime(int(year), int(mth), int(day), int(hour), int(minute))
+        date_sd=dt.datetime(int(year), int(mth), int(day), int(hour), int(minute))
         jday = juldat(date_sd)
         slon, slat=subsolar_point(jday)
         aslon[i]=slon
@@ -1896,8 +1896,8 @@ def MLT2lon(MLT, slon):
 #
 # Result:    date_out = string YYYYMMDD
 #------------------------------------------------------------------------------------
-def strd(datetime):
-    date_out=datetime.strftime('%Y%m%d')
+def strd(dtime):
+    date_out=dtime.strftime('%Y%m%d')
 #------------------------------------------------------------------------------------
     return(date_out)
 #------------------------------------------------------------------------------------
@@ -1916,8 +1916,8 @@ def strd(datetime):
 #
 # Result:    date_out = string YYYYDOY
 #------------------------------------------------------------------------------------
-def strdoy(datetime):
-    date_out=datetime.strftime('%Y%j')
+def strdoy(dtime):
+    date_out=dtime.strftime('%Y%j')
 #------------------------------------------------------------------------------------
     return(date_out)
 #------------------------------------------------------------------------------------
@@ -2635,25 +2635,25 @@ def day_of_the_month_correction(year, month, day):
 #-------------------------------------------------------------------------------------------- 
 
     #middles of the months around
-    delta_month=timedelta(days=+30)
+    delta_month=dt.timedelta(days=+30)
 
-    dtime0 = datetime(year, month, 15)
+    dtime0 = dt.datetime(year, month, 15)
     dtime1=dtime0-delta_month
     dtime2=dtime0+delta_month
     
 
     #day of interest
-    time_event = datetime(year, month, day)
+    time_event = dt.datetime(year, month, day)
 
     #chose month before or after
     if day>=15:
         month_before=dtime0.month
         month_after=dtime2.month
         t_before=dtime0
-        t_after=datetime(dtime2.year, dtime2.month, 15)
+        t_after=dt.datetime(dtime2.year, dtime2.month, 15)
 
     if day<15:
-        t_before=datetime(dtime1.year, dtime1.month, 15)
+        t_before=dt.datetime(dtime1.year, dtime1.month, 15)
         t_after=dtime0
         month_before=dtime1.month
         month_after=dtime0.month
