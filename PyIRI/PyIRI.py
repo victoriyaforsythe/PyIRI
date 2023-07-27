@@ -17,15 +17,15 @@ driver_dir = str(resources.path(__package__, 'solar_drivers').__enter__())
 #--------------------------------------------------------------------------------------------
 #Day of run:
 #--------------------------------------------------------------------------------------------
-year=2020
+year = 2020
 month=4
 day=15
 
 #--------------------------------------------------------------------------------------------
 #Define parameters for grid and time resolution:
 #--------------------------------------------------------------------------------------------
-dlat=1       #resolution of geographic latitude {degrees} (integer or float)
-dlon=1       #resolution of geographic longitude {degrees} (integer or float)
+dlat=1  # resolution of geographic latitude {degrees} (integer or float)
+dlon=1  # resolution of geographic longitude {degrees} (integer or float)
 
 dalt=10      #resolution of altitude {km} (integer or float)
 alt_min=0    #minimum altitude {km} (integer or float)
