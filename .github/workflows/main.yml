@@ -20,10 +20,6 @@ jobs:
             numpy_ver: "1.21"
             os: ubuntu-latest
             test_config: "NEP29"
-          - python-version: "3.6.8"
-            numpy_ver: "1.19.5"
-            os: "ubuntu-20.04"
-            test_config: "Ops"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with numpy ${{ matrix.numpy_ver }}
     runs-on: ${{ matrix.os }}
