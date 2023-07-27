@@ -7,6 +7,7 @@
 
 import numpy as np
 from scipy import interpolate
+import os
 
 #*******************************************************************************
 # by Victoriya V Forsythe Makarevich
@@ -102,13 +103,13 @@ def inc2magnetic_dip_latitude(inc):
 #
 # Result:    inc = inclination of the magnetic field in degrees [ngrid]
 #------------------------------------------------------------------------------------
-def inclination(dir, date_decimal, alon, alat):
+def inclination(coeff_dir, date_decimal, alon, alat):
 #------------------------------------------------------------------------------------
     #300 km altitude
     aalt=np.zeros((alon.shape))+300.
     
     #open IGRF file and read to array the main table
-    IGRF_FILE = dir+'IGRF/IGRF13.shc'
+    IGRF_FILE = os.path.join(coeff_dir, 'IGRF', 'IGRF13.shc')
     f=open(IGRF_FILE, mode='r')
     file_array = np.genfromtxt(f, delimiter='', skip_header=5)
     f.close()
