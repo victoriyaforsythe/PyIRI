@@ -1,15 +1,15 @@
-#############################################################################################
-#      Distribution statement A. Approved for public release. Distribution is unlimited.    #
-#      This work was supported by the Office of Naval Research                              #
-#############################################################################################
+###############################################################################
+# Distribution statement A. Approved for public release. Distribution is
+# unlimited.
+#
+#      This work was supported by the Office of Naval Research
+###############################################################################
+
 import numpy as np
-from datetime import datetime, date, timedelta
-import math
 from scipy import interpolate
-from numpy import degrees, radians
-from math import pi
-#************************************************************************************
-#************************************************************************************
+import os
+
+#*******************************************************************************
 # by Victoriya V Forsythe Makarevich
 #
 # Naval Research Laboratory 
@@ -23,9 +23,9 @@ from math import pi
 #            modip = modified dip anle [ngrid]
 #
 # Result:    alat = np array of latitudes [ngrid]
-#------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 def modip2lat(inc, modip):
-#------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
     #degree to radians convertion 
     DR=np.pi/180. #degree to radian conversion factor
     RD=1./DR #radian to dergree conversion factor
@@ -103,13 +103,13 @@ def inc2magnetic_dip_latitude(inc):
 #
 # Result:    inc = inclination of the magnetic field in degrees [ngrid]
 #------------------------------------------------------------------------------------
-def inclination(dir, date_decimal, alon, alat):
+def inclination(coeff_dir, date_decimal, alon, alat):
 #------------------------------------------------------------------------------------
     #300 km altitude
     aalt=np.zeros((alon.shape))+300.
     
     #open IGRF file and read to array the main table
-    IGRF_FILE = dir+'IGRF/IGRF13.shc'
+    IGRF_FILE = os.path.join(coeff_dir, 'IGRF', 'IGRF13.shc')
     f=open(IGRF_FILE, mode='r')
     file_array = np.genfromtxt(f, delimiter='', skip_header=5)
     f.close()
@@ -256,8 +256,8 @@ def geo_to_gg(radius, theta):
     e4 = e2*e2
     ep2 = (a2 - b2) / b2  # squared primed eccentricity
 
-    r = radius * np.sin(radians(theta))
-    z = radius * np.cos(radians(theta))
+    r = radius * np.sin(np.radians(theta))
+    z = radius * np.cos(np.radians(theta))
 
     r2 = r**2
     z2 = z**2
@@ -285,7 +285,7 @@ def geo_to_gg(radius, theta):
 
     height = U*(1. - b2 / (a*V))
 
-    beta = 90. - degrees(np.arctan2(z + ep2*z0, r))
+    beta = 90. - np.degrees(np.arctan2(z + ep2*z0, r))
 
     return(height, beta)
 
@@ -468,9 +468,9 @@ def synth_values(coeffs, radius, theta, phi, \
     sinth = Pnm[1, 1]
 
     # calculate cos(m*phi) and sin(m*phi) as (m, phi-points)-array
-    phi = radians(phi)
-    cmp = np.cos(np.multiply.outer(np.arange(nmax+1), phi))
-    smp = np.sin(np.multiply.outer(np.arange(nmax+1), phi))
+    phi = np.radians(phi)
+    cos_mp = np.cos(np.multiply.outer(np.arange(nmax+1), phi))
+    sin_mp = np.sin(np.multiply.outer(np.arange(nmax+1), phi))
 
     # allocate arrays in memory
     B_radius = np.zeros(grid_shape)
@@ -487,21 +487,21 @@ def synth_values(coeffs, radius, theta, phi, \
 
         for m in range(1, n+1):
             B_radius += ((n+1) * Pnm[n, m] * r_n
-                             * (coeffs[..., num] * cmp[m]
-                                + coeffs[..., num+1] * smp[m]))
+                             * (coeffs[..., num] * cos_mp[m]
+                                + coeffs[..., num+1] * sin_mp[m]))
             
             B_theta += (-Pnm[m, n+1] * r_n
-                        * (coeffs[..., num] * cmp[m]
-                           + coeffs[..., num+1] * smp[m]))
+                        * (coeffs[..., num] * cos_mp[m]
+                           + coeffs[..., num+1] * sin_mp[m]))
 
             with np.errstate(divide='ignore', invalid='ignore'):
                 # handle poles using L'Hopital's rule
                 div_Pnm = np.where(theta == 0., Pnm[m, n+1], Pnm[n, m] / sinth)
-                div_Pnm = np.where(theta == degrees(pi), -Pnm[m, n+1], div_Pnm)
+                div_Pnm = np.where(theta == np.degrees(np.pi), -Pnm[m, n+1], div_Pnm)
 
             B_phi += (m * div_Pnm * r_n
-                      * (coeffs[..., num] * smp[m]
-                         - coeffs[..., num+1] * cmp[m]))
+                      * (coeffs[..., num] * sin_mp[m]
+                         - coeffs[..., num+1] * cos_mp[m]))
 
             num += 2
 
@@ -534,7 +534,7 @@ def legendre_poly(nmax, theta):
 
     """
 
-    costh = np.cos(radians(theta))
+    costh = np.cos(np.radians(theta))
     sinth = np.sqrt(1-costh**2)
 
     Pnm = np.zeros((nmax+1, nmax+2) + costh.shape)

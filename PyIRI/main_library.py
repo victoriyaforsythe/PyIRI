@@ -1,13 +1,18 @@
-#############################################################################################
-#      Distribution statement A. Approved for public release. Distribution is unlimited.    #
-#      This work was supported by the Office of Naval Research                              #
-#############################################################################################
+################################################################################
+# Distribution statement A. Approved for public release. Distribution is
+# unlimited.
+#      This work was supported by the Office of Naval Research
+################################################################################
 #!/usr/bin/env python3
 
-import numpy as np
-from datetime import datetime, date, timedelta
+import datetime as dt
 import math
+import numpy as np
 import os
+
+from fortranformat import FortranRecordReader
+
+import igrf_library as igrf
 
 #************************************************************************************
 #************************************************************************************
@@ -101,9 +106,8 @@ import os
 #                    mag_dip_lat: magnetic dip latitude, (NumPy array), {degrees}, [N_G]
 #------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------
-def IRI_monthly_mean_parameters(year, mth, aUT, alon, alat, dir):
+def IRI_monthly_mean_parameters(year, mth, aUT, alon, alat, coeff_dir):
 #------------------------------------------------------------------------------------------------
-    import PyIRI_IGRF_Library as IGRF
     
     #Set limits for solar driver based of IG12=0-100.
     IG_min=0.
@@ -118,14 +122,14 @@ def IRI_monthly_mean_parameters(year, mth, aUT, alon, alat, dir):
     
     # Date and time for the middle of the month (day=15) that will be used to find 
     # magnetic inclination
-    dtime = datetime(year, mth, 15)
+    dtime = dt.datetime(year, mth, 15)
     date_decimal=decimal_year(dtime)
     #--------------------------------------------------------------------------------------------
     # Calculating magnetic inclanation, modified dip angle, and magnetic dip latitude using 
     # IGRF at 300 km of altitude
-    inc = IGRF.inclination(dir, date_decimal, alon, alat)
-    modip = IGRF.inc2modip(inc, alat)
-    mag_dip_lat = IGRF.inc2magnetic_dip_latitude(inc)
+    inc = igrf.inclination(coeff_dir, date_decimal, alon, alat)
+    modip = igrf.inc2modip(inc, alat)
+    mag_dip_lat = igrf.inc2magnetic_dip_latitude(inc)
     #--------------------------------------------------------------------------------------------
     # Calculate diurnal Fourier functions F_D for the given time array aUT
     D_f0f2, D_M3000, D_Es_upper, D_Es_median, D_Es_lower=diurnal_functions(aUT)
@@ -135,7 +139,7 @@ def IRI_monthly_mean_parameters(year, mth, aUT, alon, alat, dir):
     G_fof2, G_M3000, G_Es_upper, G_Es_median, G_Es_lower=set_global_G(alon, alat, modip)
     #--------------------------------------------------------------------------------------------    
     # Read CCIR coefficients and form matrix U
-    F_fof2_coeff, F_M3000_coeff, F_Es_upper, F_Es_median, F_Es_lower = read_ccir_coeff_2levels(mth, dir)
+    F_fof2_coeff, F_M3000_coeff, F_Es_upper, F_Es_median, F_Es_lower = read_ccir_coeff_2levels(mth, coeff_dir)
     #-------------------------------------------------------------------------------------------- 
     # Multiply matricies (F_D U)F_G
     foF2, M3000, foEs=gamma(aUT, D_f0f2, D_M3000, D_Es_upper, D_Es_median, D_Es_lower, G_fof2, G_M3000, G_Es_upper, G_Es_median, G_Es_lower, F_fof2_coeff, F_M3000_coeff, F_Es_upper, F_Es_median, F_Es_lower)
@@ -267,7 +271,7 @@ def IRI_monthly_mean_parameters(year, mth, aUT, alon, alat, dir):
 #
 #            EDP   = electron density for the day of interest, (NumPy array), {m-3}, [N_T, N_V, N_G]  
 #------------------------------------------------------------------------------------------------
-def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, dir):
+def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir, driver_dir):
 #------------------------------------------------------------------------------------------------
     print('PyIRI: IRI_density_1day:----------------------------------------------')
     print('Determining parameters and electron density for 1 day: year='+str(year)+', month='+str(month)+', day='+str(day))
@@ -276,19 +280,19 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, dir):
     print('Latitude = ', alat)
     
     #date and time python object for the time of interest 
-    dtime = datetime(year, month, day)
+    dtime = dt.datetime(year, month, day)
     #solar parameters for the day of interest, or provide your own F10.7
     if np.isfinite(F107) != 1:
-        F107 = solar_parameter(dtime, dir)
-        print('F10.7 value was taken from OMNIWeb data file: PyIRI/Solar_Drivers/Solar_Driver_F107.txt')
+        F107 = solar_parameter(dtime, driver_dir)
+        print('F10.7 value was taken from OMNIWeb data file: PyIRI/solar_drivers/Solar_Driver_F107.txt')
         print('F10.7='+str(F107))
     else:
         print('Provided F10.7='+str(F107))
     #find out what monthly means are needed first and what their weights will be
     t_before, t_after, fraction1, fraction2=day_of_the_month_correction(year, month, day)
 
-    F2_before, F1_before, E_before, Es_before, sun_before, mag_before=IRI_monthly_mean_parameters(t_before.year, t_before.month, aUT, alon, alat, dir) 
-    F2_after, F1_after, E_after, Es_after, sun_after, mag_after=IRI_monthly_mean_parameters(t_after.year, t_after.month, aUT, alon, alat, dir) 
+    F2_before, F1_before, E_before, Es_before, sun_before, mag_before=IRI_monthly_mean_parameters(t_before.year, t_before.month, aUT, alon, alat, coeff_dir) 
+    F2_after, F1_after, E_after, Es_after, sun_after, mag_after=IRI_monthly_mean_parameters(t_after.year, t_after.month, aUT, alon, alat, coeff_dir) 
     
     print('Mean monthly parameters are calculated')
     F2=fractional_correction_of_dictionary(fraction1, fraction2, F2_before, F2_after)
@@ -436,7 +440,7 @@ def adjust_longitude(lon, type):
 # U.S> Information Agency. 
 # Acknowledgemets to Doug Drob (NRL) for giving me these coefficients. 
 #------------------------------------------------------------------------------------
-def read_ccir_coeff_2levels(mth, dir):
+def read_ccir_coeff_2levels(mth, coeff_dir):
 #------------------------------------------------------------------------------------
     #pull the predefined sizes of the function extensions 
     coef=highest_power_of_extension()
@@ -451,8 +455,8 @@ def read_ccir_coeff_2levels(mth, dir):
     cm=str(mth+10)
     
     #F region coefficients:
-    file_F=open(dir+'CCIR_Coefficients/ccir'+cm+'.asc', mode='r')   
-    from fortranformat import FortranRecordReader
+    file_F=open(os.path.join(coeff_dir, 'CCIR', 'ccir'+cm+'.asc'), mode='r')   
+
     fmt = FortranRecordReader('(1X,4E15.8)')
     full_array=[]
     for line in file_F:
@@ -462,7 +466,7 @@ def read_ccir_coeff_2levels(mth, dir):
     file_F.close()
     
     #Sporadic E coefficients:
-    file_E=open(dir+'Es_Coefficients/Es'+cm+'.asc', mode='r')
+    file_E=open(os.path.join(coeff_dir, 'Es', 'Es'+cm+'.asc'), mode='r')
     array0_E=np.fromfile(file_E, sep=' ')
     file_E.close()
     
@@ -782,16 +786,16 @@ def highest_power_of_extension():
 # Result:   sslat = Latitude of subsolar point (=solar declination)
 #           sslon = Longitude of subsolar point (=solar declination)
 #------------------------------------------------------------------------------------
-def subsol_apex(datetime):
+def subsol_apex(dtime):
 #------------------------------------------------------------------------------------
     # Convert to year, day of year and seconds since midnight
-    if isinstance(datetime, datetime):
-        year = np.asanyarray([datetime.year])
-        doy = np.asanyarray([datetime.timetuple().tm_yday])
-        ut = np.asanyarray([datetime.hour * 3600 + datetime.minute * 60 + datetime.second])
-    elif isinstance(datetime, np.ndarray):
+    if isinstance(dtime, dt.datetime):
+        year = np.asanyarray([dtime.year])
+        doy = np.asanyarray([dtime.timetuple().tm_yday])
+        ut = np.asanyarray([dtime.hour * 3600 + dtime.minute * 60 + dtime.second])
+    elif isinstance(dtime, np.ndarray):
         # This conversion works for datetime of wrong precision or unit epoch
-        times = datetime.astype('datetime64[s]')
+        times = dtime.astype('datetime64[s]')
         year_floor = times.astype('datetime64[Y]')
         day_floor = times.astype('datetime64[D]')
         year = year_floor.astype(int) + 1970
@@ -849,7 +853,7 @@ def subsol_apex(datetime):
     sslon = sslon - 360.0 * nrot
 
     # Return a single value from the output if the input was a single value
-    if isinstance(datetime, datetime):
+    if isinstance(dtime, dt.datetime):
         return sslon[0], sslat[0]
 #------------------------------------------------------------------------------------
     return sslon, sslat 
@@ -873,7 +877,7 @@ def subsol_apex(datetime):
 #------------------------------------------------------------------------------------
 def juldat(times):
 #------------------------------------------------------------------------------------
-    if isinstance(times, datetime):
+    if isinstance(times, dt.datetime):
         Y = times.year
         M = times.month
         D = times.day
@@ -903,10 +907,10 @@ def juldat(times):
 #
 # Result:  doy = day of year
 #------------------------------------------------------------------------------------
-def doy(datetime):
+def doy(dtime):
 #------------------------------------------------------------------------------------
-    if isinstance(datetime, datetime):
-        doy = datetime.timetuple().tm_yday
+    if isinstance(dtime, dt.datetime):
+        doy = dtime.timetuple().tm_yday
     else:
         raise ValueError("input must be datetime.datetime")    
 #------------------------------------------------------------------------------------
@@ -990,7 +994,7 @@ def subsolar_point(juliantime):
 def doy_2_date(year, day_num):
 #------------------------------------------------------------------------------------        
     # converting to date
-    res_date = datetime(int(year), 1, 1) + timedelta(days=int(day_num) - 1)
+    res_date = dt.datetime(int(year), 1, 1) + dt.timedelta(days=int(day_num) - 1)
 #------------------------------------------------------------------------------------  
     return(res_date)
 #------------------------------------------------------------------------------------
@@ -1082,7 +1086,7 @@ def solzen_timearray_grid(year, mth, day, T0, alon, alat):
         UT=T0[i]
         hour=np.fix(UT)
         minute=np.fix((UT-hour)*60.)
-        date_sd=datetime(int(year), int(mth), int(day), int(hour), int(minute))
+        date_sd=dt.datetime(int(year), int(mth), int(day), int(hour), int(minute))
         jday = juldat(date_sd)
         slon, slat=subsolar_point(jday)
         aslon[i]=slon
@@ -1896,8 +1900,8 @@ def MLT2lon(MLT, slon):
 #
 # Result:    date_out = string YYYYMMDD
 #------------------------------------------------------------------------------------
-def strd(datetime):
-    date_out=datetime.strftime('%Y%m%d')
+def strd(dtime):
+    date_out=dtime.strftime('%Y%m%d')
 #------------------------------------------------------------------------------------
     return(date_out)
 #------------------------------------------------------------------------------------
@@ -1916,8 +1920,8 @@ def strd(datetime):
 #
 # Result:    date_out = string YYYYDOY
 #------------------------------------------------------------------------------------
-def strdoy(datetime):
-    date_out=datetime.strftime('%Y%j')
+def strdoy(dtime):
+    date_out=dtime.strftime('%Y%j')
 #------------------------------------------------------------------------------------
     return(date_out)
 #------------------------------------------------------------------------------------
@@ -2089,11 +2093,11 @@ def solar_interpolate(F_min, F_max, F107):
 #            
 # Result:    F107 = index
 #------------------------------------------------------------------------------------
-def solar_parameter(dtime, dir):
+def solar_parameter(dtime, driver_dir):
 #------------------------------------------------------------------------------------    
     doy = dtime.timetuple().tm_yday
     year=dtime.year
-    filenam=dir+'Solar_Drivers/Solar_Driver_F107.txt'
+    filenam=os.path.join(driver_dir, 'solar_drivers', 'Solar_Driver_F107.txt')
     f=open(filenam, mode='r')
     table = np.genfromtxt(f, delimiter='', skip_header=7)
     a=np.where((table[:,0] == year) & (table[:,1] == doy))
@@ -2635,25 +2639,25 @@ def day_of_the_month_correction(year, month, day):
 #-------------------------------------------------------------------------------------------- 
 
     #middles of the months around
-    delta_month=timedelta(days=+30)
+    delta_month=dt.timedelta(days=+30)
 
-    dtime0 = datetime(year, month, 15)
+    dtime0 = dt.datetime(year, month, 15)
     dtime1=dtime0-delta_month
     dtime2=dtime0+delta_month
     
 
     #day of interest
-    time_event = datetime(year, month, day)
+    time_event = dt.datetime(year, month, day)
 
     #chose month before or after
     if day>=15:
         month_before=dtime0.month
         month_after=dtime2.month
         t_before=dtime0
-        t_after=datetime(dtime2.year, dtime2.month, 15)
+        t_after=dt.datetime(dtime2.year, dtime2.month, 15)
 
     if day<15:
-        t_before=datetime(dtime1.year, dtime1.month, 15)
+        t_before=dt.datetime(dtime1.year, dtime1.month, 15)
         t_after=dtime0
         month_before=dtime1.month
         month_after=dtime0.month
