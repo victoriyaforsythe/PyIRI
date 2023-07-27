@@ -1,20 +1,23 @@
-#############################################################################################
-#      Distribution statement A. Approved for public release. Distribution is unlimited.    #
-#      This work was supported by the Office of Naval Research                              #
-#############################################################################################
-import PyIRI_Library as ml
-import PyIRI_IGRF_Library as IGRF
-import PyIRI_Plotting_Library as plot
-from datetime import datetime, timedelta
+################################################################################
+# Distribution statement A. Approved for public release. Distribution is
+# unlimited.
+#      This work was supported by the Office of Naval Research
+################################################################################
+
+import main_library as ml
 import numpy as np
-#--------------------------------------------------------------------------------------------
-dir='/Users/vmakarevich/Documents/Science_VF2/PyIRI/'
+import plotting as plot
+import os
+
+# Data directory: assign to current directory
+data_dir = os.curdir
 #--------------------------------------------------------------------------------------------
 #Day of run:
 #--------------------------------------------------------------------------------------------
 year=2020
 month=4
 day=15
+
 #--------------------------------------------------------------------------------------------
 #Define parameters for grid and time resolution:
 #--------------------------------------------------------------------------------------------
@@ -61,7 +64,7 @@ aUT, ahour, aminute, asecond, atime_frame_strings=ml.set_temporal_array(dUT)
 #Matrix size for all the output parameters is [N_T, N_G, 2], where 2 indicates min and max of the solar activity 
 #that corresponds to Ionospheric Global (IG) index levels of 0 and 100.
 
-F2, F1, E, Es, sun, mag=ml.IRI_monthly_mean_parameters(year, month, aUT, alon, alat, dir)  
+F2, F1, E, Es, sun, mag=ml.IRI_monthly_mean_parameters(year, month, aUT, alon, alat, data_dir)  
 
 #Plot all the parameters using PyIRI_Plotting_Library
 plot.PyIRI_3D_hm_limits(F2, F1, E, aUT, alon, alat, alon_2d, alat_2d, UT_plot)
@@ -106,7 +109,7 @@ plot.PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
 #If you need to run IRI for a particular day, you can just use this function
 F107_day=np.nan
 F2_1day, F1_1day, E_1day, Es_1day, sun_1day, mag_1day, EDP_1day=ml.IRI_density_1day(year, month, day, aUT, 
-                                                 alon, alat, aalt, F107_day, dir)
+                                                 alon, alat, aalt, F107_day, data_dir)
 
 #plot 1 profile
 plot.PyIRI_EDP_sample_1day(EDP_1day, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
