@@ -33,6 +33,8 @@ alt_max = 700  # maximum altitude {km} (integer or float)
 dUT = 10  # time resolution {hours} (integer or float)
 
 UT_plot = 10  # at what UT to plot the parameters
+
+ccir_or_ursi = 1  # choose what coefficients to use for NmF2: 0=CCIR, 1=URSI
 # -----------------------------------------------------------------------------
 # Define spacial horizontal grid:
 # -----------------------------------------------------------------------------
@@ -75,7 +77,8 @@ aUT, ahour, aminute, asecond, atime_frame_strings = ml.set_temporal_array(dUT)
 
 F2, F1, E, Es, sun, mag = ml.IRI_monthly_mean_parameters(year, month, aUT,
                                                          alon, alat,
-                                                         coeff_dir)
+                                                         coeff_dir,
+                                                         ccir_or_ursi)
 
 # Plot all the parameters using PyIRI_Plotting_Library
 plot.PyIRI_3D_hm_limits(F2, F1, E, aUT, alon, alat, alon_2d, alat_2d, UT_plot)
@@ -136,7 +139,8 @@ plot.PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
 F107_day = 100.
 F2, F1, E, Es, sun, mag, EDP = ml.IRI_density_1day(year, month, day, aUT,
                                                    alon, alat, aalt, F107_day,
-                                                   coeff_dir, driver_dir)
+                                                   coeff_dir, driver_dir, 
+                                                   ccir_or_ursi)
 
 # Plot 1 profile for the selected day
 plot.PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, alon_2d, alat_2d,

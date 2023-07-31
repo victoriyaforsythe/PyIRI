@@ -16,7 +16,7 @@ from fortranformat import FortranRecordReader
 import igrf_library as igrf
 
 
-def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir):
+def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -50,6 +50,8 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir):
     #
     # dir   = direction to the root folder in your computer where PyIRI is
     # placed, (must be string)
+    #
+    # ccir_or_ursi = 0=CCIR option, 1=URSI option (integer)
     #
     # Result:--------------------------------------------------------------------
     # F2 = dictionary that contains:
@@ -114,7 +116,8 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir):
     F107_max = IG12_2_F107(IG_max)
     print('Model parameters are being determinaed for 2 levels of solar'
           'activity at F10.7=69.3 and 135.2 SFU')
-    print('which correspands to 0 and 100 IG12 index.')
+    acoeff = ['CCIR', 'URSI']
+    print('For NmF2 determination '+acoeff[ccir_or_ursi]+' used.')
 
     # defining this F107 limits to use throughout the code
     F107 = np.array([F107_min, F107_max])
@@ -138,7 +141,12 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir):
     G_fof2, G_M3000, G_Es_med = set_gl_G(alon, alat, modip)
     # -------------------------------------------------------------------------
     # Read CCIR coefficients and form matrix U
-    F_fof2_c, F_M3000_c, F_Es_med = read_ccir_coeff_2levels(mth, coeff_dir)
+    F_c_CCIR, F_c_URSI, F_M3000_c, F_Es_med = read_ccir_coeff(mth,
+                                                              coeff_dir)
+    if ccir_or_ursi == 0:
+        F_fof2_c = F_c_CCIR
+    if ccir_or_ursi == 1:
+        F_fof2_c = F_c_URSI
     # -------------------------------------------------------------------------
     # Multiply matricies (F_D U)F_G
     foF2, M3000, foEs = gamma(aUT, D_f0f2, D_M3000, D_Es_med, G_fof2, G_M3000,
@@ -204,7 +212,7 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir):
 
 
 def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
-                     driver_dir):
+                     driver_dir, ccir_or_ursi):
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -243,12 +251,14 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
     # dir   = direction to the root folder in your computer where PyIRI is
     # placed, (must be string)
     #
+    # ccir_or_ursi = 0=CCIR option, 1=URSI option (integer)
+    #
     # Result:-------------------------------------------------------------------
-    # F2    = dictionary that contains:
-    # NmF2:       peak density of F2 region, (NumPy array), {m-3},
+    # F2 = dictionary that contains:
+    # NmF2: peak density of F2 region, (NumPy array), {m-3},
     # [N_T, N_G, 2]
     #
-    # foF2:       critical frequency of F2 region, (NumPy array), {MHz},
+    # foF2: critical frequency of F2 region, (NumPy array), {MHz},
     # [N_T, N_G, 2]
     #
     # M3000: the obliquity factor for a distance of 3,000 km. Defined as
@@ -277,52 +287,52 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
     # hmF1: height of the F1 peak, (NumPy array, can have NaNs), {km},
     # [N_T, N_G, 2]
     #
-    # B_F1_bot:   bottom thickness of the F1 region, (NumPy array,
+    # B_F1_bot: bottom thickness of the F1 region, (NumPy array,
     # can have NaNs), {km}, [N_T, N_G, 2]
     #
-    # E     = dictionary that contains:
-    # NmE:        peak density of E region, (NumPy array), {m-3},
+    # E = dictionary that contains:
+    # NmE: peak density of E region, (NumPy array), {m-3},
     # [N_T, N_G, 2]
     #
-    # foE:        critical frequency of E region, (NumPy array), {MHz},
+    # foE: critical frequency of E region, (NumPy array), {MHz},
     # [N_T, N_G, 2]
     #
-    # hmE:        height of the E peak, (NumPy array), {km}, [N_T, N_G, 2]
+    # hmE: height of the E peak, (NumPy array), {km}, [N_T, N_G, 2]
     #
-    # B_E_top:    top thickness of the E region, (NumPy array), {km},
+    # B_E_top: top thickness of the E region, (NumPy array), {km},
     # [N_T, N_G, 2]
     #
-    # B_E_bot:    bottom thickness of the E region, (NumPy array), {km},
+    # B_E_bot: bottom thickness of the E region, (NumPy array), {km},
     # [N_T, N_G, 2]
     #
-    # Es    = dictionary that contains:
-    # NmEs:        peak density of sporadic E region Es, (NumPy array),
+    # Es = dictionary that contains:
+    # NmEs: peak density of sporadic E region Es, (NumPy array),
     # {m-3}, [N_T, N_G, 2]
     #
-    # foEs:        critical frequency of Es, (NumPy array), {MHz},
+    # foEs: critical frequency of Es, (NumPy array), {MHz},
     # [N_T, N_G, 2]
     #
-    # hmEs:        height of the Es peak, (NumPy array), {km},
+    # hmEs: height of the Es peak, (NumPy array), {km},
     # [N_T, N_G, 2]
     #
-    # B_Es_top:    top thickness of the Es, (NumPy array), {km},
+    # B_Es_top: top thickness of the Es, (NumPy array), {km},
     # [N_T, N_G, 2]
     #
-    # B_Es_bot:    bottom thickness of the Es, (NumPy array), {km},
+    # B_Es_bot: bottom thickness of the Es, (NumPy array), {km},
     # [N_T, N_G, 2]
     #
-    # sun   = dictionary that contains:
-    # lon:         geographic longitude of subsolar point, (NumPy array),
+    # sun = dictionary that contains:
+    # lon: geographic longitude of subsolar point, (NumPy array),
     # {degrees}, [N_T]
     #
-    # lat:         geographic latitude of subsolar point, (NumPy array),
+    # lat: geographic latitude of subsolar point, (NumPy array),
     # {degrees}, [N_T]
     #
-    # mag   = dictionary that contains:
-    # inc:         inclination of the Earth magnetic field at 300 km altitude,
+    # mag = dictionary that contains:
+    # inc: inclination of the Earth magnetic field at 300 km altitude,
     # (NumPy array), {degrees}, [N_G]
     #
-    # EDP   = electron density for the day of interest, (NumPy array), {m-3},
+    # EDP = electron density for the day of interest, (NumPy array), {m-3},
     # [N_T, N_V, N_G]
     # **************************************************************************
     print('PyIRI: IRI_density_1day:------------------------------------------')
@@ -344,6 +354,9 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
     else:
         print('Provided F10.7='+str(F107))
 
+    acoeff = ['CCIR', 'URSI']
+    print('For NmF2 determination '+acoeff[ccir_or_ursi]+'  used.')
+
     # find out what monthly means are needed first and what their weights
     # will be
     t_before, t_after, fr1, fr2 = day_of_the_month_corr(year, month, day)
@@ -353,13 +366,15 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
                                                                aUT,
                                                                alon,
                                                                alat,
-                                                               coeff_dir)
+                                                               coeff_dir,
+                                                               ccir_or_ursi)
     F2_2, F1_2, E_2, Es_2, sun_2, mag_2 = IRI_monthly_mean_par(t_after.year,
                                                                t_after.month,
                                                                aUT,
                                                                alon,
                                                                alat,
-                                                               coeff_dir)
+                                                               coeff_dir,
+                                                               ccir_or_ursi)
 
     print('Mean monthly parameters are calculated')
     F2 = fractional_correction_of_dictionary(fr1, fr2, F2_1, F2_2)
@@ -484,7 +499,7 @@ def adjust_longitude(lon, type):
 # -----------------------------------------------------------------------
 
 
-def read_ccir_coeff_2levels(mth, coeff_dir):
+def read_ccir_coeff(mth, coeff_dir):
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -530,14 +545,22 @@ def read_ccir_coeff_2levels(mth, coeff_dir):
 
     # F region coefficients:
     file_F = open(os.path.join(coeff_dir, 'CCIR', 'ccir'+cm+'.asc'), mode='r')
-
     fmt = FortranRecordReader('(1X,4E15.8)')
     full_array = []
-
     for line in file_F:
         line_vals = fmt.read(line)
         full_array = np.concatenate((full_array, line_vals), axis=None)
-    array0_F = full_array[0:-2]
+    array0_F_CCIR = full_array[0:-2]
+    file_F.close()
+
+    # F region URSI coefficients:
+    file_F = open(os.path.join(coeff_dir, 'URSI', 'ursi'+cm+'.asc'), mode='r')
+    fmt = FortranRecordReader('(1X,4E15.8)')
+    full_array = []
+    for line in file_F:
+        line_vals = fmt.read(line)
+        full_array = np.concatenate((full_array, line_vals), axis=None)
+    array0_F_URSI = full_array
     file_F.close()
 
     # Sporadic E coefficients:
@@ -545,14 +568,19 @@ def read_ccir_coeff_2levels(mth, coeff_dir):
     array0_E = np.fromfile(file_E, sep=' ')
     file_E.close()
 
-    # for FoF2: reshape array to [nj, nk, 2] shape
+    # for FoF2 CCIR: reshape array to [nj, nk, 2] shape
     F = np.zeros((coef['nj']['F0F2'], coef['nk']['F0F2'], 2))
-    array1 = array0_F[0:F.size]
-    F_fof2_2 = np.reshape(array1, F.shape, order='F')
+    array1 = array0_F_CCIR[0:F.size]
+    F_fof2_2_CCIR = np.reshape(array1, F.shape, order='F')
+
+    # for FoF2 URSI: reshape array to [nj, nk, 2] shape
+    F = np.zeros((coef['nj']['F0F2'], coef['nk']['F0F2'], 2))
+    array1 = array0_F_URSI[0:F.size]
+    F_fof2_2_URSI = np.reshape(array1, F.shape, order='F')
 
     # for M3000: reshape array to [nj, nk, 2] shape
     F = np.zeros((coef['nj']['M3000'], coef['nk']['M3000'], 2))
-    array2 = array0_F[(F_fof2_2.size)::]
+    array2 = array0_F_CCIR[(F_fof2_2_CCIR.size)::]
     F_M3000_2 = np.reshape(array2, F.shape, order='F')
 
     # for Es:
@@ -569,7 +597,8 @@ def read_ccir_coeff_2levels(mth, coeff_dir):
     array1 = array0_E[skip_coeff.size:(skip_coeff.size+F.size)]
     F_E = np.reshape(array1, F.shape, order='F')
 
-    F_fof2 = F_fof2_2
+    F_fof2_CCIR = F_fof2_2_CCIR
+    F_fof2_URSI = F_fof2_2_URSI
     F_M3000 = F_M3000_2
     F_Es_upper = F_E[:, :, 0:2]
     F_Es_median = F_E[:, :, 2:4]
@@ -586,7 +615,8 @@ def read_ccir_coeff_2levels(mth, coeff_dir):
                         0:coef['nk']['Es_lower'],
                         :]
 # -----------------------------------------------------------------------
-    return(F_fof2, F_M3000, F_Es_upper, F_Es_median, F_Es_low)
+    return(F_fof2_CCIR, F_fof2_URSI, F_M3000, F_Es_upper, F_Es_median,
+           F_Es_low)
 # -----------------------------------------------------------------------
 
 
