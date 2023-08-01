@@ -3,12 +3,13 @@
 # unlimited.
 #      This work was supported by the Office of Naval Research
 # #############################################################################
+from fortranformat import FortranRecordReader
 import datetime as dt
 import igrf_library as igrf
 import math
 import numpy as np
 import os
-from fortranformat import FortranRecordReader
+
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
     # **************************************************************************

@@ -3,10 +3,11 @@
 # unlimited.
 #      This work was supported by the Office of Naval Research
 # #############################################################################
+from importlib import resources
 import main_library as ml
 import numpy as np
 import plotting as plot
-from importlib import resources
+
 
 # Determine the coefficient and driver directories
 coeff_dir = str(resources.path(__package__, 'coefficients').__enter__())
