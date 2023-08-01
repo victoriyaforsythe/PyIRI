@@ -139,7 +139,7 @@ plot.PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
 F107_day = 100.
 F2, F1, E, Es, sun, mag, EDP = ml.IRI_density_1day(year, month, day, aUT,
                                                    alon, alat, aalt, F107_day,
-                                                   coeff_dir, driver_dir, 
+                                                   coeff_dir, driver_dir,
                                                    ccir_or_ursi)
 
 # Plot 1 profile for the selected day

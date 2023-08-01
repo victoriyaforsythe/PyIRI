@@ -25,8 +25,8 @@ def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir):
     levels_cb = np.linspace(-90, 90, 5)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 45))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 45))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
     for c in contour.collections:
         c.set_edgecolor("face")
@@ -50,8 +50,8 @@ def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir):
     levels_cb = np.linspace(-90, 90, 5)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 45))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 45))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
     for c in contour.collections:
         c.set_edgecolor("face")
@@ -75,8 +75,8 @@ def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir):
     levels_cb = np.linspace(-90, 90, 5)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 45))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 45))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
     for c in contour.collections:
         c.set_edgecolor("face")
@@ -98,8 +98,8 @@ def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(10, 100, 40)
@@ -135,8 +135,8 @@ def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(10, 60, 40)
@@ -172,8 +172,8 @@ def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(20, 55, 40)
@@ -209,8 +209,8 @@ def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(2.2, 3.8, 40)
@@ -246,8 +246,8 @@ def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(200, 500, 40)
@@ -283,8 +283,8 @@ def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(100, 350, 40)
@@ -320,8 +320,8 @@ def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(0, 12, 40)
@@ -358,8 +358,8 @@ def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(0, 4, 40)
@@ -395,8 +395,8 @@ def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(0, 16, 40)
@@ -432,8 +432,8 @@ def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
     levels = np.linspace(0, 4e12, 40)
@@ -472,8 +472,8 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     ax[0].set_ylabel('Geo Lat (°)')
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
-    plt.xticks(np.arange(-180, 180+45, 90))
-    plt.yticks(np.arange(-90, 90+45, 45))
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)', '(c)']
     ax[0].text(130, 70, abc[0], c='white')
     levels0 = np.linspace(0, 1, 40)

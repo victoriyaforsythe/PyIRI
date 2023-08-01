@@ -117,7 +117,7 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
     print('Model parameters are being determinaed for 2 levels of solar'
           'activity at F10.7=69.3 and 135.2 SFU')
     acoeff = ['CCIR', 'URSI']
-    print('For NmF2 determination '+acoeff[ccir_or_ursi]+' used.')
+    print('For NmF2 determination ' + acoeff[ccir_or_ursi] + ' used.')
 
     # defining this F107 limits to use throughout the code
     F107 = np.array([F107_min, F107_max])
@@ -337,7 +337,7 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
     # **************************************************************************
     print('PyIRI: IRI_density_1day:------------------------------------------')
     print('Determining parameters and electron density for 1 day: \
-           year='+str(year)+', month='+str(month)+', day='+str(day))
+           year=' + str(year) + ', month=' + str(month) + ', day=' + str(day))
     print('For UT = ', aUT)
     print('Longitude = ', alon)
     print('Latitude = ', alat)
@@ -350,12 +350,12 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
         F107 = solar_parameter(dtime, driver_dir)
         print('F10.7 value was taken from OMNIWeb data file: \
                PyIRI/solar_drivers/Solar_Driver_F107.txt')
-        print('F10.7='+str(F107))
+        print('F10.7=' + str(F107))
     else:
-        print('Provided F10.7='+str(F107))
+        print('Provided F10.7=' + str(F107))
 
     acoeff = ['CCIR', 'URSI']
-    print('For NmF2 determination '+acoeff[ccir_or_ursi]+'  used.')
+    print('For NmF2 determination ' + acoeff[ccir_or_ursi] + '  used.')
 
     # find out what monthly means are needed first and what their weights
     # will be
@@ -427,7 +427,7 @@ def adjust_longitude(lon, type):
         if type == 'to360':
             # check that values in the array don't go over 360
             multiple = np.floor_divide(np.abs(lon), 360)
-            lon = lon - multiple*360*np.sign(lon)
+            lon = lon - multiple * 360 * np.sign(lon)
 
             a = np.where(lon < 0.)
             inda = a[0]
@@ -440,7 +440,7 @@ def adjust_longitude(lon, type):
         if type == 'to180':
             # check that values in the array don't go over 360
             multiple = np.floor_divide(np.abs(lon), 360)
-            lon = lon - multiple*360*np.sign(lon)
+            lon = lon - multiple * 360 * np.sign(lon)
 
             a = np.where(lon > 180.)
             inda = a[0]
@@ -453,21 +453,21 @@ def adjust_longitude(lon, type):
         if type == 'to24':
             # check that values in the array don't go over 24
             multiple = np.floor_divide(np.abs(lon), 24)
-            lon = lon - multiple*24.*np.sign(lon)
+            lon = lon - multiple * 24. * np.sign(lon)
 
             a = np.where(lon < 0.)
             inda = a[0]
-            lon[inda] = lon[inda]+24.
+            lon[inda] = lon[inda] + 24.
 
             b = np.where(lon > 24.)
             indb = b[0]
-            lon[indb] = lon[indb]-24.
+            lon[indb] = lon[indb] - 24.
 
     if (isinstance(lon, int)) | (isinstance(lon, float)):
         if type == 'to360':
             # check that values in the array don't go over 360
             multiple = np.floor_divide(np.abs(lon), 360)
-            lon = lon - multiple*360*np.sign(lon)
+            lon = lon - multiple * 360 * np.sign(lon)
 
             if lon < 0.:
                 lon = lon + 360.
@@ -477,7 +477,7 @@ def adjust_longitude(lon, type):
         if type == 'to180':
             # check that values in the array don't go over 360
             multiple = np.floor_divide(np.abs(lon), 360)
-            lon = lon - multiple*360*np.sign(lon)
+            lon = lon - multiple * 360 * np.sign(lon)
 
             if lon > 180.:
                 lon = lon - 360.
@@ -487,7 +487,7 @@ def adjust_longitude(lon, type):
         if type == 'to24':
             # check that values in the array don't go over 24
             multiple = np.floor_divide(np.abs(lon), 24)
-            lon = lon - multiple*24.*np.sign(lon)
+            lon = lon - multiple * 24. * np.sign(lon)
 
             if lon < 0.:
                 lon = lon + 24.
@@ -541,10 +541,11 @@ def read_ccir_coeff(mth, coeff_dir):
         print(flag)
 
     # add 10 to the month becasue the file numeration goes from 11 to 22.
-    cm = str(mth+10)
+    cm = str(mth + 10)
 
     # F region coefficients:
-    file_F = open(os.path.join(coeff_dir, 'CCIR', 'ccir'+cm+'.asc'), mode='r')
+    file_F = open(os.path.join(coeff_dir, 'CCIR', 'ccir' + cm + '.asc'),
+                  mode='r')
     fmt = FortranRecordReader('(1X,4E15.8)')
     full_array = []
     for line in file_F:
@@ -554,7 +555,8 @@ def read_ccir_coeff(mth, coeff_dir):
     file_F.close()
 
     # F region URSI coefficients:
-    file_F = open(os.path.join(coeff_dir, 'URSI', 'ursi'+cm+'.asc'), mode='r')
+    file_F = open(os.path.join(coeff_dir, 'URSI', 'ursi' + cm + '.asc'),
+                  mode='r')
     fmt = FortranRecordReader('(1X,4E15.8)')
     full_array = []
     for line in file_F:
@@ -564,7 +566,8 @@ def read_ccir_coeff(mth, coeff_dir):
     file_F.close()
 
     # Sporadic E coefficients:
-    file_E = open(os.path.join(coeff_dir, 'Es', 'Es'+cm+'.asc'), mode='r')
+    file_E = open(os.path.join(coeff_dir, 'Es', 'Es' + cm + '.asc'),
+                  mode='r')
     array0_E = np.fromfile(file_E, sep=' ')
     file_E.close()
 
@@ -594,7 +597,7 @@ def read_ccir_coeff(mth, coeff_dir):
     # Each file starts with 60 indexies, we will not need them, therefore
     # skip it
     skip_coeff = np.zeros((6, 10))
-    array1 = array0_E[skip_coeff.size:(skip_coeff.size+F.size)]
+    array1 = array0_E[skip_coeff.size:(skip_coeff.size + F.size)]
     F_E = np.reshape(array1, F.shape, order='F')
 
     F_fof2_CCIR = F_fof2_2_CCIR
@@ -653,7 +656,7 @@ def set_diurnal_functions(nj, time_array):
     D = np.zeros((nj, time_array.size))
 
     # convert time array to -pi/2 to pi/2
-    hou = np.deg2rad((15.0E0*time_array - 180.0E0))
+    hou = np.deg2rad((15.0E0 * time_array - 180.0E0))
 
     # construct the array of evaluated functions that can be further multiplied
     # by the coefficients
@@ -661,9 +664,9 @@ def set_diurnal_functions(nj, time_array):
     for j in range(0, nj):
         for i in range(0, 2):
             if np.mod(i, 2) == 0:
-                f = np.cos(hou*(i + j))
+                f = np.cos(hou * (i + j))
             else:
-                f = np.sin(hou*(i + j))
+                f = np.sin(hou * (i + j))
             if ii < nj:
                 D[ii, :] = f
                 ii = ii + 1
@@ -746,19 +749,19 @@ def set_global_functions(Q, nk, alon, alat, x):
         for i in range(0, Q[j]):
             for m in range(0, 2):
                 if m == 0:
-                    fun3_st = 'cos(lon*'+str(j)+')'
-                    fun3 = np.cos(np.deg2rad(alon*j))
+                    fun3_st = 'cos(lon*' + str(j) + ')'
+                    fun3 = np.cos(np.deg2rad(alon * j))
                 else:
-                    fun3_st = 'sin(lon*'+str(j)+')'
+                    fun3_st = 'sin(lon*' + str(j) + ')'
                     # fun3 = np.sin(np.deg2rad(alon*j))
-                if (j != 0) | (fun3_st != 'sin(lon*'+str(j)+')'):
+                if (j != 0) | (fun3_st != 'sin(lon*' + str(j) + ')'):
                     fun1 = (np.sin(np.deg2rad(x)))**i
                     # fun1_st = 'sin(x)^'+str(i)
 
                     fun2 = (np.cos(np.deg2rad(alat)))**j
                     # fun2_st = 'cos(alat)^'+str(j)
 
-                    Gk[k, :] = fun1*fun2*fun3
+                    Gk[k, :] = fun1 * fun2 * fun3
                     k = k + 1
 # -----------------------------------------------------------------------
     return(Gk)
@@ -942,9 +945,9 @@ def subsol_apex(dtime):
     if isinstance(dtime, dt.datetime):
         year = np.asanyarray([dtime.year])
         doy = np.asanyarray([dtime.timetuple().tm_yday])
-        ut = np.asanyarray([dtime.hour*3600. +
-                            dtime.minute*60. +
-                            dtime.second])
+        ut = np.asanyarray([dtime.hour * 3600.
+                            + dtime.minute * 60.
+                            + dtime.second])
     elif isinstance(dtime, np.ndarray):
         # This conversion works for datetime of wrong precision or unit epoch
         times = dtime.astype('datetime64[s]')
@@ -964,7 +967,7 @@ def subsol_apex(dtime):
     nleap -= 99
     mask_1900 = year <= 1900
     if np.any(mask_1900):
-        ncent = np.floor((year[mask_1900] - 1601.)/100.).astype(int)
+        ncent = np.floor((year[mask_1900] - 1601.) / 100.).astype(int)
         ncent = 3. - ncent
         nleap[mask_1900] = nleap[mask_1900] + ncent
 
@@ -981,8 +984,8 @@ def subsol_apex(dtime):
     grad = np.radians(g0 + 0.9856003 * df)
 
     # Ecliptic longitude:
-    lmrad = (np.radians(lmean + 1.915 * np.sin(grad) +
-                        0.020 * np.sin(2.0 * grad)))
+    lmrad = (np.radians(lmean + 1.915 * np.sin(grad)
+                        + 0.020 * np.sin(2.0 * grad)))
     sinlm = np.sin(lmrad)
 
     # Obliquity of ecliptic in radians:
@@ -1042,10 +1045,12 @@ def juldat(times):
         m = times.minute
         s = times.second
 
-        julian_datetime = (367.*Y - int((7.*(Y + int((M + 9.) / 12.)))/4.) +
-                           int((275.*M)/9.) + D + 1721013.5 +
-                           (h + m/60. + s / math.pow(60, 2)) / 24. -
-                           0.5*math.copysign(1, 100.*Y + M - 190002.5) + 0.5)
+        julian_datetime = (367. * Y
+                           - int((7. * (Y + int((M + 9.) / 12.))) / 4.)
+                           + int((275. * M) / 9.) + D + 1721013.5
+                           + (h + m / 60. + s / math.pow(60, 2)) / 24.
+                           - 0.5 * math.copysign(1, 100. * Y + M - 190002.5)
+                           + 0.5)
 
     else:
         raise ValueError("input must be datetime.datetime")
@@ -1102,40 +1107,40 @@ def subsolar_point(juliantime):
     # **************************************************************************
     # **************************************************************************
     # number of centuries from J2000
-    t = (juliantime - 2451545.)/36525.
+    t = (juliantime - 2451545.) / 36525.
 
     # mean longitude corrected for aberation (deg)
-    lms = np.mod(280.460 + 36000.771*t, 360.)
+    lms = np.mod(280.460 + 36000.771 * t, 360.)
 
     # mean anomaly (deg)
-    solanom = np.mod(357.527723 + 35999.05034*t, 360.)
+    solanom = np.mod(357.527723 + 35999.05034 * t, 360.)
 
     # ecliptic longitude (deg)
-    ecplon = (lms + 1.914666471*np.sin(np.deg2rad(solanom)) +
-              0.01999464*np.sin(np.deg2rad(2.*solanom)))
+    ecplon = (lms + 1.914666471 * np.sin(np.deg2rad(solanom))
+              + 0.01999464 * np.sin(np.deg2rad(2. * solanom)))
 
     # obliquity of the ecliptic (deg)
-    epsilon = (23.439291 - 0.0130042*t)
+    epsilon = (23.439291 - 0.0130042 * t)
 
     # solar declination in radians
-    decsun = np.rad2deg(np.arcsin(np.sin(np.deg2rad(epsilon)) *
-                                  np.sin(np.deg2rad(ecplon))))
+    decsun = np.rad2deg(np.arcsin(np.sin(np.deg2rad(epsilon))
+                                  * np.sin(np.deg2rad(ecplon))))
 
     # greenwich mean sidereal time in seconds
-    tgmst = (67310.54841 +
-             (876600.*3600.+8640184.812866)*t +
-             0.93104*t**2 -
-             6.2e-6*t**3)
+    tgmst = (67310.54841
+             + (876600. * 3600. + 8640184.812866) * t
+             + 0.93104 * t**2
+             - 6.2e-6 * t**3)
 
     # greenwich mean sidereal time in degrees
-    tgmst = np.mod(tgmst, 86400.)/240.
+    tgmst = np.mod(tgmst, 86400.) / 240.
 
     # right ascension
-    num = (np.cos(np.deg2rad(epsilon)) *
-           np.sin(np.deg2rad(ecplon)) /
-           np.cos(np.deg2rad(decsun)))
+    num = (np.cos(np.deg2rad(epsilon))
+           * np.sin(np.deg2rad(ecplon))
+           / np.cos(np.deg2rad(decsun)))
 
-    den = np.cos(np.deg2rad(ecplon))/np.cos(np.deg2rad(decsun))
+    den = np.cos(np.deg2rad(ecplon)) / np.cos(np.deg2rad(decsun))
     sunra = np.rad2deg(np.arctan2(num, den))
 
     # longitude of the sun indegrees
@@ -1169,8 +1174,8 @@ def doy_2_date(year, day_num):
     # **************************************************************************
     # **************************************************************************
     # converting to date
-    res_date = (dt.datetime(int(year), 1, 1) +
-                dt.timedelta(days=int(day_num) - 1))
+    res_date = (dt.datetime(int(year), 1, 1)
+                + dt.timedelta(days=int(day_num) - 1))
 # -----------------------------------------------------------------------
     return(res_date)
 # -----------------------------------------------------------------------
@@ -1202,11 +1207,11 @@ def solar_zenith(lon_sun, lat_sun, lon_observer, lat_observer):
 
     if (isinstance(lon_sun, int)) | (isinstance(lon_sun, float)):
         # cosine of solar zenith angle
-        cos_zenith = (np.sin(np.deg2rad(lat_sun)) *
-                      np.sin(np.deg2rad(lat_observer)) +
-                      np.cos(np.deg2rad(lat_sun)) *
-                      np.cos(np.deg2rad(lat_observer)) *
-                      np.cos(np.deg2rad((lon_sun-lon_observer))))
+        cos_zenith = (np.sin(np.deg2rad(lat_sun))
+                      * np.sin(np.deg2rad(lat_observer))
+                      + np.cos(np.deg2rad(lat_sun))
+                      * np.cos(np.deg2rad(lat_observer))
+                      * np.cos(np.deg2rad((lon_sun - lon_observer))))
 
         # solar zenith angle
         azenith = np.rad2deg(np.arccos(cos_zenith))
@@ -1225,11 +1230,11 @@ def solar_zenith(lon_sun, lat_sun, lon_observer, lat_observer):
 
         for i in range(0, lon_sun.size):
             # cosine of solar zenith angle
-            cos_zenith = (np.sin(np.deg2rad(lat_sun[i])) *
-                          np.sin(np.deg2rad(lat_observer)) +
-                          np.cos(np.deg2rad(lat_sun[i])) *
-                          np.cos(np.deg2rad(lat_observer)) *
-                          np.cos(np.deg2rad((lon_sun[i]-lon_observer))))
+            cos_zenith = (np.sin(np.deg2rad(lat_sun[i]))
+                          * np.sin(np.deg2rad(lat_observer))
+                          + np.cos(np.deg2rad(lat_sun[i]))
+                          * np.cos(np.deg2rad(lat_observer))
+                          * np.cos(np.deg2rad((lon_sun[i] - lon_observer))))
 
             # solar zenith angle
             azenith[i, :] = np.rad2deg(np.arccos(cos_zenith))
@@ -1274,7 +1279,7 @@ def solzen_timearray_grid(year, mth, day, T0, alon, alat):
     for i in range(0, T0.size):
         UT = T0[i]
         hour = np.fix(UT)
-        minute = np.fix((UT - hour)*60.)
+        minute = np.fix((UT - hour) * 60.)
         date_sd = dt.datetime(int(year), int(mth), int(day),
                               int(hour), int(minute))
         jday = juldat(date_sd)
@@ -1320,13 +1325,13 @@ def solzen_effective(chi):
 
     x = chi - chi0
 
-    f1 = 90. - 0.24*fexp(20. - 0.2*chi)
+    f1 = 90. - 0.24 * fexp(20. - 0.2 * chi)
 
     f2 = chi
 
-    ee = fexp(alpha*x)
+    ee = fexp(alpha * x)
 
-    chi_eff = (f1*ee + f2)/(ee + 1.)
+    chi_eff = (f1 * ee + f2) / (ee + 1.)
 
     # replace nan with 0
     chi_eff = np.nan_to_num(chi_eff)
@@ -1370,14 +1375,15 @@ def foE(mth, solzen_effective, alat, f107):
         seas = 1
 
     # introduce the latitudinal dependence
-    ee = fexp(np.deg2rad(0.3*alat))
+    ee = fexp(np.deg2rad(0.3 * alat))
 
     # combine seasonal and latitudinal dependence
-    seasp = seas*(ee - 1.)/(ee + 1.)
+    seasp = seas * (ee - 1.) / (ee + 1.)
 
     # critical frequency
-    foE = (np.sqrt(0.49 + (1.112 - 0.019*seasp)**2 *
-                   np.sqrt(f107)*(np.cos(np.deg2rad(solzen_effective)))**0.6))
+    foE = (np.sqrt(0.49 + (1.112 - 0.019 * seasp)**2
+                   * np.sqrt(f107)
+                   * (np.cos(np.deg2rad(solzen_effective)))**0.6))
 
     # turn nans into zeros
     foE = np.nan_to_num(foE)
@@ -1412,12 +1418,12 @@ def foE_IRI(solzen, solzen_noon, alat, f107):
     # **************************************************************************
     # **************************************************************************
     # set arrays same size as alat
-    m = alat*0.
-    C = alat*0.
-    n = alat*0.
+    m = alat * 0.
+    C = alat * 0.
+    n = alat * 0.
 
     # variation with solar activity (factor A)
-    A = 1. + 0.0094*(f107 - 66.)
+    A = 1. + 0.0094 * (f107 - 66.)
     # variation with noon solar zenith angle (B) and with latitude (C)
     abs_alat = np.absolute(alat)
     sl = np.cos(np.deg2rad(abs_alat))
@@ -1425,11 +1431,11 @@ def foE_IRI(solzen, solzen_noon, alat, f107):
     a1 = np.where(abs_alat < 32.)
     a2 = np.where(abs_alat >= 32.)
 
-    m[a1] = -1.93+1.92*sl[a1]
-    C[a1] = 23.+116.*sl[a1]
+    m[a1] = -1.93 + 1.92 * sl[a1]
+    C[a1] = 23. + 116. * sl[a1]
 
-    m[a2] = 0.11-0.49*sl[a2]
-    C[a2] = 92.+35.*sl[a2]
+    m[a2] = 0.11 - 0.49 * sl[a2]
+    C[a2] = 92. + 35. * sl[a2]
 
     solzen_noon[np.where(solzen_noon >= 90.)] = 89.999
     B = (np.cos(np.deg2rad(solzen_noon)))**m
@@ -1442,14 +1448,14 @@ def foE_IRI(solzen, solzen_noon, alat, f107):
     n[a4] = 1.31
 
     # adjusted solar zenith angle during nighttime (XHIC)
-    solzen_adjusted = solzen - 3.*np.log(1. + np.exp((solzen - 89.98)/3.))
+    solzen_adjusted = solzen - 3. * np.log(1. + np.exp((solzen - 89.98) / 3.))
 
     D = np.cos(np.deg2rad(solzen_adjusted))**n
 
-    foE4 = (A*B*C*D)
+    foE4 = (A * B * C * D)
 
     # minimum allowable foE (foe_min=sqrt[SMIN])...............................
-    SMIN2 = 0.121 + 0.0015*(f107 - 60.)
+    SMIN2 = 0.121 + 0.0015 * (f107 - 60.)
     SMIN4 = SMIN2**2
     foE4[np.where(foE4 < SMIN4)] = SMIN4
 
@@ -1488,7 +1494,7 @@ def gammaE(year, mth, time, alon, alat, aF107):
 
     # solar zenith angle for day 15 in the month of interest at noon
     solzen_noon, slon_noon, slat_noon = solzen_timearray_grid(year, mth, 15,
-                                                              time*0+12.,
+                                                              time * 0 + 12.,
                                                               alon, alat)
 
     # effective solar zenith angle
@@ -1557,28 +1563,27 @@ def Probability_F1(year, mth, time, alon, alat, mag_dip_lat, aF107):
 
     for isol in range(0, 2):
         a_R12[:, :, isol] = np.full((time.size, alon.size), R12_min_max[isol])
-        a_P[:, :, isol] = (0.5 + 0.5*np.cos(np.deg2rad(solzen)))**gamma
+        a_P[:, :, isol] = (0.5 + 0.5 * np.cos(np.deg2rad(solzen)))**gamma
         a_solzen[:, :, isol] = solzen
 
-    n = (0.093 +
-         0.0046*a_mag_dip_lat_abs -
-         0.000054*a_mag_dip_lat_abs**2 +
-         0.0003*a_R12)
+    n = (0.093
+         + 0.0046 * a_mag_dip_lat_abs
+         - 0.000054 * a_mag_dip_lat_abs**2
+         + 0.0003 * a_R12)
 
-    f_100 = (5.348 +
-             0.011*a_mag_dip_lat_abs -
-             0.00023*a_mag_dip_lat_abs**2)
+    f_100 = (5.348
+             + 0.011 * a_mag_dip_lat_abs
+             - 0.00023 * a_mag_dip_lat_abs**2)
 
-    f_0 = (4.35 +
-           0.0058*a_mag_dip_lat_abs -
-           0.00012*a_mag_dip_lat_abs**2)
+    f_0 = (4.35
+           + 0.0058 * a_mag_dip_lat_abs
+           - 0.00012 * a_mag_dip_lat_abs**2)
 
-    f_s = f_0 + (f_100 - f_0)*a_R12/100.
+    f_s = f_0 + (f_100 - f_0) * a_R12 / 100.
 
     arg = (np.cos(np.deg2rad(a_solzen)))
-    a_foF1[np.where(arg > 0)] = (f_s[np.where(arg > 0)] *
-                                 arg[np.where(arg > 0)]
-                                 ** n[np.where(arg > 0)])
+    ind = np.where(arg > 0)
+    a_foF1[ind] = f_s[ind] * arg[ind]**n[ind]
 
     a_foF1[np.where(a_P < 0.5)] = np.nan
 # -----------------------------------------------------------------------
@@ -1610,12 +1615,12 @@ def gammaF1(foE, foF2):
     # **************************************************************************
     # set the new array to be equal to the initial critical frequency of E
     # region
-    foF1 = foE*0.
+    foF1 = foE * 0.
     # from Leitinger et al, 2005 (NeQuick 2 model):
-    foF1[np.where(foE >= 2.)] = 1.4*foE[np.where(foE >= 2.)]
+    foF1[np.where(foE >= 2.)] = 1.4 * foE[np.where(foE >= 2.)]
     foF1[np.where(foE < 2.)] = 0.
-    foF1[np.where(1.4*foE >= 0.85*foF2)] = (foE[np.where(1.4*foE >=
-                                                         0.85*foF2)]*1.4*0.85)
+    ind = np.where(1.4 * foE >= 0.85 * foF2)
+    foF1[ind] = foE[ind] * 1.4 * 0.85
 # -----------------------------------------------------------------------
     return(foF1)
 # -----------------------------------------------------------------------
@@ -1681,16 +1686,16 @@ def freq_to_Nm(foF2, foF1, foE, foEs):
     # **************************************************************************
     # **************************************************************************
     # F2 peak
-    NmF2 = freq2den(foF2)*1e11
+    NmF2 = freq2den(foF2) * 1e11
 
     # F1 peak
-    NmF1 = freq2den(foF1)*1e11
+    NmF1 = freq2den(foF1) * 1e11
 
     # E
-    NmE = freq2den(foE)*1e11
+    NmE = freq2den(foE) * 1e11
 
     # Es
-    NmEs = freq2den(foEs)*1e11
+    NmEs = freq2den(foEs) * 1e11
 
     # exclude negative values, in case there are any
     NmF2[np.where(NmF2 <= 0)] = 1.
@@ -1723,26 +1728,27 @@ def hm(M3000, foE, foF2, B_F2_bot, hmF2):
     # **************************************************************************
     # **************************************************************************
     # E
-    hmE = 120.+np.zeros((M3000.shape))
+    hmE = 120. + np.zeros((M3000.shape))
 
     # F2
     M = M3000
-    del_M = foE*0.
+    del_M = foE * 0.
     del_M[np.where(foE < 1e-30)] = -0.012
 
     # based on the Ionospheric Correction Algorithm for Galileo Single
     # Frequency Users that describes NeQuick Model
-    ratio = foF2/foE
+    ratio = foF2 / foE
 
-    ee = fexp(20.*(ratio - 1.75))
+    ee = fexp(20. * (ratio - 1.75))
 
-    ro = (ratio*ee + 1.75)/(ee + 1.)
+    ro = (ratio * ee + 1.75) / (ee + 1.)
 
-    del_M[np.where(foE >= 1e-30)] = ((0.253/(ro[np.where(foE >= 1e-30)] -
-                                             1.215)) - 0.012)
+    del_M[np.where(foE >= 1e-30)] = ((0.253 / (ro[np.where(foE >= 1e-30)]
+                                               - 1.215)) - 0.012)
 
-    hmF2 = (((1490.*M*np.sqrt((0.0196*M**2 + 1.) /
-                              (1.2967*M**2 - 1.)))/(M+del_M)) - 176.)
+    hmF2 = (((1490. * M * np.sqrt((0.0196 * M**2 + 1.)
+                                  / (1.2967 * M**2 - 1.)))
+             / (M + del_M)) - 176.)
 
     # Es
     hmEs = 100. + np.zeros((M3000.shape))
@@ -1771,27 +1777,27 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
     # hmF1
     # **************************************************************************
     # **************************************************************************
-    hmF1 = NmF2*0 + np.nan
-    a = NmF2*0
-    b = NmF2*0
-    c = NmF2*0
-    d = NmF2*0
-    x = NmF2*0 + np.nan
+    hmF1 = NmF2 * 0 + np.nan
+    a = NmF2 * 0
+    b = NmF2 * 0
+    c = NmF2 * 0
+    d = NmF2 * 0
+    x = NmF2 * 0 + np.nan
 
     a[:, :, :] = 1.
     ind_finite = np.isfinite(NmF1)
-    b[ind_finite] = (2. - 4.*NmF2[ind_finite]/NmF1[ind_finite])
+    b[ind_finite] = (2. - 4. * NmF2[ind_finite] / NmF1[ind_finite])
     c[:, :, :] = 1.
 
-    d = (b**2) - (4*a*c)
+    d = (b**2) - (4 * a * c)
     ind_positive = np.where(d >= 0)
 
     # take second root of the quadratic equation (it is below hmF2)
-    x[ind_positive] = ((-b[ind_positive] - np.sqrt(d[ind_positive])) /
-                       (2*a[ind_positive]))
+    x[ind_positive] = ((-b[ind_positive] - np.sqrt(d[ind_positive]))
+                       / (2 * a[ind_positive]))
 
     ind_g0 = np.where(x > 0)
-    hmF1[ind_g0] = B_F2_bot[ind_g0]*np.log(x[ind_g0]) + hmF2[ind_g0]
+    hmF1[ind_g0] = B_F2_bot[ind_g0] * np.log(x[ind_g0]) + hmF2[ind_g0]
 
 # -----------------------------------------------------------------------
     return(hmF1)
@@ -1817,7 +1823,7 @@ def find_B_F1_bot(hmF1, hmE, P_F1):
     # B_F1_bot
     # **************************************************************************
     # **************************************************************************
-    B_F1_bot = 0.5*(hmF1 - hmE)
+    B_F1_bot = 0.5 * (hmF1 - hmE)
     B_F1_bot[np.where(P_F1 < 0.5)] = np.nan
 # -----------------------------------------------------------------------
     return(B_F1_bot)
@@ -1860,33 +1866,33 @@ def hm_IRI(M3000, foE, foF2, modip, aF107):
     # add 2 levels of solar activity for modip, by using same elemetns
     # empty array, swap axises before filling with same elements of modip,
     # swap back to match M3000 array shape
-    modip_2levels = M3000*0.
+    modip_2levels = M3000 * 0.
     modip_2levels = np.swapaxes(modip_2levels, 1, 2)
     modip_2levels = np.full(modip_2levels.shape, modip)
     modip_2levels = np.swapaxes(modip_2levels, 1, 2)
 
     # make R12 same as input arrays to account for 2 levels of solar activity
-    aR12 = M3000*0.
+    aR12 = M3000 * 0.
     for isol in range(0, 2):
         aR12[:, :, isol] = np.full((time_dim, grid_dim), R12_min_max[isol])
 
     # empty array
     hmF2 = np.zeros((M3000.shape))
 
-    ratio = foF2/foE
-    f1 = 0.00232*aR12+0.222
-    f2 = 1.0-aR12/150.0*np.exp(-(modip_2levels/40.)**2)
-    f3 = 1.2-0.0116*np.exp(aR12/41.84)
-    f4 = 0.096*(aR12-25.)/150.
+    ratio = foF2 / foE
+    f1 = 0.00232 * aR12 + 0.222
+    f2 = 1.0 - aR12 / 150.0 * np.exp(-(modip_2levels / 40.)**2)
+    f3 = 1.2 - 0.0116 * np.exp(aR12 / 41.84)
+    f4 = 0.096 * (aR12 - 25.) / 150.
 
     a = np.where(ratio < 1.7)
     ratio[a] = 1.7
 
-    DM = f1*f2/(ratio - f3)+f4
-    hmF2 = 1490.0/(M3000+DM) - 176.0
+    DM = f1 * f2 / (ratio - f3) + f4
+    hmF2 = 1490.0 / (M3000 + DM) - 176.0
 
     # Es
-    hmEs = 100.+np.zeros((M3000.shape))
+    hmEs = 100. + np.zeros((M3000.shape))
 # -----------------------------------------------------------------------
     return(hmF2, hmE, hmEs)
 # -----------------------------------------------------------------------
@@ -1919,40 +1925,40 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aF107):
     # the B 100 times smaller. It took me a long time to find this mistake,
     # while comparing with my results. The printed guide doesn't have this
     # typo.
-    dNdHmx = -3.467 + 1.714*np.log(foF2) + 2.02*np.log(M3000)
-    dNdHmx = 0.01*fexp(dNdHmx)
-    B_F2_bot = 0.385*NmF2/dNdHmx
+    dNdHmx = -3.467 + 1.714 * np.log(foF2) + 2.02 * np.log(M3000)
+    dNdHmx = 0.01 * fexp(dNdHmx)
+    B_F2_bot = 0.385 * NmF2 / dNdHmx
 
     # B_F2_top..................................................................
     # set empty arrays
-    k = foF2*0
+    k = foF2 * 0.
     # shape parameter depends on solar activity:
 
     for isol in range(0, 2):
         # Effective sunspot number
         R12 = F107_2_R12(aF107[isol])
-        k[:, :, isol] = (3.22 -
-                         0.0538*foF2[:, :, isol] -
-                         0.00664*hmF2[:, :, isol] +
-                         (0.113*hmF2[:, :, isol]/B_F2_bot[:, :, isol]) +
-                         0.00257*R12)
+        k[:, :, isol] = (3.22
+                         - 0.0538 * foF2[:, :, isol]
+                         - 0.00664 * hmF2[:, :, isol]
+                         + (0.113 * hmF2[:, :, isol] / B_F2_bot[:, :, isol])
+                         + 0.00257 * R12)
 
     # auxiliary parameters x and v:
-    x = (k*B_F2_bot-150.)/100.
+    x = (k * B_F2_bot - 150.) / 100.
     # thickness
-    B_F2_top = (100.*x + 150.)/(0.041163*x**2 - 0.183981*x + 1.424472)
+    B_F2_top = (100. * x + 150.) / (0.041163 * x**2 - 0.183981 * x + 1.424472)
 
     # B_E_top..................................................................
-    B_E_top = 7.+np.zeros((NmF2.shape))
+    B_E_top = 7. + np.zeros((NmF2.shape))
 
     # B_E_bot..................................................................
-    B_E_bot = 5.+np.zeros((NmF2.shape))
+    B_E_bot = 5. + np.zeros((NmF2.shape))
 
     # B_Es_top.................................................................
-    B_Es_top = 1.+np.zeros((NmF2.shape))
+    B_Es_top = 1. + np.zeros((NmF2.shape))
 
     # B_Es_bot.................................................................
-    B_Es_bot = 1.+np.zeros((NmF2.shape))
+    B_Es_bot = 1. + np.zeros((NmF2.shape))
 
 # -----------------------------------------------------------------------
     return(B_F2_bot, B_F2_top, B_E_bot, B_E_top, B_Es_bot, B_Es_top)
@@ -1986,62 +1992,11 @@ def epstein(Nm, hm, B, alt):
     Z = B
     W = alt
 
-    aexp = fexp((W - Y)/Z)
+    aexp = fexp((W - Y) / Z)
 
-    res = X*aexp/(1+aexp)**2
+    res = X * aexp / (1 + aexp)**2
 # -----------------------------------------------------------------------
     return(res)
-# -----------------------------------------------------------------------
-
-
-def amplitude(NmF2, NmE, NmF1, hmF2, hmF1, hmE, B_E_top, B_F1_bot, B_F2_bot,
-              foF1):
-    # **************************************************************************
-    # **************************************************************************
-    # by Victoriya V Forsythe Makarevich
-    #
-    # Naval Research Laboratory
-    # Space Physics
-    #
-    # Date: 11.01.2022
-    #
-    # This function returns thicknesses
-    #
-    # Variables:
-    # NmF2, NmE, NmF1, hmF2, hmF1, hmE, B_E_top, B_F1_bot, B_F2_bot, foF1
-    # (or gamma_F1)
-    #
-    # Result:
-    # A1, A2, A3 = amplitudes of F2, F1, and E regions
-    # **************************************************************************
-    # **************************************************************************
-
-    A1 = np.zeros((NmF2.size))
-    A2 = np.zeros((NmF2.size))
-    A3 = np.zeros((NmF2.size))
-
-    # A1 = F2 layer amplitude
-    A1 = 4.*NmF2
-
-    A3a = 4.*NmE
-
-    for i in range(0, 5):
-        if (NmF1 != 0):
-            A2a = 4.*((NmF1-epstein(A1, hmF2, B_F2_bot, hmF1) -
-                       epstein(A3a, hmE, B_E_top, hmF1)))
-        else:
-            A2a = np.array([0])
-        if (NmE != 0):
-            A3a = 4.*((NmE - epstein(A2a, hmF1, B_F1_bot, hmE) -
-                       epstein(A1, hmF2, B_F2_bot, hmE)))
-        else:
-            A3a = np.array([0])
-
-    A2 = A2a
-    exp = fexp(60*(A3a - 0.005))
-    A3 = (A3a*exp+0.05)/(1+exp)
-# -----------------------------------------------------------------------
-    return(A1, A2, A3)
 # -----------------------------------------------------------------------
 
 
@@ -2106,10 +2061,10 @@ def decimal_year(dtime):
 
     # decimal, day of year devided by number of days in year, taking leap years
     # in account
-    decimal = (doy-1)/(365 + leap_year(dtime.year))
+    decimal = (doy - 1) / (365 + leap_year(dtime.year))
 
     # year plus decimal
-    date_decimal = dtime.year+decimal
+    date_decimal = dtime.year + decimal
 # -----------------------------------------------------------------------
     return(date_decimal)
 # -----------------------------------------------------------------------
@@ -2268,7 +2223,7 @@ def set_grid(dMLT, dQlat):
     # aQDlat_2d = 2d QDlat coordinates
     # **************************************************************************
     # **************************************************************************
-    aMLT_2d, aQDlat_2d = np.mgrid[0:24+dMLT:dMLT, -90:90+dQlat:dQlat]
+    aMLT_2d, aQDlat_2d = np.mgrid[0:24 + dMLT:dMLT, -90:90 + dQlat:dQlat]
     aMLT = np.reshape(aMLT_2d, aMLT_2d.size)
     aQDlat = np.reshape(aQDlat_2d, aQDlat_2d.size)
 # -----------------------------------------------------------------------
@@ -2299,7 +2254,7 @@ def set_geo_grid(dlon, dlat):
     # alat_2d = 2d lat coordinates
     # **************************************************************************
     # **************************************************************************
-    alon_2d, alat_2d = np.mgrid[-180:180+dlon:dlon, -90:90+dlat:dlat]
+    alon_2d, alat_2d = np.mgrid[-180:180 + dlon:dlon, -90:90 + dlat:dlat]
     alon = np.reshape(alon_2d, alon_2d.size)
     alat = np.reshape(alat_2d, alat_2d.size)
 # -----------------------------------------------------------------------
@@ -2324,7 +2279,7 @@ def set_alt_grid(dalt):
     # Result:    aalt = alt grid
     # **************************************************************************
     # **************************************************************************
-    aalt = np.mgrid[90:1000+dalt:dalt]
+    aalt = np.mgrid[90:1000 + dalt:dalt]
 # -----------------------------------------------------------------------
     return(aalt)
 # -----------------------------------------------------------------------
@@ -2356,9 +2311,9 @@ def set_temporal_array(dUT):
     # **************************************************************************
     aUT = np.arange(0, 24, dUT)
     ahour = np.fix(aUT).astype(int)
-    aminute = ((aUT - ahour)*60.).astype(int)
-    asecond = (aUT*0).astype(int)
-    atime_frame_strings = [str(ahour[it]).zfill(2)+str(aminute[it]).zfill(2)
+    aminute = ((aUT - ahour) * 60.).astype(int)
+    asecond = (aUT * 0).astype(int)
+    atime_frame_strings = [str(ahour[it]).zfill(2) + str(aminute[it]).zfill(2)
                            for it in range(0, aUT.size)]
 # -----------------------------------------------------------------------
     return(aUT, ahour, aminute, asecond, atime_frame_strings)
@@ -2389,15 +2344,15 @@ def solar_interpolate(F_min, F_max, F107):
     # **************************************************************************
     # **************************************************************************
     # min and max of IG12 Ionospheric Global Index
-    IG12_min = 0
-    IG12_max = 100
+    IG12_min = 0.
+    IG12_max = 100.
 
     IG12 = F107_2_IG12(F107)
 
     # linear interpolation of the whole matrix:
     # https://en.wikipedia.org/wiki/Linear_interpolation
-    F = (F_min*(IG12_max-IG12)/(IG12_max-IG12_min) +
-         F_max*(IG12-IG12_min)/(IG12_max-IG12_min))
+    F = (F_min * (IG12_max - IG12) / (IG12_max - IG12_min)
+         + F_max * (IG12 - IG12_min) / (IG12_max - IG12_min))
 # -----------------------------------------------------------------------
     return(F)
 # -----------------------------------------------------------------------
@@ -2455,7 +2410,7 @@ def freq2den(f):
     # d = density
     # **************************************************************************
     # **************************************************************************
-    d = 0.124*f**2
+    d = 0.124 * f**2
     # -----------------------------------------------------------------------
     return(d)
     # -----------------------------------------------------------------------
@@ -2480,7 +2435,7 @@ def R12_2_F107(R12):
     # F10.7 = solar flux
     # **************************************************************************
     # **************************************************************************
-    F107 = 63.7 + 0.728*R12 + 8.9E-4*R12**2
+    F107 = 63.7 + 0.728 * R12 + 8.9E-4 * R12**2
     # -----------------------------------------------------------------------
     return(F107)
     # -----------------------------------------------------------------------
@@ -2507,7 +2462,7 @@ def F107_2_R12(F107):
     # **************************************************************************
     a = 8.9E-4
     b = 0.728
-    c = 63.7-F107
+    c = 63.7 - F107
     x = quadratic([a, b, c])[0]
     # -----------------------------------------------------------------------
     return(x)
@@ -2534,7 +2489,7 @@ def F107_2_AZR(f107):
     # AZR = effective sunspot number
     # **************************************************************************
     # **************************************************************************
-    x = np.sqrt(167273. + (f107 - 63.7)*1123.6) - 408.99
+    x = np.sqrt(167273. + (f107 - 63.7) * 1123.6) - 408.99
     # -----------------------------------------------------------------------
     return(x)
     # -----------------------------------------------------------------------
@@ -2560,7 +2515,7 @@ def R12_2_IG12(R12):
     # IG12 = ionospheric global index
     # **************************************************************************
     # **************************************************************************
-    IG12 = 12.349 + 1.468*R12 - 0.00268*R12**2
+    IG12 = 12.349 + 1.468 * R12 - 0.00268 * R12**2
     # -----------------------------------------------------------------------
     return(IG12)
     # -----------------------------------------------------------------------
@@ -2672,11 +2627,11 @@ def quadratic(coeff):
     b = coeff[1]
     c = coeff[2]
 
-    d = (b**2) - (4*a*c)
+    d = (b**2) - (4. * a * c)
 
     # find two solutions
-    root1 = (-b+np.sqrt(d))/(2*a)
-    root2 = (-b-np.sqrt(d))/(2*a)
+    root1 = (-b + np.sqrt(d)) / (2. * a)
+    root2 = (-b - np.sqrt(d)) / (2. * a)
     # -----------------------------------------------------------------------
     return([root1, root2])
     # -----------------------------------------------------------------------
@@ -2706,12 +2661,12 @@ def epstein_function_array(A1, hm, B_bot, x):
 
     density = np.zeros((A1.shape))
 
-    alpha = (x-hm)/B_bot
+    alpha = (x - hm) / B_bot
     exp = fexp(alpha)
 
     a = np.where(alpha <= 25)
     b = np.where(alpha > 25)
-    density[a] = A1[a]*exp[a]/(1+exp[a])**2
+    density[a] = A1[a] * exp[a] / (1. + exp[a])**2
     density[b] = 0.
 # -----------------------------------------------------------------------
     return(density)
@@ -2740,16 +2695,16 @@ def epstein_function_top_array(A1, hmF2, B_F2_top, x):
     # **************************************************************************
     # **************************************************************************
     g = 0.125
-    r = 100
+    r = 100.
     dh = x - hmF2
-    z = dh/(B_F2_top*(1 + (r*g*dh/(r*B_F2_top+g*dh))))
+    z = dh / (B_F2_top * (1 + (r * g * dh / (r * B_F2_top + g * dh))))
     exp = fexp(z)
 
     density = np.zeros((exp.size))
-    density[exp > 1e11] = A1[exp > 1e11]/exp[exp > 1e11]
-    density[exp <= 1e11] = (A1[exp <= 1e11] *
-                            exp[exp <= 1e11] /
-                            (exp[exp <= 1e11] + 1)**2)
+    density[exp > 1e11] = A1[exp > 1e11] / exp[exp > 1e11]
+    density[exp <= 1e11] = (A1[exp <= 1e11]
+                            * exp[exp <= 1e11]
+                            / (exp[exp <= 1e11] + 1)**2)
 # -----------------------------------------------------------------------
     return(density)
 # -----------------------------------------------------------------------
@@ -2778,16 +2733,16 @@ def amplitudes_array(NmF2, NmF1, NmE, hmF2, hmF1, hmE, B_E_top, B_F1_bot,
     # **************************************************************************
 
     # Amplitude of Epstein function should be multiplyed by 4
-    A1 = 4.*NmF2
-    A2a = 4.*NmF1
-    A3a = 4.*NmE
+    A1 = 4. * NmF2
+    A2a = 4. * NmF1
+    A3a = 4. * NmE
 
     for i in range(0, 5):
         F2_contribution = epstein_function_array(A1, hmF2, B_F2_bot, hmF1)
         E_contribution = epstein_function_array(A3a, hmE, B_E_top, hmF1)
 
         a = np.where(NmF1 > (F2_contribution + E_contribution))
-        A2a[a] = NmF1[a] - F2_contribution[a]-E_contribution[a]
+        A2a[a] = NmF1[a] - F2_contribution[a] - E_contribution[a]
 
         F1_contribution = epstein_function_array(A2a, hmF1, B_F1_bot, hmE)
         F2_contribution = epstein_function_array(A1, hmF2, B_F2_bot, hmE)
@@ -2826,9 +2781,9 @@ def drop_function(x):
     nelem = x.size
 
     if nelem > 1:
-        y = 1-(x/(nelem-1))**n
+        y = 1. - (x / (nelem - 1.))**n
     else:
-        y = np.zeros((x.size))+1
+        y = np.zeros((x.size)) + 1.
     # -----------------------------------------------------------------------
     return(y)
     # -----------------------------------------------------------------------
@@ -2913,7 +2868,7 @@ def EDP_builder(x, aalt):
     # number of elements in horizontal dimention of grid
     nhor = x.shape[2]
     # time and horisontal grid dimention
-    ngrid = nhor*nUT
+    ngrid = nhor * nUT
     # vertical dimention
     nalt = aalt.size
 
@@ -2968,9 +2923,9 @@ def EDP_builder(x, aalt):
     a_B_E_top = np.full(shape2, B_E_top)
     a_B_E_bot = np.full(shape2, B_E_bot)
 
-    a_A1 = 4.*a_NmF2
-    a_A2 = 4.*a_NmF1
-    a_A3 = 4.*a_NmE
+    a_A1 = 4. * a_NmF2
+    a_A2 = 4. * a_NmF1
+    a_A3 = 4. * a_NmE
 
     # !!! do not use a[0], because all 3 dimentions are needed. this is
     # the same as density[a]= density[a[0], a[1], a[2]]
@@ -2987,40 +2942,40 @@ def EDP_builder(x, aalt):
 
     # when F1 is present-----------------------------------------
     # F2 bottom down to F1
-    a = np.where((np.isfinite(a_NmF1)) &
-                 (a_alt < a_hmF2) &
-                 (a_alt >= a_hmF1))
+    a = np.where((np.isfinite(a_NmF1))
+                 & (a_alt < a_hmF2)
+                 & (a_alt >= a_hmF1))
     density_F2[a] = epstein_function_array(a_A1[a], a_hmF2[a],
                                            a_B_F2_bot[a], a_alt[a])
 
     # E top plus F1 bottom (hard boundaries)
     a = np.where((a_alt > a_hmE) & (a_alt < a_hmF1))
-    drop_1[a] = 1. - ((a_alt[a]-a_hmE[a])/(a_hmF1[a]-a_hmE[a]))**4.
-    drop_2[a] = 1. - ((a_hmF1[a]-a_alt[a])/(a_hmF1[a]-a_hmE[a]))**4.
+    drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF1[a] - a_hmE[a]))**4.
+    drop_2[a] = 1. - ((a_hmF1[a] - a_alt[a]) / (a_hmF1[a] - a_hmE[a]))**4.
 
     density_E[a] = epstein_function_array(a_A3[a],
                                           a_hmE[a],
                                           a_B_E_top[a],
-                                          a_alt[a])*drop_1[a]
+                                          a_alt[a]) * drop_1[a]
     density_F1[a] = epstein_function_array(a_A2[a],
                                            a_hmF1[a],
                                            a_B_F1_bot[a],
-                                           a_alt[a])*drop_2[a]
+                                           a_alt[a]) * drop_2[a]
 
     # when F1 is not present(hard boundaries)--------------------
-    a = np.where((np.isnan(a_NmF1)) &
-                 (a_alt < a_hmF2) &
-                 (a_alt > a_hmE))
-    drop_1[a] = 1. - ((a_alt[a]-a_hmE[a])/(a_hmF2[a]-a_hmE[a]))**4.
-    drop_2[a] = 1. - ((a_hmF2[a]-a_alt[a])/(a_hmF2[a]-a_hmE[a]))**4.
+    a = np.where((np.isnan(a_NmF1))
+                 & (a_alt < a_hmF2)
+                 & (a_alt > a_hmE))
+    drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF2[a] - a_hmE[a]))**4.
+    drop_2[a] = 1. - ((a_hmF2[a] - a_alt[a]) / (a_hmF2[a] - a_hmE[a]))**4.
     density_E[a] = epstein_function_array(a_A3[a],
                                           a_hmE[a],
                                           a_B_E_top[a],
-                                          a_alt[a])*drop_1[a]
+                                          a_alt[a]) * drop_1[a]
     density_F2[a] = epstein_function_array(a_A1[a],
                                            a_hmF2[a],
                                            a_B_F2_bot[a],
-                                           a_alt[a])*drop_2[a]
+                                           a_alt[a]) * drop_2[a]
 
     density = density_F2 + density_F1 + density_E
 
@@ -3063,8 +3018,8 @@ def day_of_the_month_corr(year, month, day):
     # middles of the months around
     delta_month = dt.timedelta(days=+30)
     dtime0 = dt.datetime(year, month, 15)
-    dtime1 = dtime0-delta_month
-    dtime2 = dtime0+delta_month
+    dtime1 = dtime0 - delta_month
+    dtime2 = dtime0 + delta_month
 
     # day of interest
     time_event = dt.datetime(year, month, day)
@@ -3080,13 +3035,13 @@ def day_of_the_month_corr(year, month, day):
 
     # how many days after middle of previous month and to the middle of
     # next month
-    dt1 = time_event-t_before
-    dt2 = t_after-time_event
-    dt3 = t_after-t_before
+    dt1 = time_event - t_before
+    dt2 = t_after - time_event
+    dt3 = t_after - t_before
 
     # fractions of the influence for the interpolation
-    fraction1 = dt2.days/dt3.days
-    fraction2 = dt1.days/dt3.days
+    fraction1 = dt2.days / dt3.days
+    fraction2 = dt1.days / dt3.days
     # -----------------------------------------------------------------------
     return(t_before, t_after, fraction1, fraction2)
     # -----------------------------------------------------------------------
@@ -3118,7 +3073,7 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
     # **************************************************************************
     F_new = F_before
     for key in F_before:
-        F_new[key] = F_before[key]*fraction1 + F_after[key]*fraction2
+        F_new[key] = F_before[key] * fraction1 + F_after[key] * fraction2
     # -----------------------------------------------------------------------
     return(F_new)
     # -----------------------------------------------------------------------
@@ -3161,8 +3116,8 @@ def solar_interpolation_of_dictionary(F, F107):
         F_min = F_key[0, :]
         F_max = F_key[1, :]
 
-        F_new[key] = (F_min*(IG12_max-IG12)/(IG12_max-IG12_min) +
-                      F_max*(IG12-IG12_min)/(IG12_max-IG12_min))
+        F_new[key] = (F_min * (IG12_max - IG12) / (IG12_max - IG12_min)
+                      + F_max * (IG12 - IG12_min) / (IG12_max - IG12_min))
 
         F_new[key] = np.swapaxes(F_new[key], 0, 1)
     # -----------------------------------------------------------------------
