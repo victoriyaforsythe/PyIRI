@@ -3,8 +3,8 @@
 # unlimited.
 #      This work was supported by the Office of Naval Research
 # #############################################################################
-import numpy as np
 from scipy import interpolate
+import numpy as np
 import os
 
 

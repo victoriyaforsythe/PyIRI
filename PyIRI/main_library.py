@@ -16,8 +16,6 @@ import numpy as np
 import os
 
 
-
-
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
     # **************************************************************************
     # **************************************************************************
