@@ -2337,7 +2337,6 @@ def solar_parameter(dtime, driver_dir):
     year = dtime.year
     filenam = os.path.join(driver_dir, 'solar_drivers',
                            'Solar_Driver_F107.txt')
-    f = open(filenam, mode='r')
     table = np.genfromtxt(filenam, delimiter='', skip_header=7)
     a = np.where((table[:, 0] == year) & (table[:, 1] == doy))
     F107 = float(table[a[0], 3])
