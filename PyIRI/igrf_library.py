@@ -127,9 +127,8 @@ def inclination(coeff_dir, date_decimal, alon, alat):
     aalt = np.zeros((alon.shape)) + 300.
     # open IGRF file and read to array the main table
     IGRF_FILE = os.path.join(coeff_dir, 'IGRF', 'IGRF13.shc')
-    f = open(IGRF_FILE, mode='r')
-    file_array = np.genfromtxt(f, delimiter='', skip_header=5)
-    f.close()
+    with open(IGRF_FILE, mode='r') as fopen:
+        file_array = np.genfromtxt(fopen, delimiter='', skip_header=5)
     # create the time array of years that match the years in the file
     # (check if file is change to the newer version)
     igrf_time = np.arange(1900, 2025 + 5, 5)
@@ -400,12 +399,12 @@ def synth_values(coeffs, radius, theta, phi,
         b = np.broadcast(radius, theta, phi,
                          np.broadcast_to(0, coeffs.shape[:-1]))
     except ValueError:
-        print('Cannot broadcast grid shapes (excl. last dimension of coeffs):')
-        print(f'radius: {radius.shape}')
-        print(f'theta:  {theta.shape}')
-        print(f'phi:    {phi.shape}')
-        print(f'coeffs: {coeffs.shape[:-1]}')
-        raise
+        raise ValueError(''.join(['Cannot broadcast grid shapes \
+        (excl. last dimension of coeffs):\nradius: ',
+                                  repr(radius.shape),
+                                  '\ntheta: ', repr(theta.shape),
+                                  '\nphi: ', repr(phi.shape),
+                                  '\ncoeffs: ', repr(coeffs.shape)]))
     grid_shape = b.shape
     # initialize radial dependence given the source
     r_n = radius**(-(nmin + 2))
@@ -524,12 +523,10 @@ def xyz2dhif(x, y, z):
     # F: total intensity (nT) : float
     # **************************************************************************
     # **************************************************************************
-
-    r2d = np.rad2deg
     hsq = x * x + y * y
     hoz = np.sqrt(hsq)
     eff = np.sqrt(hsq + z * z)
-    dec = np.arctan2(y, x)
-    inc = np.arctan2(z, hoz)
+    dec = np.rad2deg(np.arctan2(y, x))
+    inc = np.rad2deg(np.arctan2(z, hoz))
     # --------------------------------------------------------------------------------------
-    return r2d(dec), hoz, r2d(inc), eff
+    return dec, hoz, inc, eff

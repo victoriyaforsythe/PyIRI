@@ -1991,42 +1991,6 @@ def epstein(Nm, hm, B, alt):
     # --------------------------------------------------------------------------------------
 
 
-def leap_year(year):
-    # **************************************************************************
-    # **************************************************************************
-    # by Victoriya V Forsythe Makarevich
-    #
-    # Naval Research Laboratory
-    # Space Physics
-    #
-    # Date: 11.01.2022
-    #
-    # This function returns 1 if the given year is a leap year and 0 is not.
-    #
-    # Variables:
-    # year = year
-    #
-    # Result:
-    # 1, 0 = yes, no
-    # **************************************************************************
-    # **************************************************************************
-    # if it is a century year then it should be evenly devided by 400
-    if (year % 400 == 0) and (year % 100 == 0):
-        # --------------------------------------------------------------------------------------
-        return 1
-        # --------------------------------------------------------------------------------------
-    # not a century year should be evenly devided by 4
-    elif (year % 4 == 0) and (year % 100 != 0):
-        # --------------------------------------------------------------------------------------
-        return 1
-        # --------------------------------------------------------------------------------------
-    # else it is not a leap year
-    else:
-        # --------------------------------------------------------------------------------------
-        return 0
-        # --------------------------------------------------------------------------------------
-
-
 def decimal_year(dtime):
     # **************************************************************************
     # **************************************************************************
@@ -2050,9 +2014,9 @@ def decimal_year(dtime):
     # day of the year
     doy = dtime.timetuple().tm_yday
 
-    # decimal, day of year devided by number of days in year, taking leap years
-    # in account
-    decimal = (doy - 1) / (365 + leap_year(dtime.year))
+    # decimal, day of year devided by number of days in year
+    days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
+    decimal = (doy - 1) / days_of_year
 
     # year plus decimal
     date_decimal = dtime.year + decimal
