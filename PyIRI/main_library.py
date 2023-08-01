@@ -3,8 +3,8 @@
 # unlimited.
 #      This work was supported by the Office of Naval Research
 # ########################################################
-from fortranformat import FortranRecordReader
 import datetime as dt
+from fortranformat import FortranRecordReader
 import igrf_library as igrf
 import math
 import numpy as np

@@ -3,9 +3,9 @@
 # unlimited.
 #      This work was supported by the Office of Naval Research
 # #####################################################
-from scipy import interpolate
 import numpy as np
 import os
+from scipy import interpolate
 
 
 def modip2lat(inc, modip):
