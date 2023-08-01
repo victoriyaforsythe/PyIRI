@@ -1978,14 +1978,10 @@ def epstein(Nm, hm, B, alt):
     # res = Epstein function
     # **************************************************************************
     # **************************************************************************
-    X = Nm
-    Y = hm
-    Z = B
-    W = alt
+    # In a typical Epstein function: X = Nm, Y = hm, Z = B, and W = alt
+    aexp = fexp((alt - hm) / B)
 
-    aexp = fexp((W - Y) / Z)
-
-    res = X * aexp / (1 + aexp)**2
+    res = Nm * aexp / (1 + aexp)**2
     # --------------------------------------------------------------------------------------
     return res
     # --------------------------------------------------------------------------------------
@@ -2052,7 +2048,8 @@ def decimal_year(dtime):
 
     # decimal, day of year devided by number of days in year, taking leap years
     # in account
-    decimal = (doy - 1) / (365 + leap_year(dtime.year))
+    days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
+    decimal = (doy - 1) / days_of_year
 
     # year plus decimal
     date_decimal = dtime.year + decimal
@@ -2373,8 +2370,7 @@ def solar_parameter(dtime, driver_dir):
     year = dtime.year
     filenam = os.path.join(driver_dir, 'solar_drivers',
                            'Solar_Driver_F107.txt')
-    f = open(filenam, mode='r')
-    table = np.genfromtxt(f, delimiter='', skip_header=7)
+    table = np.genfromtxt(filenam, delimiter='', skip_header=7)
     a = np.where((table[:, 0] == year) & (table[:, 1] == doy))
     F107 = float(table[a[0], 3])
     # --------------------------------------------------------------------------------------

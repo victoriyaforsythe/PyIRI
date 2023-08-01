@@ -529,7 +529,7 @@ def xyz2dhif(x, y, z):
     hsq = x * x + y * y
     hoz = np.sqrt(hsq)
     eff = np.sqrt(hsq + z * z)
-    dec = np.arctan2(y, x)
-    inc = np.arctan2(z, hoz)
+    dec = np.rad2deg(np.arctan2(y, x))
+    inc = np.rad2deg(np.arctan2(z, hoz))
     # --------------------------------------------------------------------------------------
-    return r2d(dec), hoz, r2d(inc), eff
+    return dec, hoz, inc, eff

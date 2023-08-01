@@ -75,7 +75,7 @@ def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir):
     for c in contour.collections:
         c.set_edgecolor("face")
     cbar = fig.colorbar(contour, ax=ax, ticks=levels_cb)
-    cbar.set_label('Modip (°)')
+    cbar.set_label(r'Modip ($^\circ$)')
     plt.title('Alt = 300 km')
     plt.savefig(Figname)
     return
