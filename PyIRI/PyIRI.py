@@ -128,11 +128,11 @@ EDP = ml.reconstruct_density_from_parameters(F2, F1, E, aalt)
 plot.PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
 
 # -----------------------------------------------------------------------------
-# Montly mean density for min and max of solar activity:
+# Monthly mean density for min and max of solar activity:
 # -----------------------------------------------------------------------------
 # The original IRI model further interpolates between 2 levels of solar
 # activity to estimate density for a particular level of F10.7. Additionally,
-# it interpolates between 2 consequent months to make a smooth seasonal
+# it interpolates between 2 consecutive months to make a smooth seasonal
 # transition.
 # Here is an example of how this interpolation can be done:
 # If you need to run IRI for a particular day, you can just use this function
