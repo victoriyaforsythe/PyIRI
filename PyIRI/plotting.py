@@ -34,7 +34,7 @@ def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir):
     cbar.set_label('Mag Dip Lat (°)')
     plt.title('Alt = 300 km')
     plt.savefig(Figname)
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir):
     cbar.set_label('Inclination (°)')
     plt.title('Alt = 300 km')
     plt.savefig(Figname)
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir):
     cbar.set_label('Modip (°)')
     plt.title('Alt = 300 km')
     plt.savefig(Figname)
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -121,7 +121,7 @@ def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F1}_{bot}$ (km)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{bot}$ (km)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -195,7 +195,7 @@ def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{top}$ (km)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -232,7 +232,7 @@ def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('MUF(3000)F2/$fo$F2')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -269,7 +269,7 @@ def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F2 (km)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -306,7 +306,7 @@ def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F1 (km)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -343,8 +343,7 @@ def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$Es (MHz)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -381,7 +380,7 @@ def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$E (MHz)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -418,7 +417,7 @@ def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$F2 (MHz)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -455,7 +454,7 @@ def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$Nm$F2 (m$^{-3}$)')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -520,7 +519,7 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     ax[1].title.set_text('Solar Min')
     ax[2].title.set_text('Solar Max')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -545,7 +544,7 @@ def PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt,
     x = np.reshape(EDP[ind_max], aalt.shape)
     ax.plot(x, aalt, c='white', label='Sol max')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -568,4 +567,4 @@ def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt,
     x = np.reshape(EDP[ind], aalt.shape)
     ax.plot(x, aalt, c='black')
     plt.savefig(Figname, format='pdf', bbox_inches='tight')
-    return()
+    return

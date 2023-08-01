@@ -34,7 +34,7 @@ def modip2lat(inc, modip):
     alat_rad = np.arccos(rad_arg)
     alat_deg = np.rad2deg(alat_rad)
     # --------------------------------------------------------------------------
-    return(alat_deg)
+    return alat_deg
     # --------------------------------------------------------------------------
 
 
@@ -65,7 +65,7 @@ def inc2modip(inc, alat):
     modip_rad = np.arctan(rad_arg)
     modip_deg = np.rad2deg(modip_rad)
     # --------------------------------------------------------------------------
-    return(modip_deg)
+    return modip_deg
     # --------------------------------------------------------------------------
 
 
@@ -92,7 +92,7 @@ def inc2magnetic_dip_latitude(inc):
     arg = 0.5 * (np.tan(np.deg2rad(inc)))
     magnetic_dip_latitude = np.rad2deg(np.arctan(arg))
     # --------------------------------------------------------------------------
-    return(magnetic_dip_latitude)
+    return magnetic_dip_latitude
     # --------------------------------------------------------------------------
 
 
@@ -159,7 +159,7 @@ def inclination(coeff_dir, date_decimal, alon, alat):
     dec, hoz, inc, eff = xyz2dhif(X, Y, Z)
     # return only inclanation because that is what we need for PyIRI
     # --------------------------------------------------------------------------
-    return(inc)
+    return inc
     # --------------------------------------------------------------------------
 
 
@@ -209,7 +209,7 @@ def gg_to_geo(h, gdcolat):
     cthc = ctgd * cd - stgd * sd
     thc = np.rad2deg(np.arccos(cthc))  # arccos returns values in [0, pi]
     # --------------------------------------------------------------------------
-    return(rad, thc, sd, cd)
+    return rad, thc, sd, cd
     # --------------------------------------------------------------------------
 
 
@@ -265,7 +265,7 @@ def geo_to_gg(radius, theta):
     height = U * (1. - b2 / (a * V))
     beta = 90. - np.degrees(np.arctan2(z + ep2 * z0, r))
     # --------------------------------------------------------------------------
-    return(height, beta)
+    return height, beta
     # --------------------------------------------------------------------------
 
 
@@ -536,4 +536,4 @@ def xyz2dhif(x, y, z):
     dec = np.arctan2(y, x)
     inc = np.arctan2(z, hoz)
     # --------------------------------------------------------------------------
-    return(r2d(dec), hoz, r2d(inc), eff)
+    return r2d(dec), hoz, r2d(inc), eff
