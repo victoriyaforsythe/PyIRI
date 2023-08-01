@@ -2008,13 +2008,7 @@ def decimal_year(dtime):
     # **************************************************************************
     # day of the year
     doy = dtime.timetuple().tm_yday
-
-<<<<<<< HEAD
     # decimal, day of year devided by number of days in year
-=======
-    # decimal, day of year devided by number of days in year, taking leap years
-    # in account
->>>>>>> 40830df2c9fcb8ae105fdfb8a1f7a3b9e1cca0b8
     days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
     decimal = (doy - 1) / days_of_year
 
