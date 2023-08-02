@@ -11,7 +11,6 @@ import plotting as plot
 
 # Determine the coefficient and driver directories
 coeff_dir = str(resources.path(__package__, 'coefficients').__enter__())
-driver_dir = str(resources.path(__package__, 'solar_drivers').__enter__())
 
 # -----------------------------------------------------------------------------
 # Day of run:
@@ -25,16 +24,13 @@ day = 15
 # -----------------------------------------------------------------------------
 dlat = 1  # resolution of geographic latitude {degrees} (integer or float)
 dlon = 1  # resolution of geographic longitude {degrees} (integer or float)
-
 dalt = 10  # resolution of altitude {km} (integer or float)
 alt_min = 0  # minimum altitude {km} (integer or float)
 alt_max = 700  # maximum altitude {km} (integer or float)
-
 dUT = 10  # time resolution {hours} (integer or float)
-
 UT_plot = 10  # at what UT to plot the parameters
-
 ccir_or_ursi = 1  # choose what coefficients to use for NmF2: 0=CCIR, 1=URSI
+
 # -----------------------------------------------------------------------------
 # Define spacial horizontal grid:
 # -----------------------------------------------------------------------------
@@ -139,7 +135,7 @@ plot.PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt, UT_plot)
 F107_day = 100.
 F2, F1, E, Es, sun, mag, EDP = ml.IRI_density_1day(year, month, day, aUT,
                                                    alon, alat, aalt, F107_day,
-                                                   coeff_dir, driver_dir,
+                                                   coeff_dir,
                                                    ccir_or_ursi)
 
 # Plot 1 profile for the selected day
