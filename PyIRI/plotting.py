@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-
-# ########################################################
+# ---------------------------------------------------------
 # Distribution statement A. Approved for public release.
 # Distribution is unlimited.
 # This work was supported by the Office of Naval Research.
-# ########################################################
-
+# ---------------------------------------------------------
 """This library contains components visualisation routines for PyIRI."""
 
 import matplotlib.pyplot as plt
@@ -13,26 +11,30 @@ import numpy as np
 import os
 
 
-def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir):
-"""Plot magnetic dip latitude.
+def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir,
+                           plot_name='PyIRI_mag_dip_lat.pdf'):
+    """Plot magnetic dip latitude.
 
-Parameters
-----------
-mag : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    mag : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Output name, without directory, for the saved figure
+        (default='PyIRI_mag_dip_lat.pdf')
 
-"""
-    Figname = os.path.join(plot_dir, 'PyIRI_mag_dip_lat.pdf')
+    """
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 1)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
@@ -50,32 +52,33 @@ plot_dir : str
     cbar = fig.colorbar(contour, ax=ax, ticks=levels_cb)
     cbar.set_label('Mag Dip Lat (°)')
     plt.title('Alt = 300 km')
-    plt.savefig(Figname)
+    plt.savefig(figname)
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
-def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir):
-"""Plot magnetic inclination.
+def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir,
+                   plot_name='PyIRI_inc.pdf'):
+    """Plot magnetic inclination.
 
-Parameters
-----------
-mag : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    mag : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory (default='PyIRI_inc.pdf')
 
-"""
-    Figname = os.path.join(plot_dir, 'PyIRI_inc.pdf')
+    """
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 1)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
@@ -93,32 +96,34 @@ plot_dir : str
     cbar = fig.colorbar(contour, ax=ax, ticks=levels_cb)
     cbar.set_label('Inclination (°)')
     plt.title('Alt = 300 km')
-    plt.savefig(Figname)
+    plt.savefig(figname)
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
-def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir):
-"""Plot modified dip angle.
+def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir,
+                     plot_name='PyIRI_modip.pdf'):
+    """Plot modified dip angle.
 
-Parameters
-----------
-mag : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    mag : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_modip.pdf')
 
-"""
-    Figname = os.path.join(plot_dir, 'PyIRI_modip.pdf')
+    """
+    figname = os.path.join(plot_dir, 'PyIRI_modip.pdf')
     fig, ax = plt.subplots(1, 1)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
@@ -136,41 +141,43 @@ plot_dir : str
     cbar = fig.colorbar(contour, ax=ax, ticks=levels_cb)
     cbar.set_label(r'Modip ($^\circ$)')
     plt.title('Alt = 300 km')
-    plt.savefig(Figname)
+    plt.savefig(figname)
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                                UT, plot_dir):
-"""Plot thickness of F1 bottom side for solar min and max.
+                                UT, plot_dir,
+                                plot_name='PyIRI_B_F1_bot_min_max.pdf'):
+    """Plot thickness of F1 bottom side for solar min and max.
 
-Parameters
-----------
-F1 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F1 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_B_F1_bot_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_B_F1_bot_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -197,41 +204,43 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F1}_{bot}$ (km)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                                UT, plot_dir):
-"""Plot thickness of F2 bottom side for solar min and max.
+                                UT, plot_dir,
+                                plot_name='PyIRI_B_F2_bot_min_max.pdf'):
+    """Plot thickness of F2 bottom side for solar min and max.
 
-Parameters
-----------
-F2 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_B_F2_bot_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_B_F2_bot_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -258,41 +267,43 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{bot}$ (km)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                                UT, plot_dir):
-"""Plot thickness of F2 topside for solar min and max.
+                                UT, plot_dir,
+                                plot_name='PyIRI_B_F2_top_min_max.pdf'):
+    """Plot thickness of F2 topside for solar min and max.
 
-Parameters
-----------
-F2 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_B_F2_top_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_B_F2_top_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -319,41 +330,42 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{top}$ (km)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                             UT, plot_dir):
-"""Plot M3000 propagation parameter for solar min and max.
+                             UT, plot_dir, plot_name='PyIRI_M3000_min_max.pdf'):
+    """Plot M3000 propagation parameter for solar min and max.
 
-Parameters
-----------
-F2 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_M3000_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_M3000_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -380,41 +392,42 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('MUF(3000)F2/$fo$F2')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir):
-"""Plot hmF2 for solar min and max.
+                            UT, plot_dir, plot_name='PyIRI_hmF2_min_max.pdf'):
+    """Plot hmF2 for solar min and max.
 
-Parameters
-----------
-F2 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_hmF2_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_hmF2_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -441,41 +454,42 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F2 (km)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir):
-"""Plot hmF1 for solar min and max.
+                            UT, plot_dir, plot_name='PyIRI_hmF1_min_max.pdf'):
+    """Plot hmF1 for solar min and max.
 
-Parameters
-----------
-F1 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F1 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_hmF1_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_hmF1_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -502,41 +516,42 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F1 (km)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir):
-"""Plot foEs for solar min and max.
+                            UT, plot_dir, plot_name='PyIRI_foEs_min_max.pdf'):
+    """Plot foEs for solar min and max.
 
-Parameters
-----------
-Es : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    Es : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_foEs_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_foEs_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -563,41 +578,42 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$Es (MHz)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
-                           UT, plot_dir):
-"""Plot foE for solar min and max.
+                           UT, plot_dir, plot_name='PyIRI_foE_min_max.pdf'):
+    """Plot foE for solar min and max.
 
-Parameters
-----------
-E : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    E : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_foE_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_foE_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -624,41 +640,42 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$E (MHz)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir):
-"""Plot foF2 for solar min and max.
+                            UT, plot_dir, plot_name='PyIRI_foF2_min_max.pdf'):
+    """Plot foF2 for solar min and max.
 
-Parameters
-----------
-F2 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_foF2_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_foF2_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -685,41 +702,42 @@ plot_dir : str
                          s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$F2 (MHz)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir):
-"""Plot NmF2 for solar min and max.
+                            UT, plot_dir, plot_name='PyIRI_NmF2_min_max.pdf'):
+    """Plot NmF2 for solar min and max.
 
-Parameters
-----------
-F2 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_NmF2_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_NmF2_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
@@ -746,41 +764,42 @@ plot_dir : str
                          c='red', s=20, edgecolors="black", linewidths=0.5)
     cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$Nm$F2 (m$^{-3}$)')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir):
-"""Plot foF1 for solar min and max.
+                            UT, plot_dir, plot_name='PyIRI_foF1_min_max.pdf'):
+    """Plot foF1 for solar min and max.
 
-Parameters
-----------
-F1 : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI.
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    F1 : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_foF1_min_max.pdf')
 
-"""
+    """
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
-    Figname = os.path.join(plot_dir, 'PyIRI_foF1_min_max.pdf')
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(10, 3),
                            constrained_layout=True)
     ax[0].set_facecolor('grey')
@@ -835,40 +854,40 @@ plot_dir : str
     ax[0].title.set_text('Probability')
     ax[1].title.set_text('Solar Min')
     ax[2].title.set_text('Solar Max')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_EDP_sample(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt,
-                     UT, plot_dir):
-"""Plot EDP for one location for solar min and max.
+                     UT, plot_dir, plot_name='PyIRI_EDP_sample.pdf'):
+    """Plot EDP for one location for solar min and max.
 
-Parameters
-----------
-EDP : array-like
-    3-D electron density array output of
-    IRI_monthly_mean_parameters.
-aUT : array-like
-    Array of universal times in hours used in PyIRI
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    EDP : array-like
+        3-D electron density array output of IRI_monthly_mean_parameters.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_EDP_sample.pdf')
 
-"""
-    Figname = os.path.join(plot_dir, 'PyIRI_EDP_sample.pdf')
+    """
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(3, 3),
                            constrained_layout=True)
     plt.xlim([0, 2.5e12])
@@ -885,40 +904,40 @@ plot_dir : str
     ind_max = 1, ind_time, ind_vert, ind_grid
     x = np.reshape(EDP[ind_max], aalt.shape)
     ax.plot(x, aalt, c='white', label='Sol max')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
-
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 
 
 def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, alon_2d, alat_2d, aalt,
-                          UT, plot_dir):
-"""Plot EDP for one location.
+                          UT, plot_dir, plot_name='PyIRI_EDP_sample_1day.pdf'):
+    """Plot EDP for one location.
 
-Parameters
-----------
-EDP : array-like
-    3-D electron density array output of IRI_density_1day.
-aUT : array-like
-    Array of universal times in hours used in PyIRI
-alon : array-like
-    Flattened array of geo longitudes in degrees.
-alat : array-like
-    Flattened array of geo latitudes in degrees.
-alon_2d : array-like
-    2-D array of geo longitudes in degrees.
-alat_2d : array-like
-    2-D array of geo latitudes in degrees.
-sun : dict
-    Dictionary output of IRI_monthly_mean_parameters.
-UT : float
-    UT time frame from array aUT to plot.
-plot_dir : str
-    Direction where to save the figure.
+    Parameters
+    ----------
+    EDP : array-like
+        3-D electron density array output of IRI_density_1day.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_EDP_sample_1day.pdf')
 
-"""
-    Figname = os.path.join(plot_dir, 'PyIRI_EDP_sample_1day.pdf')
+    """
+    figname = os.path.join(plot_dir, plot_name)
     fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(3, 3),
                            constrained_layout=True)
     plt.xlim([0, 2.5e12])
@@ -932,5 +951,5 @@ plot_dir : str
     ind = ind_time, ind_vert, ind_grid
     x = np.reshape(EDP[ind], aalt.shape)
     ax.plot(x, aalt, c='black')
-    plt.savefig(Figname, format='pdf', bbox_inches='tight')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
