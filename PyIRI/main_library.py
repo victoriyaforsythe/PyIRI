@@ -31,7 +31,7 @@ import os
 
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
-    """Outpute monthly mean ionospheric parameters.
+    """Output monthly mean ionospheric parameters.
 
     Parameters
     ----------
@@ -221,7 +221,7 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
 
 def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
                      ccir_or_ursi=0):
-    """Outpute ionospheric parameters for a particular day.
+    """Output ionospheric parameters for a particular day.
 
     Parameters
     ----------
@@ -796,7 +796,7 @@ def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
 
 
 def highest_power_of_extension():
-    """Provide highest power of extension.
+    """Provide the highest power of extension.
 
     Returns
     -------
