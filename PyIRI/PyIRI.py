@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-
-# ########################################################
+# --------------------------------------------------------
 # Distribution statement A. Approved for public release.
 # Distribution is unlimited.
 # This work was supported by the Office of Naval Research.
-# ########################################################
-
-"""General interface with examples of how to use PyIRI
+# --------------------------------------------------------
+"""General interface with examples of how to use PyIRI.
 
 References
 ----------
@@ -21,6 +19,7 @@ electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
 490 doi: 10.1016/j.jastp.2008.01.015
 .. [4] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
 in ionospheric mapping 476 by numerical methods.
+
 """
 
 from importlib import resources
