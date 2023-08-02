@@ -8,20 +8,20 @@
 
 """This library contains components for PyIRI software
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
-    .. [3] Nava et al. (2008). A new version of the nequick ionosphere
-    electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
-    490 doi: 10.1016/j.jastp.2008.01.015
-    .. [4] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-    in ionospheric mapping 476 by numerical methods.
-    """
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+.. [3] Nava et al. (2008). A new version of the nequick ionosphere
+electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
+490 doi: 10.1016/j.jastp.2008.01.015
+.. [4] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+in ionospheric mapping 476 by numerical methods.
+"""
 
 import datetime as dt
 from fortranformat import FortranRecordReader
@@ -32,85 +32,85 @@ import os
 
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
-    """Outpute monthly mean ionospheric parameters.
+"""Outpute monthly mean ionospheric parameters.
 
-    Parameters
-    ----------
-    year : int
-        Year.
-    mth : int
-        Month.
-    aUT : array-like
-        Array of universal time (UT) in hours.
-        Must be Numpy array of any size [N_T].
-    alon : array-like
-        Flattened array of geographic longitudes in degrees.
-        Must be Numpy array of any size [N_G].
-    alat : array-like
-        Flattened array of geographic latitudes in degrees.
-        Must be Numpy array of any size [N_G].
-    coeff_dir : str
-        Place where coefficients are.
-    ccir_or_ursi : int
-        If 0 is given CCIR will be used for F2 critical frequency.
-        If 1 then URSI.
+Parameters
+----------
+year : int
+    Year.
+mth : int
+    Month.
+aUT : array-like
+    Array of universal time (UT) in hours.
+    Must be Numpy array of any size [N_T].
+alon : array-like
+    Flattened array of geographic longitudes in degrees.
+    Must be Numpy array of any size [N_G].
+alat : array-like
+    Flattened array of geographic latitudes in degrees.
+    Must be Numpy array of any size [N_G].
+coeff_dir : str
+    Place where coefficients are.
+ccir_or_ursi : int
+    If 0 is given CCIR will be used for F2 critical frequency.
+    If 1 then URSI.
 
-    Returns
-    -------
-    F2 : dict
-        'Nm' is peak density of F2 region in m-3.
-        'fo' is critical frequency of F2 region in MHz.
-        'M3000' is the obliquity factor for a distance of 3,000 km.
-        Defined as refracted in the ionosphere, can be received at a
-        distance of 3,000 km, unitless.
-        'hm' is height of the F2 peak in km.
-        'B_topi is top thickness of the F2 region in km.
-        'B_bot' is bottom thickness of the F2 region in km.
-        Shape [N_T, N_G, 2].
-    F1 : dict
-        'Nm' is peak density of F1 region in m-3.
-        'fo' is critical frequency of F1 region in MHz.
-        'P' is the probability occurrence of F1 region, unitless.
-        'hm' is height of the F1 peak in km.
-        'B_bot' is bottom thickness of the F1 region in km.
-        Shape [N_T, N_G, 2].
-    E : dict
-        'Nm' is peak density of E region in m-3.
-        'fo' is critical frequency of E region in MHz.
-        'hm' is height of the E peak in km.
-        'B_top' is bottom thickness of the E region in km.
-        'B_bot' is bottom thickness of the E region in km.
-        Shape [N_T, N_G, 2].
-    Es : dict
-        'Nm' is peak density of Es region in m-3.
-        'fo' is critical frequency of Es region in MHz.
-        'hm' is height of the Es peak in km.
-        'B_top' is bottom thickness of the Es region in km.
-        'B_bot' is bottom thickness of the Es region in km.
-        Shape [N_T, N_G, 2].
-    sun : dict
-        'lon' is longitude of subsolar point in degrees.
-        'lat' is latitude of subsolar point in degrees.
-        Shape [N_G]
-    mag : dict
-        'inc' is inclination of the magnetic field in degrees.
-        'modip' is modified dip angle in degrees.
-        'mag_dip_lat' is magnetic dip latitude in degrees.
-        Shape [N_G]
+Returns
+-------
+F2 : dict
+    'Nm' is peak density of F2 region in m-3.
+    'fo' is critical frequency of F2 region in MHz.
+    'M3000' is the obliquity factor for a distance of 3,000 km.
+    Defined as refracted in the ionosphere, can be received at a
+    distance of 3,000 km, unitless.
+    'hm' is height of the F2 peak in km.
+    'B_topi is top thickness of the F2 region in km.
+    'B_bot' is bottom thickness of the F2 region in km.
+    Shape [N_T, N_G, 2].
+F1 : dict
+    'Nm' is peak density of F1 region in m-3.
+    'fo' is critical frequency of F1 region in MHz.
+    'P' is the probability occurrence of F1 region, unitless.
+    'hm' is height of the F1 peak in km.
+    'B_bot' is bottom thickness of the F1 region in km.
+    Shape [N_T, N_G, 2].
+E : dict
+    'Nm' is peak density of E region in m-3.
+    'fo' is critical frequency of E region in MHz.
+    'hm' is height of the E peak in km.
+    'B_top' is bottom thickness of the E region in km.
+    'B_bot' is bottom thickness of the E region in km.
+    Shape [N_T, N_G, 2].
+Es : dict
+    'Nm' is peak density of Es region in m-3.
+    'fo' is critical frequency of Es region in MHz.
+    'hm' is height of the Es peak in km.
+    'B_top' is bottom thickness of the Es region in km.
+    'B_bot' is bottom thickness of the Es region in km.
+    Shape [N_T, N_G, 2].
+sun : dict
+    'lon' is longitude of subsolar point in degrees.
+    'lat' is latitude of subsolar point in degrees.
+    Shape [N_G]
+mag : dict
+    'inc' is inclination of the magnetic field in degrees.
+    'modip' is modified dip angle in degrees.
+    'mag_dip_lat' is magnetic dip latitude in degrees.
+    Shape [N_G]
 
-    Notes
-    -----
-    This function returns monthly mean ionospheric parameters for min
-    and max levels of solar activity that correspond to the Ionosonde
-    Index IG12 of 0 and 100.
+Notes
+-----
+This function returns monthly mean ionospheric parameters for min
+and max levels of solar activity that correspond to the Ionosonde
+Index IG12 of 0 and 100.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
 
     # Set limits for solar driver based of IG12 = 0 - 100.
     aIG = np.array([0., 100.])
@@ -211,93 +211,93 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
 
 def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
                      ccir_or_ursi):
-    """Outpute ionospheric parameters for a particular day.
+"""Outpute ionospheric parameters for a particular day.
 
-    Parameters
-    ----------
-    year : int
-        Year.
-    mth : int
-        Month.
-    day : int
-        Day.
-    aUT : array-like
-        Array of universal time (UT) in hours.
-        Must be Numpy array of any size [N_T].
-    alon : array-like
-        Flattened array of geographic longitudes in degrees.
-        Must be Numpy array of any size [N_G].
-    alat : array-like
-        Flattened array of geographic latitudes in degrees.
-        Must be Numpy array of any size [N_G].
-    aalt : array-like
-        Array of altitudes in km.
-        Must be Numpy array of any size [N_V].
-    F107 : float
-        User provided F10.7 solar flux index in SFU.
-    coeff_dir : str
-        Place where coefficients are located.
-    ccir_or_ursi : int
-        If 0 is given CCIR will be used for F2 critical frequency.
-        If 1 then URSI coefficients.
+Parameters
+----------
+year : int
+    Year.
+mth : int
+    Month.
+day : int
+    Day.
+aUT : array-like
+    Array of universal time (UT) in hours.
+    Must be Numpy array of any size [N_T].
+alon : array-like
+    Flattened array of geographic longitudes in degrees.
+    Must be Numpy array of any size [N_G].
+alat : array-like
+    Flattened array of geographic latitudes in degrees.
+    Must be Numpy array of any size [N_G].
+aalt : array-like
+    Array of altitudes in km.
+    Must be Numpy array of any size [N_V].
+F107 : float
+    User provided F10.7 solar flux index in SFU.
+coeff_dir : str
+    Place where coefficients are located.
+ccir_or_ursi : int
+    If 0 is given CCIR will be used for F2 critical frequency.
+    If 1 then URSI coefficients.
 
-    Returns
-    -------
-    F2 : dict
-        'Nm' is peak density of F2 region in m-3.
-        'fo' is critical frequency of F2 region in MHz.
-        'M3000' is the obliquity factor for a distance of 3,000 km.
-        Defined as refracted in the ionosphere, can be received at a distance
-        of 3,000 km, unitless.
-        'hm' is height of the F2 peak in km.
-        'B_topi is top thickness of the F2 region in km.
-        'B_bot' is bottom thickness of the F2 region in km.
-        Shape [N_T, N_G, 2].
-    F1 : dict
-        'Nm' is peak density of F1 region in m-3.
-        'fo' is critical frequency of F1 region in MHz.
-        'P' is the probability occurrence of F1 region, unitless.
-        'hm' is height of the F1 peak in km.
-        'B_bot' is bottom thickness of the F1 region in km.
-        Shape [N_T, N_G, 2].
-    E : dict
-        'Nm' is peak density of E region in m-3.
-        'fo' is critical frequency of E region in MHz.
-        'hm' is height of the E peak in km.
-        'B_top' is bottom thickness of the E region in km.
-        'B_bot' is bottom thickness of the E region in km.
-        Shape [N_T, N_G, 2].
-    Es : dict
-        'Nm' is peak density of Es region in m-3.
-        'fo' is critical frequency of Es region in MHz.
-        'hm' is height of the Es peak in km.
-        'B_top' is bottom thickness of the Es region in km.
-        'B_bot' is bottom thickness of the Es region in km.
-        Shape [N_T, N_G, 2].
-    sun : dict
-        'lon' is longitude of subsolar point in degrees.
-        'lat' is latitude of subsolar point in degrees.
-        Shape [N_G].
-    mag : dict
-        'inc' is inclination of the magnetic field in degrees.
-        'modip' is modified dip angle in degrees.
-        'mag_dip_lat' is magnetic dip latitude in degrees.
-        Shape [N_G].
-    EDP : array-like
-        Electron density profiles in m-3 with shape [N_T, N_V, N_G]
+Returns
+-------
+F2 : dict
+    'Nm' is peak density of F2 region in m-3.
+    'fo' is critical frequency of F2 region in MHz.
+    'M3000' is the obliquity factor for a distance of 3,000 km.
+    Defined as refracted in the ionosphere, can be received at a distance
+    of 3,000 km, unitless.
+    'hm' is height of the F2 peak in km.
+    'B_topi is top thickness of the F2 region in km.
+    'B_bot' is bottom thickness of the F2 region in km.
+    Shape [N_T, N_G, 2].
+F1 : dict
+    'Nm' is peak density of F1 region in m-3.
+    'fo' is critical frequency of F1 region in MHz.
+    'P' is the probability occurrence of F1 region, unitless.
+    'hm' is height of the F1 peak in km.
+    'B_bot' is bottom thickness of the F1 region in km.
+    Shape [N_T, N_G, 2].
+E : dict
+    'Nm' is peak density of E region in m-3.
+    'fo' is critical frequency of E region in MHz.
+    'hm' is height of the E peak in km.
+    'B_top' is bottom thickness of the E region in km.
+    'B_bot' is bottom thickness of the E region in km.
+    Shape [N_T, N_G, 2].
+Es : dict
+    'Nm' is peak density of Es region in m-3.
+    'fo' is critical frequency of Es region in MHz.
+    'hm' is height of the Es peak in km.
+    'B_top' is bottom thickness of the Es region in km.
+    'B_bot' is bottom thickness of the Es region in km.
+    Shape [N_T, N_G, 2].
+sun : dict
+    'lon' is longitude of subsolar point in degrees.
+    'lat' is latitude of subsolar point in degrees.
+    Shape [N_G].
+mag : dict
+    'inc' is inclination of the magnetic field in degrees.
+    'modip' is modified dip angle in degrees.
+    'mag_dip_lat' is magnetic dip latitude in degrees.
+    Shape [N_G].
+EDP : array-like
+    Electron density profiles in m-3 with shape [N_T, N_V, N_G]
 
-    Notes
-    -----
-    This function returns ionospheric parameters and 3-D electron density
-    for a given day and provided F10.7 solar flux index.
+Notes
+-----
+This function returns ionospheric parameters and 3-D electron density
+for a given day and provided F10.7 solar flux index.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     print('PyIRI: IRI_density_1day:------------------------------------------')
     print('Determining parameters and electron density for 1 day: \
            year=' + str(year) + ', month=' + str(mth) + ', day=' + str(day))
@@ -355,53 +355,53 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
 
 def read_ccir_ursi_coeff(mth, coeff_dir):
-    """Reade coefficients from CCIR, URSI, and Es.
+"""Reade coefficients from CCIR, URSI, and Es.
 
-    Parameters
-    ----------
-    mth : int
-        Month.
-    coeff_dir : str
-        Place where the coefficint files are.
+Parameters
+----------
+mth : int
+    Month.
+coeff_dir : str
+    Place where the coefficint files are.
 
-    Returns
-    -------
-    F_fof2_CCIR : array-like
-        CCIR coefficients for F2 frequency.
-    F_fof2_URSI : array-like
-        URSI coefficients for F2 frequency.
-    F_M3000 : array-like
-        CCIR coefficients for M3000.
-    F_Es_median : array-like
-        Bradley coefficients for Es.
+Returns
+-------
+F_fof2_CCIR : array-like
+    CCIR coefficients for F2 frequency.
+F_fof2_URSI : array-like
+    URSI coefficients for F2 frequency.
+F_M3000 : array-like
+    CCIR coefficients for M3000.
+F_Es_median : array-like
+    Bradley coefficients for Es.
 
-    Notes
-    -----
-    This function sets the combination of sin and cos functions that define
-    the diurnal destribution of the parameters and that can be further
-    multiplied by the coefficients U_jk (from CCIR, URSI, and Es maps).
-    The desired eequation can be found in the Technical Note Advances in
-    Ionospheric Mapping by Numerical Methods, Jones & Graham 1966. Equation
-    (c) page 38.
-    Acknowledgement for Es coefficients:
-    Mrs. Estelle D. Powell and Mrs. Gladys I. Waggoner in supervising the
-    collection, keypunching and processing of the foEs data.
-    This work was sponsored by U.S. Navy as part of the SS-267 program.
-    The final development work and production of the foEs maps was supported
-    by the U.S Information Agency.
-    Acknowledgemets to Doug Drob (NRL) for giving me these coefficients.
+Notes
+-----
+This function sets the combination of sin and cos functions that define
+the diurnal destribution of the parameters and that can be further
+multiplied by the coefficients U_jk (from CCIR, URSI, and Es maps).
+The desired eequation can be found in the Technical Note Advances in
+Ionospheric Mapping by Numerical Methods, Jones & Graham 1966. Equation
+(c) page 38.
+Acknowledgement for Es coefficients:
+Mrs. Estelle D. Powell and Mrs. Gladys I. Waggoner in supervising the
+collection, keypunching and processing of the foEs data.
+This work was sponsored by U.S. Navy as part of the SS-267 program.
+The final development work and production of the foEs maps was supported
+by the U.S Information Agency.
+Acknowledgemets to Doug Drob (NRL) for giving me these coefficients.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-    in ionospheric mapping 476 by numerical methods.
-    .. [3] Bradley, P. A. (2003). Ingesting a sporadic-e model to iri.
-    Adv. Space Res., 31(3), 577-588.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+in ionospheric mapping 476 by numerical methods.
+.. [3] Bradley, P. A. (2003). Ingesting a sporadic-e model to iri.
+Adv. Space Res., 31(3), 577-588.
 
-    """
+"""
     # pull the predefined sizes of the function extensions
     coef = highest_power_of_extension()
 
@@ -494,38 +494,38 @@ def read_ccir_ursi_coeff(mth, coeff_dir):
 
 
 def set_diurnal_functions(nj, time_array):
-    """Calculate diurnal Fourier function components.
+"""Calculate diurnal Fourier function components.
 
-    Parameters
-    ----------
-    nj : array-like
-        The highest order of diurnal variation.
-    time_array : array-like
-        Array of UTs in hours.
+Parameters
+----------
+nj : array-like
+    The highest order of diurnal variation.
+time_array : array-like
+    Array of UTs in hours.
 
-    Returns
-    -------
-    D : array-like
-        Diurnal functions.
+Returns
+-------
+D : array-like
+    Diurnal functions.
 
-    Notes
-    -----
-    This function sets the combination of sin and cos functions that define
-    the diurnal destribution of the parameters and that can be further
-    multiplied by the coefficients U_jk (from CCIR, URSI, and Es maps).
-    The desired eequation can be found in the Technical Note Advances in
-    Ionospheric Mapping by Numerical Methods, Jones & Graham 1966. Equation
-    (c) page 38.
+Notes
+-----
+This function sets the combination of sin and cos functions that define
+the diurnal destribution of the parameters and that can be further
+multiplied by the coefficients U_jk (from CCIR, URSI, and Es maps).
+The desired eequation can be found in the Technical Note Advances in
+Ionospheric Mapping by Numerical Methods, Jones & Graham 1966. Equation
+(c) page 38.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-    in ionospheric mapping 476 by numerical methods.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+in ionospheric mapping 476 by numerical methods.
 
-    """
+"""
     # check that time array goes from 0-24:
     if (np.min(time_array) < 0) | (np.max(time_array) > 24):
         flag = 'Error: in set_diurnal_functions time array min < 0 or max > 24'
@@ -556,36 +556,36 @@ def set_diurnal_functions(nj, time_array):
 
 
 def diurnal_functions(time_array):
-    """Set diurnal functions for F2, M3000, and Es.
+"""Set diurnal functions for F2, M3000, and Es.
 
-    Parameters
-    ----------
-    time_array : array-like
-        Array of UTs in hours.
+Parameters
+----------
+time_array : array-like
+    Array of UTs in hours.
 
-    Returns
-    -------
-    D_f0f2 : array-like
-        Diurnal functions for foF2.
-    D_M3000 : array-like
-        Diurnal functions for M3000.
-    D_Es_median : array-like
-        Diurnal functions for Es.
+Returns
+-------
+D_f0f2 : array-like
+    Diurnal functions for foF2.
+D_M3000 : array-like
+    Diurnal functions for M3000.
+D_Es_median : array-like
+    Diurnal functions for Es.
 
-    Notes
-    -----
-    This function calculates diurnal functions for F0F2, M3000, and Es
-    coefficients
+Notes
+-----
+This function calculates diurnal functions for F0F2, M3000, and Es
+coefficients
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-    in ionospheric mapping 476 by numerical methods.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+in ionospheric mapping 476 by numerical methods.
 
-    """
+"""
     # nj is the highest order of the expansion
 
     coef = highest_power_of_extension()
@@ -604,42 +604,42 @@ def diurnal_functions(time_array):
 
 
 def set_global_functions(Q, nk, alon, alat, modip):
-    """Set global functions.
+"""Set global functions.
 
-    Parameters
-    ----------
-    Q : array-like
-        Vector of highest order of sin(x).
-    nk : array-like
-        Highest order of geographic extension, or how many
-        functions are there e.g. there are 76 functions in
-        Table 3 on page 18 of Jones & Graham 1966.
-    alon : array-like
-        Flattened array of geographic longitudes in degrees.
-    alat : array-like
-        Flattened array of geographic latitudes in degrees.
-    modip : array-like
-        Modified dip angle in degrees.
+Parameters
+----------
+Q : array-like
+    Vector of highest order of sin(x).
+nk : array-like
+    Highest order of geographic extension, or how many
+    functions are there e.g. there are 76 functions in
+    Table 3 on page 18 of Jones & Graham 1966.
+alon : array-like
+    Flattened array of geographic longitudes in degrees.
+alat : array-like
+    Flattened array of geographic latitudes in degrees.
+modip : array-like
+    Modified dip angle in degrees.
 
-    Returns
-    -------
-    Gk : array-like
-        Global functions
+Returns
+-------
+Gk : array-like
+    Global functions
 
-    Notes
-    -----
-    This function sets Geographic Coordinate Functions G_k(position) page
-    # 18 of Jones & Graham 1965
+Notes
+-----
+This function sets Geographic Coordinate Functions G_k(position) page
+# 18 of Jones & Graham 1965
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-    in ionospheric mapping 476 by numerical methods.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+in ionospheric mapping 476 by numerical methods.
 
-    """
+"""
     Gk = np.zeros((nk, alon.size))
     k = 0.
     for j in range(0, len(Q)):
@@ -663,41 +663,41 @@ def set_global_functions(Q, nk, alon, alat, modip):
 
 
 def set_gl_G(alon, alat, modip):
-    """Calculate global functions.
+"""Calculate global functions.
 
-    Parameters
-    ----------
-    alon : array-like
-        Flattened array of geographic longitudes in degrees.
-    alat : array-like
-        Flattened array of geographic latitudes in degrees.
-    modip : array-like
-        Modified dip angle in degrees.
+Parameters
+----------
+alon : array-like
+    Flattened array of geographic longitudes in degrees.
+alat : array-like
+    Flattened array of geographic latitudes in degrees.
+modip : array-like
+    Modified dip angle in degrees.
 
-    Returns
-    -------
-    G_fof2 : array-like
-        Global functions for F2 region.
-    G_M3000 : array-like
-        Global functions for M3000 propagation parameter.
-    G_Es_median : array-like
-        Global functions for Es region.
+Returns
+-------
+G_fof2 : array-like
+    Global functions for F2 region.
+G_M3000 : array-like
+    Global functions for M3000 propagation parameter.
+G_Es_median : array-like
+    Global functions for Es region.
 
-    Notes
-    -----
-    This function sets Geographic Coodrdinate Functions G_k(position) page
-    # 18 of Jones & Graham 1965 for F0F2, M3000, and Es coefficients
+Notes
+-----
+This function sets Geographic Coodrdinate Functions G_k(position) page
+# 18 of Jones & Graham 1965 for F0F2, M3000, and Es coefficients
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
-    and geographic variations of ionospheric data by numerical methods,
-    control of instability, ITU Telecommunication Journal , 32 (1), 18–28.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
+and geographic variations of ionospheric data by numerical methods,
+control of instability, ITU Telecommunication Journal , 32 (1), 18–28.
 
-    """
+"""
     coef = highest_power_of_extension()
 
     G_fof2 = set_global_functions(coef['QM']['F0F2'],
@@ -714,50 +714,50 @@ def set_gl_G(alon, alat, modip):
 
 def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
           F_fof2_coeff, F_M3000_coeff, F_Es_median):
-    """Calculate foF2, M3000 propagetion parameter, and foEs.
+"""Calculate foF2, M3000 propagetion parameter, and foEs.
 
-    Parameters
-    ----------
-    D_f0f2 : array-like
-        Diurnal functions for F2 region.
-    D_M3000 : array-like
-        Diurnal functions for M3000 propagation parameter.
-    D_Es_median : array-like
-        Diurnal functions for Es region.
-    G_fof2 : array-like
-        Global functions for F2 region.
-    G_M3000 : array-like
-        Global functions for M3000 propagation parameter.
-    G_Es_median : array-like
-        Global functions for Es region.
-    F_fof2_coeff : array-like
-        CCIR or URCI coefficients.
-    F_M3000_coeff : array-like
-        CCIR coefficients.
-    F_Es_median : array-like
-        Bradley Es coefficients.
+Parameters
+----------
+D_f0f2 : array-like
+    Diurnal functions for F2 region.
+D_M3000 : array-like
+    Diurnal functions for M3000 propagation parameter.
+D_Es_median : array-like
+    Diurnal functions for Es region.
+G_fof2 : array-like
+    Global functions for F2 region.
+G_M3000 : array-like
+    Global functions for M3000 propagation parameter.
+G_Es_median : array-like
+    Global functions for Es region.
+F_fof2_coeff : array-like
+    CCIR or URCI coefficients.
+F_M3000_coeff : array-like
+    CCIR coefficients.
+F_Es_median : array-like
+    Bradley Es coefficients.
 
-    Returns
-    -------
-    gamma_f0f2 : array-like
-        Critical frequency of F2 layer.
-    gamma_M3000 : array-like
-        M3000 propagation parameter.
-    gamma_Es_median : array-like
-        Critical frequency of Es layer.
+Returns
+-------
+gamma_f0f2 : array-like
+    Critical frequency of F2 layer.
+gamma_M3000 : array-like
+    M3000 propagation parameter.
+gamma_Es_median : array-like
+    Critical frequency of Es layer.
 
-    Notes
-    -----
-    This function caclulates numerical maps for F0F2, M3000, and Es for 2
-    levels of solar activity (min, max) using matrix multiplication
+Notes
+-----
+This function caclulates numerical maps for F0F2, M3000, and Es for 2
+levels of solar activity (min, max) using matrix multiplication
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     Nd = D_f0f2.shape[0]
     Ng = G_fof2.shape[1]
 
@@ -781,32 +781,32 @@ def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
 
 
 def highest_power_of_extension():
-    """Provide highest power of extension.
+"""Provide highest power of extension.
 
-    Returns
-    -------
-    const : dict
-        Dictionary that has QM, nk, and nj parameters.
+Returns
+-------
+const : dict
+    Dictionary that has QM, nk, and nj parameters.
 
-    Notes
-    -----
-    This function sets a common set of constants that define the power of
-    etensions.
-    QM = array of highest power of sin(x).
-    nk = highest order of geographic extension.
-    e.g. there are 76 functions in Table 3 on page 18 in Jones & Graham 1965.
-    nj = highest order in diurnal variation.
+Notes
+-----
+This function sets a common set of constants that define the power of
+etensions.
+QM = array of highest power of sin(x).
+nk = highest order of geographic extension.
+e.g. there are 76 functions in Table 3 on page 18 in Jones & Graham 1965.
+nj = highest order in diurnal variation.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
-    and geographic variations of ionospheric data by numerical methods,
-    control of instability, ITU Telecommunication Journal , 32 (1), 18–28.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
+and geographic variations of ionospheric data by numerical methods,
+control of instability, ITU Telecommunication Journal , 32 (1), 18–28.
 
-    """
+"""
     # degree of extension
     QM_F0F2 = [12, 12, 9, 5, 2, 1, 1, 1, 1]
     QM_M3000 = [7, 8, 6, 3, 2, 1, 1]
@@ -845,26 +845,26 @@ def highest_power_of_extension():
 
 
 def juldat(times):
-    """Calculate the Julian time given calendar date and time.
+"""Calculate the Julian time given calendar date and time.
 
-    Parameters
-    ----------
-    times : class:`dt.datetime
-        Juliantime in days.
+Parameters
+----------
+times : class:`dt.datetime
+    Juliantime in days.
 
-    Returns
-    -------
-    julian_datetime : float
-        Julian date.
+Returns
+-------
+julian_datetime : float
+    Julian date.
 
-    Notes
-    -----
-    This function calculates the Julian time given calendar date and time
-    in np.datetime64 array. This function is consistent with NOVAS, The
-    US Navy Observatory Astromony Software Library and algorythm by Fliegel
-    and Van Flander.
+Notes
+-----
+This function calculates the Julian time given calendar date and time
+in np.datetime64 array. This function is consistent with NOVAS, The
+US Navy Observatory Astromony Software Library and algorythm by Fliegel
+and Van Flander.
 
-    """
+"""
     if isinstance(times, dt.datetime):
         Y = times.year
         M = times.month
@@ -888,26 +888,26 @@ def juldat(times):
 
 
 def subsolar_point(juliantime):
-    """Find location of subsolar point.
+"""Find location of subsolar point.
 
-    Parameters
-    ----------
-    juliantime : float
-        Juliantime in days.
+Parameters
+----------
+juliantime : float
+    Juliantime in days.
 
-    Returns
-    -------
-    lonsun : float
-        Longitude of the sun in degrees.
-    latsun : float
-        Latitude of the sun in degrees.
+Returns
+-------
+lonsun : float
+    Longitude of the sun in degrees.
+latsun : float
+    Latitude of the sun in degrees.
 
-    Notes
-    -----
-    This function returns the lon and lat of subsolar point for a given
-    Juliantime Latitude of subsolar point is same as solar declination angle.
+Notes
+-----
+This function returns the lon and lat of subsolar point for a given
+Juliantime Latitude of subsolar point is same as solar declination angle.
 
-    """
+"""
     # number of centuries from J2000
     t = (juliantime - 2451545.) / 36525.
 
@@ -956,30 +956,30 @@ def subsolar_point(juliantime):
 
 
 def solar_zenith(lon_sun, lat_sun, lon_observer, lat_observer):
-    """Caclulate solar zenith angle from known location of the sun.
+"""Caclulate solar zenith angle from known location of the sun.
 
-    Parameters
-    ----------
-    lon_sun : array-like
-        Longitude of the sun in degrees.
-    lat_sun : array-like
-        Latitude of the sun in degrees.
-    lon_observer : array-like
-        Longitude of the observer in degrees.
-    lat_observer : array-like
-        Latitude of the observer in degrees.
+Parameters
+----------
+lon_sun : array-like
+    Longitude of the sun in degrees.
+lat_sun : array-like
+    Latitude of the sun in degrees.
+lon_observer : array-like
+    Longitude of the observer in degrees.
+lat_observer : array-like
+    Latitude of the observer in degrees.
 
-    Returns
-    -------
-    azenith : array-like
-        Solar zenith angle.
+Returns
+-------
+azenith : array-like
+    Solar zenith angle.
 
-    Notes
-    -----
-    This function takes lon and lat of the subsolar point and lon and lat
-    of the observer, and calculates solar zenith angle.
+Notes
+-----
+This function takes lon and lat of the subsolar point and lon and lat
+of the observer, and calculates solar zenith angle.
 
-    """
+"""
     if (isinstance(lon_sun, int)) | (isinstance(lon_sun, float)):
         # cosine of solar zenith angle
         cos_zenith = (np.sin(np.deg2rad(lat_sun))
@@ -1019,38 +1019,38 @@ def solar_zenith(lon_sun, lat_sun, lon_observer, lat_observer):
 
 
 def solzen_timearray_grid(year, mth, day, T0, alon, alat):
-    """Caclulate solar zenith angle.
+"""Caclulate solar zenith angle.
 
-    Parameters
-    ----------
-    year : int
-        Year.
-    mth : int
-        Month.
-    day : int
-        Day.
-    T0 : array-like
-        Array of UTs in hours.
-    alon : array-like
-        Flattened array of longitudes in degrees.
-    alat : array-like
-        Flattened array of latitudes in degrees.
+Parameters
+----------
+year : int
+    Year.
+mth : int
+    Month.
+day : int
+    Day.
+T0 : array-like
+    Array of UTs in hours.
+alon : array-like
+    Flattened array of longitudes in degrees.
+alat : array-like
+    Flattened array of latitudes in degrees.
 
-    Returns
-    -------
-    solzen : array-like
-        Solar zenith angle.
-    aslon : array-like
-        Longitude of subsolar point in degrees.
-    aslat : array-like
-        Latitude of subsolar point in degrees.
+Returns
+-------
+solzen : array-like
+    Solar zenith angle.
+aslon : array-like
+    Longitude of subsolar point in degrees.
+aslat : array-like
+    Latitude of subsolar point in degrees.
 
-    Notes
-    -----
-    This function returns solar zenith angle for the given year, month,
-    day, array of UT, and arrays of lon and lat of the grid.
+Notes
+-----
+This function returns solar zenith angle for the given year, month,
+day, array of UT, and arrays of lon and lat of the grid.
 
-    """
+"""
     # check size of the grid arrays
     if alon.size != alat.size:
         flag = 'Error: in solzen_timearray_grid alon and alat sizes are \
@@ -1077,38 +1077,38 @@ def solzen_timearray_grid(year, mth, day, T0, alon, alat):
 
 
 def solzen_effective(chi):
-    """Caclulate effective solar zenith angle.
+"""Caclulate effective solar zenith angle.
 
-    Parameters
-    ----------
-    chi : array-like
-        Solar zenith angle (deg).
+Parameters
+----------
+chi : array-like
+    Solar zenith angle (deg).
 
-    Returns
-    -------
-    chi_eff : array-like
-        Effective solar zenith angle (deg).
+Returns
+-------
+chi_eff : array-like
+    Effective solar zenith angle (deg).
 
-    Notes
-    -----
-    This function calculates effective solar zenith angle as a function of
-    solar zenith angle and solar zenith angle at day-night transition,
-    according to the Titheridge model. f2 is used during daytime, and f1
-    during nightime, and the exponential day-night transition is used to
-    ensure the continuity of foE and its first derivative at solar terminator
-    [Nava et al, 2008 "A new version of the NeQuick ionosphere electron
-    density model"]
+Notes
+-----
+This function calculates effective solar zenith angle as a function of
+solar zenith angle and solar zenith angle at day-night transition,
+according to the Titheridge model. f2 is used during daytime, and f1
+during nightime, and the exponential day-night transition is used to
+ensure the continuity of foE and its first derivative at solar terminator
+[Nava et al, 2008 "A new version of the NeQuick ionosphere electron
+density model"]
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Nava et al. (2008). A new version of the nequick ionosphere
-    electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
-    490 doi: 10.1016/j.jastp.2008.01.015
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Nava et al. (2008). A new version of the nequick ionosphere
+electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
+490 doi: 10.1016/j.jastp.2008.01.015
 
-    """
+"""
     # solar zenith angle at day-night transition (deg), number
     chi0 = 86.23292796211615E0
 
@@ -1132,41 +1132,41 @@ def solzen_effective(chi):
 
 
 def foE(mth, solzen_effective, alat, f107):
-    """Caclulate critical freqeuency of E region.
+"""Caclulate critical freqeuency of E region.
 
-    Parameters
-    ----------
-    mth : int
-        Month.
-    solzen_effective : array-like
-        Effective solar zenith angle.
-    alat : array-like
-        Flattened array of latitudes in degrees.
-    f107 : float
-        F10.7 solar flux in SFU.
+Parameters
+----------
+mth : int
+    Month.
+solzen_effective : array-like
+    Effective solar zenith angle.
+alat : array-like
+    Flattened array of latitudes in degrees.
+f107 : float
+    F10.7 solar flux in SFU.
 
-    Returns
-    -------
-    foE : array-like
-        critical frequency of E region in MHz.
+Returns
+-------
+foE : array-like
+    critical frequency of E region in MHz.
 
-    Notes
-    -----
-    This function caclulates foE for a given effective solar zenith angle
-    and level of solar activity. This routine is based
-    on the Ionospheric Correction Algorithm for Galileo Single Frequency
-    Users that describes NeQuick Model
+Notes
+-----
+This function caclulates foE for a given effective solar zenith angle
+and level of solar activity. This routine is based
+on the Ionospheric Correction Algorithm for Galileo Single Frequency
+Users that describes NeQuick Model
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Nava et al. (2008). A new version of the nequick ionosphere
-    electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
-    490 doi: 10.1016/j.jastp.2008.01.015
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Nava et al. (2008). A new version of the nequick ionosphere
+electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
+490 doi: 10.1016/j.jastp.2008.01.015
 
-    """
+"""
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -1219,44 +1219,44 @@ def foE(mth, solzen_effective, alat, f107):
 
 
 def gammaE(year, mth, time, alon, alat, aIG):
-    """Caclulate numerical maps for critical freqeuency of E region.
+"""Caclulate numerical maps for critical freqeuency of E region.
 
-    Parameters
-    ----------
-    year : int
-        Year.
-    mth : int
-        Month.
-    time : array-like
-        Array of UTs in hours.
-    alon : array-like
-        Flattened array of longitudes in degrees.
-    alat : array-like
-        Flattened array of latitudes in degrees.
-    aIG : array-like
-        Min and max of IG12 index.
+Parameters
+----------
+year : int
+    Year.
+mth : int
+    Month.
+time : array-like
+    Array of UTs in hours.
+alon : array-like
+    Flattened array of longitudes in degrees.
+alat : array-like
+    Flattened array of latitudes in degrees.
+aIG : array-like
+    Min and max of IG12 index.
 
-    Returns
-    -------
-    gamma_E : array-like
-        critical frequency of E region in MHz.
-    slon : array-like
-        Longitude of subsolar point in degrees.
-    slat : array-like
-        Latitude of subsolar point in degrees.
+Returns
+-------
+gamma_E : array-like
+    critical frequency of E region in MHz.
+slon : array-like
+    Longitude of subsolar point in degrees.
+slat : array-like
+    Latitude of subsolar point in degrees.
 
-    Notes
-    -----
-    This function caclulates numerical maps for FoE for 2 levels of solar
-    activity.
+Notes
+-----
+This function caclulates numerical maps for FoE for 2 levels of solar
+activity.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     # solar zenith angle for day 15 in the month of interest
     solzen, slon, slat = solzen_timearray_grid(year, mth, 15, time, alon, alat)
 
@@ -1282,46 +1282,46 @@ def gammaE(year, mth, time, alon, alat, aIG):
 
 
 def Probability_F1(year, mth, time, alon, alat, mag_dip_lat, aIG):
-    """Calculate probability occurence of F1 layer.
+"""Calculate probability occurence of F1 layer.
 
-    Parameters
-    ----------
-    year : int
-        Year.
-    mth : int
-        Month.
-    time : array-like
-        Array of UTs in hours.
-    alon : array-like
-        Flattened array of longitudes in degrees.
-    alat : array-like
-        Flattened array of latitudes in degrees.
-    mag_dip_lat : array-like
-        Flattened array of magnetic dip latitudes in degrees.
-    aIG : array-like
-        Min and Max of IG12.
+Parameters
+----------
+year : int
+    Year.
+mth : int
+    Month.
+time : array-like
+    Array of UTs in hours.
+alon : array-like
+    Flattened array of longitudes in degrees.
+alat : array-like
+    Flattened array of latitudes in degrees.
+mag_dip_lat : array-like
+    Flattened array of magnetic dip latitudes in degrees.
+aIG : array-like
+    Min and Max of IG12.
 
-    Returns
-    -------
-    a_P : array-like
-        Probability occurrence of F1 layer.
-    a_foF1 : array-like
-        Critical freqeuncy of F1 layer in MHz.
+Returns
+-------
+a_P : array-like
+    Probability occurrence of F1 layer.
+a_foF1 : array-like
+    Critical freqeuncy of F1 layer in MHz.
 
-    Notes
-    -----
-    This function caclulates numerical maps probability of F1 layer.
+Notes
+-----
+This function caclulates numerical maps probability of F1 layer.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     # make arrays to hold numerical maps for 2 levels of solar activity
     a_P = np.zeros((time.size, alon.size, 2))
     a_foF1 = np.zeros((time.size, alon.size, 2))
@@ -1377,25 +1377,25 @@ def Probability_F1(year, mth, time, alon, alat, mag_dip_lat, aIG):
 
 
 def fexp(x):
-    """Calculate exponent without overflow.
+"""Calculate exponent without overflow.
 
-    Parameters
-    ----------
+Parameters
+----------
 
-    x : array-like
-        Any input.
+x : array-like
+    Any input.
 
-    Returns
-    -------
-    y : array-like
-        Exponent of x.
+Returns
+-------
+y : array-like
+    Exponent of x.
 
-    Notes
-    -----
-    This function function caclulates exp(x) with restrictions to not cause
-    overflow.
+Notes
+-----
+This function function caclulates exp(x) with restrictions to not cause
+overflow.
 
-    """
+"""
     if (isinstance(x, float)) | (isinstance(x, int)):
         if x > 80:
             y = 5.5406E34
@@ -1418,37 +1418,37 @@ def fexp(x):
 
 
 def freq_to_Nm(foF2, foF1, foE, foEs):
-    """Convert critical frequency to plasma density.
+"""Convert critical frequency to plasma density.
 
-    Parameters
-    ----------
+Parameters
+----------
 
-    foF2 : array-like
-        Critical frequency of F2 layer in MHz.
-    foF1 : array-like
-        Critical frequency of F1 layer in MHz.
-    foE : array-like
-        Critical frequency of E layer in MHz.
-    foEs : array-like
-        Critical frequency of Es layer in MHz.
+foF2 : array-like
+    Critical frequency of F2 layer in MHz.
+foF1 : array-like
+    Critical frequency of F1 layer in MHz.
+foE : array-like
+    Critical frequency of E layer in MHz.
+foEs : array-like
+    Critical frequency of Es layer in MHz.
 
-    Returns
-    -------
-    NmF2 : array-like
-        Peak density of F2 layer in m-3.
-    NmF1 : array-like
-        Peak density of F1 layer in m-3.
-    NmE : array-like
-        Peak density of E layer in m-3.
-    NmEs : array-like
-        Peak density of Es layer in m-3.
+Returns
+-------
+NmF2 : array-like
+    Peak density of F2 layer in m-3.
+NmF1 : array-like
+    Peak density of F1 layer in m-3.
+NmE : array-like
+    Peak density of E layer in m-3.
+NmEs : array-like
+    Peak density of Es layer in m-3.
 
-    Notes
-    -----
-    This function returns maximum density for the given critical frequency and
-    limits it to 1 if it is below zero.
+Notes
+-----
+This function returns maximum density for the given critical frequency and
+limits it to 1 if it is below zero.
 
-    """
+"""
     # F2 peak
     NmF2 = freq2den(foF2) * 1e11
 
@@ -1472,37 +1472,37 @@ def freq_to_Nm(foF2, foF1, foE, foEs):
 
 
 def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
-    """Return height of F1 layer.
+"""Return height of F1 layer.
 
-    Parameters
-    ----------
+Parameters
+----------
 
-    NmF2 : array-like
-        Peak density of F2 layer in m-3.
-    NmF1 : array-like
-        Peak density of F1 layer in m-3.
-    hmF2 : array-like
-        Height of F2 layer in km.
-    B_F2_bot : array-like
-        Thickness of F2 bottom layer in km.
+NmF2 : array-like
+    Peak density of F2 layer in m-3.
+NmF1 : array-like
+    Peak density of F1 layer in m-3.
+hmF2 : array-like
+    Height of F2 layer in km.
+B_F2_bot : array-like
+    Thickness of F2 bottom layer in km.
 
-    Returns
-    -------
-    hmF1 : array-like
-        Height of F1 layer in km.
+Returns
+-------
+hmF1 : array-like
+    Height of F1 layer in km.
 
-    Notes
-    -----
-    This function calculates hmF1 from known shape of F2 bottom side, where
-    it drops to NmF1.
+Notes
+-----
+This function calculates hmF1 from known shape of F2 bottom side, where
+it drops to NmF1.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     hmF1 = NmF2 * 0 + np.nan
     a = NmF2 * 0
     b = NmF2 * 0
@@ -1530,34 +1530,34 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
 
 
 def find_B_F1_bot(hmF1, hmE, P_F1):
-    """Return thickness of F1 layer.
+"""Return thickness of F1 layer.
 
-    Parameters
-    ----------
+Parameters
+----------
 
-    hmF1 : array-like
-        Height of F1 layer in km.
-    hmE : array-like
-        Height of E layer in km.
-    P_F1 : array-like
-        Probability of observing F1 layer.
+hmF1 : array-like
+    Height of F1 layer in km.
+hmE : array-like
+    Height of E layer in km.
+P_F1 : array-like
+    Probability of observing F1 layer.
 
-    Returns
-    -------
-    B_F1_bot : array-like
-        Thickness of F1 layer in km.
+Returns
+-------
+B_F1_bot : array-like
+    Thickness of F1 layer in km.
 
-    Notes
-    -----
-    This function returns thickness of F1 layer in km.
+Notes
+-----
+This function returns thickness of F1 layer in km.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -1584,46 +1584,46 @@ def find_B_F1_bot(hmF1, hmE, P_F1):
 
 
 def hm_IRI(M3000, foE, foF2, modip, aIG):
-    """Return height of the ionospheric layers.
+"""Return height of the ionospheric layers.
 
-    Parameters
-    ----------
+Parameters
+----------
 
-    M3000 : array-like
-        Propagation parameter for F2 region related to hmF2.
-    foE : array-like
-        Critical frequency of E region in MHz.
-    foF2 : array-like
-        Critical frequency of F2 region in MHz.
-    modip : array-like
-        Modified dip angle in degrees.
-    aIG : array-like
-        Min and max of IG12 index.
+M3000 : array-like
+    Propagation parameter for F2 region related to hmF2.
+foE : array-like
+    Critical frequency of E region in MHz.
+foF2 : array-like
+    Critical frequency of F2 region in MHz.
+modip : array-like
+    Modified dip angle in degrees.
+aIG : array-like
+    Min and max of IG12 index.
 
-    Returns
-    -------
-    hmF2 : array-like
-        Height of F2 layer in km.
-    hmE : array-like
-        Height of E layer in km.
-    hmEs : array-like
-        Height of Es layer in km.
+Returns
+-------
+hmF2 : array-like
+    Height of F2 layer in km.
+hmE : array-like
+    Height of E layer in km.
+hmEs : array-like
+    Height of Es layer in km.
 
-    Notes
-    -----
-    This function returns height of ionospheric layers like it is
-    done in IRI.
+Notes
+-----
+This function returns height of ionospheric layers like it is
+done in IRI.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     s = M3000.shape
     time_dim = s[0]
     grid_dim = s[1]
@@ -1671,49 +1671,49 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
 
 
 def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
-    """Return thicknesses of ionospheric layers.
+"""Return thicknesses of ionospheric layers.
 
-    Parameters
-    ----------
-    foF2 : array-like
-        Critical frequency of F2 region in MHz.
-    M3000 : array-like
-        Propagation parameter for F2 region related to hmF2.
-    hmF2 : array-like
-        Height of the F2 layer.
-    hmE : array-like
-        Height of the E layer.
-    mth : int
-        Month of the year.
-    aIG : array-like
-        Min and max of IG12 index.
+Parameters
+----------
+foF2 : array-like
+    Critical frequency of F2 region in MHz.
+M3000 : array-like
+    Propagation parameter for F2 region related to hmF2.
+hmF2 : array-like
+    Height of the F2 layer.
+hmE : array-like
+    Height of the E layer.
+mth : int
+    Month of the year.
+aIG : array-like
+    Min and max of IG12 index.
 
-    Returns
-    -------
-    B_F2_bot : array-like
-        Thickness of F2 bottom in km.
-    B_F2_top : array-like
-        Thickness of F2 top in km.
-    B_E_bot : array-like
-        Thickness of E bottom in km.
-    B_E_top : array-like
-        Thickness of E top in km.
-    B_Es_bot : array-like
-        Thickness of Es bottom in km.
-    B_Es_top : array-like
-        Thickness of Es top in km.
+Returns
+-------
+B_F2_bot : array-like
+    Thickness of F2 bottom in km.
+B_F2_top : array-like
+    Thickness of F2 top in km.
+B_E_bot : array-like
+    Thickness of E bottom in km.
+B_E_top : array-like
+    Thickness of E top in km.
+B_Es_bot : array-like
+    Thickness of Es bottom in km.
+B_Es_top : array-like
+    Thickness of Es top in km.
 
-    Notes
-    -----
-    This function returns thicknesses of ionospheric layers.
+Notes
+-----
+This function returns thicknesses of ionospheric layers.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     # B_F2_bot..................................................................
     NmF2 = freq2den(foF2)
     # In the actual NeQuick_2 code there is a typo, missing 0.01 which makes
@@ -1760,30 +1760,30 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
 
 
 def epstein(Nm, hm, B, alt):
-    """Calculate Epstein function for given parameters.
+"""Calculate Epstein function for given parameters.
 
-    Parameters
-    ----------
-    Nm : array-like
-        Peak density in m-3.
-    hm : array-like
-        Height of peak density in km.
-    B : array-like
-        Thickness of the layer in km.
-    alt : array-like
-        Altitude array in km.
+Parameters
+----------
+Nm : array-like
+    Peak density in m-3.
+hm : array-like
+    Height of peak density in km.
+B : array-like
+    Thickness of the layer in km.
+alt : array-like
+    Altitude array in km.
 
-    Returns
-    -------
-    res : array-like
-        Constructed Epstein profile in m-3.
+Returns
+-------
+res : array-like
+    Constructed Epstein profile in m-3.
 
-    Notes
-    -----
-    This function returns epstein function for given parameters.
-    In a typical Epstein function: X = Nm, Y = hm, Z = B, and W = alt.
+Notes
+-----
+This function returns epstein function for given parameters.
+In a typical Epstein function: X = Nm, Y = hm, Z = B, and W = alt.
 
-    """
+"""
     aexp = fexp((alt - hm) / B)
     res = Nm * aexp / (1 + aexp)**2
     # --------------------------------------------------------------------------------------
@@ -1792,24 +1792,24 @@ def epstein(Nm, hm, B, alt):
 
 
 def decimal_year(dtime):
-    """Return decimal year.
+"""Return decimal year.
 
-    Parameters
-    ----------
-    dtime : class:`dt.datetime
-        Given datetime.
+Parameters
+----------
+dtime : class:`dt.datetime
+    Given datetime.
 
-    Returns
-    -------
-    date_decimal : float
-        Decimal year.
+Returns
+-------
+date_decimal : float
+    Decimal year.
 
-    Notes
-    -----
-    This function returns decimal year. For example, middle of the year
-    is 2020.5.
+Notes
+-----
+This function returns decimal year. For example, middle of the year
+is 2020.5.
 
-    """
+"""
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -1843,31 +1843,31 @@ def decimal_year(dtime):
 
 
 def set_geo_grid(dlon, dlat):
-    """Set geographical grid for given horizontal resolution.
+"""Set geographical grid for given horizontal resolution.
 
-    Parameters
-    ----------
-    dlon : float
-        Longitudinal step size in degrees.
-    dlat : float
-        Latitudinal step size in degrees.
+Parameters
+----------
+dlon : float
+    Longitudinal step size in degrees.
+dlat : float
+    Latitudinal step size in degrees.
 
-    Returns
-    -------
-    alon : array-like
-        Flattened coordinates of longitudes in degrees.
-    alat : array-like
-        Flattened coordinates of latitudes in degrees.
-    alon_2d : array-like
-        Reshaped 2-D array of longitudes in degrees.
-    alat_2d : array-like
-        Reshaped 2-D array of latitudes in degrees.
+Returns
+-------
+alon : array-like
+    Flattened coordinates of longitudes in degrees.
+alat : array-like
+    Flattened coordinates of latitudes in degrees.
+alon_2d : array-like
+    Reshaped 2-D array of longitudes in degrees.
+alat_2d : array-like
+    Reshaped 2-D array of latitudes in degrees.
 
-    Notes
-    -----
-    This function makes global grid arrays for given resolution.
+Notes
+-----
+This function makes global grid arrays for given resolution.
 
-    """
+"""
     alon_2d, alat_2d = np.mgrid[-180:180 + dlon:dlon, -90:90 + dlat:dlat]
     alon = np.reshape(alon_2d, alon_2d.size)
     alat = np.reshape(alat_2d, alat_2d.size)
@@ -1877,23 +1877,23 @@ def set_geo_grid(dlon, dlat):
 
 
 def set_alt_grid(dalt):
-    """Set an altitdue array with given vertical resolution.
+"""Set an altitdue array with given vertical resolution.
 
-    Parameters
-    ----------
-    dalt : float
-        Vertical step in km.
+Parameters
+----------
+dalt : float
+    Vertical step in km.
 
-    Returns
-    -------
-    aalt : array-like
-        Altitude array in km.
+Returns
+-------
+aalt : array-like
+    Altitude array in km.
 
-    Notes
-    -----
-    This function makes altitude array from 90 to 1000 km for given resolution.
+Notes
+-----
+This function makes altitude array from 90 to 1000 km for given resolution.
 
-    """
+"""
     aalt = np.mgrid[90:1000 + dalt:dalt]
     # --------------------------------------------------------------------------------------
     return aalt
@@ -1901,31 +1901,31 @@ def set_alt_grid(dalt):
 
 
 def set_temporal_array(dUT):
-    """Set a time array with given time step.
+"""Set a time array with given time step.
 
-    Parameters
-    ----------
-    dUT : float
-        Time step in hours.
+Parameters
+----------
+dUT : float
+    Time step in hours.
 
-    Returns
-    -------
-    aUT : array-like
-        Universal time array in hours.
-    ahour : array-like
-        int array of hours.
-    aminute : array-like
-        int array of minutes.
-    asecond : array-like
-        int array of seconds.
-    atime_frame_strings : array-like
-        String array of time stamps HHMM.
+Returns
+-------
+aUT : array-like
+    Universal time array in hours.
+ahour : array-like
+    int array of hours.
+aminute : array-like
+    int array of minutes.
+asecond : array-like
+    int array of seconds.
+atime_frame_strings : array-like
+    String array of time stamps HHMM.
 
-    Notes
-    -----
-    This function converts ionospheric frequency to plasma density.
+Notes
+-----
+This function converts ionospheric frequency to plasma density.
 
-    """
+"""
     aUT = np.arange(0, 24, dUT)
     ahour = np.fix(aUT).astype(int)
     aminute = ((aUT - ahour) * 60.).astype(int)
@@ -1938,23 +1938,23 @@ def set_temporal_array(dUT):
 
 
 def freq2den(f):
-    """Convert ionospheric frequency to plasma density.
+"""Convert ionospheric frequency to plasma density.
 
-    Parameters
-    ----------
-    f : array-like
-        ionospheric freqeuncy in MHz.
+Parameters
+----------
+f : array-like
+    ionospheric freqeuncy in MHz.
 
-    Returns
-    -------
-    d : array-like
-        plasma density in m-3.
+Returns
+-------
+d : array-like
+    plasma density in m-3.
 
-    Notes
-    -----
-    This function converts ionospheric frequency to plasma density.
+Notes
+-----
+This function converts ionospheric frequency to plasma density.
 
-    """
+"""
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -1980,23 +1980,23 @@ def freq2den(f):
 
 
 def R12_2_F107(R12):
-    """Convert R12 to F10.7 coefficients.
+"""Convert R12 to F10.7 coefficients.
 
-    Parameters
-    ----------
-    R12 : float or array-like
-        12-month sunspot number.
+Parameters
+----------
+R12 : float or array-like
+    12-month sunspot number.
 
-    Returns
-    -------
-    F107 : float or array-like
-        Solar flux at 10.7 in SFU.
+Returns
+-------
+F107 : float or array-like
+    Solar flux at 10.7 in SFU.
 
-    Notes
-    -----
-    This function converts R12 to F10.7.
+Notes
+-----
+This function converts R12 to F10.7.
 
-    """
+"""
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -2022,23 +2022,23 @@ def R12_2_F107(R12):
 
 
 def F107_2_R12(F107):
-    """Convert F10.7 to R12 coefficients.
+"""Convert F10.7 to R12 coefficients.
 
-    Parameters
-    ----------
-    F107 : float or array-like
-        Solar flux at 10.7 in SFU.
+Parameters
+----------
+F107 : float or array-like
+    Solar flux at 10.7 in SFU.
 
-    Returns
-    -------
-    R12 : float or array-like
-        12-month sunspot number.
+Returns
+-------
+R12 : float or array-like
+    12-month sunspot number.
 
-    Notes
-    -----
-    This function converts F10.7 to R12.
+Notes
+-----
+This function converts F10.7 to R12.
 
-    """
+"""
     # **************************************************************************
     # **************************************************************************
     # by Victoriya V Forsythe Makarevich
@@ -2067,23 +2067,23 @@ def F107_2_R12(F107):
 
 
 def R12_2_IG12(R12):
-    """Convert R12 to IG12 coefficients.
+"""Convert R12 to IG12 coefficients.
 
-    Parameters
-    ----------
-    R12 : float or array-like
-        Sunspot number coefficient R12.
+Parameters
+----------
+R12 : float or array-like
+    Sunspot number coefficient R12.
 
-    Returns
-    -------
-    IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+Returns
+-------
+IG12 : float or array-like
+    Ionosonde Gloabal coeffcient.
 
-    Notes
-    -----
-    This function converts R12 to IG12.
+Notes
+-----
+This function converts R12 to IG12.
 
-    """
+"""
     IG12 = 12.349 + 1.468 * R12 - 0.00268 * R12**2
     # --------------------------------------------------------------------------------------
     return IG12
@@ -2091,29 +2091,29 @@ def R12_2_IG12(R12):
 
 
 def IG12_2_R12(IG12):
-    """Convert IG12 to R12 coefficients.
+"""Convert IG12 to R12 coefficients.
 
-    Parameters
-    ----------
-    IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+Parameters
+----------
+IG12 : float or array-like
+    Ionosonde Gloabal coeffcient.
 
-    Returns
-    -------
-    R12 : float or array-like
-        Sunspot number coefficient R12.
+Returns
+-------
+R12 : float or array-like
+    Sunspot number coefficient R12.
 
-    Notes
-    -----
-    This function converts IG12 to R12.
+Notes
+-----
+This function converts IG12 to R12.
 
-    References
-    ----------
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     a = -0.00268
     b = 1.468
     c = 12.349 - IG12
@@ -2125,32 +2125,32 @@ def IG12_2_R12(IG12):
 
 
 def F107_2_IG12(F107):
-    """Convert F10.7 to IG12 coefficients.
+"""Convert F10.7 to IG12 coefficients.
 
-    Parameters
-    ----------
-    F107 : float or array-like
-        Solar flux F10.7 voefficient in SFU.
+Parameters
+----------
+F107 : float or array-like
+    Solar flux F10.7 voefficient in SFU.
 
-    Returns
-    -------
-    IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+Returns
+-------
+IG12 : float or array-like
+    Ionosonde Gloabal coeffcient.
 
-    Notes
-    -----
-    This function converts F10.7 to IG12.
+Notes
+-----
+This function converts F10.7 to IG12.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     R12 = F107_2_R12(F107)
     IG12 = R12_2_IG12(R12)
     # --------------------------------------------------------------------------------------
@@ -2159,32 +2159,32 @@ def F107_2_IG12(F107):
 
 
 def IG12_2_F107(IG12):
-    """Convert IG12 to F10.7 coefficients.
+"""Convert IG12 to F10.7 coefficients.
 
-    Parameters
-    ----------
-    IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+Parameters
+----------
+IG12 : float or array-like
+    Ionosonde Gloabal coeffcient.
 
-    Returns
-    -------
-    F107 : float or array-like
-        Solar flux F10.7 voefficient in SFU.
+Returns
+-------
+F107 : float or array-like
+    Solar flux F10.7 voefficient in SFU.
 
-    Notes
-    -----
-    This function converts IG12 to F10.7.
+Notes
+-----
+This function converts IG12 to F10.7.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     R12 = IG12_2_R12(IG12)
     F107 = R12_2_F107(R12)
     # --------------------------------------------------------------------------------------
@@ -2193,23 +2193,23 @@ def IG12_2_F107(IG12):
 
 
 def quadratic(coeff):
-    """Solve quadratic equation for given coefficients a, b, c.
+"""Solve quadratic equation for given coefficients a, b, c.
 
-    Parameters
-    ----------
-    coeff : array-like
-        a,b,c coefficients.
+Parameters
+----------
+coeff : array-like
+    a,b,c coefficients.
 
-    Returns
-    -------
-    [root1, root2] : array-like
-        2-D array with 2 roots.
+Returns
+-------
+[root1, root2] : array-like
+    2-D array with 2 roots.
 
-    Notes
-    -----
-    This function solves quadratic equation and returns 2 roots.
+Notes
+-----
+This function solves quadratic equation and returns 2 roots.
 
-    """
+"""
     a = coeff[0]
     b = coeff[1]
     c = coeff[2]
@@ -2225,35 +2225,35 @@ def quadratic(coeff):
 
 
 def epstein_function_array(A1, hm, B, x):
-    """Construct density epstein profile for any layer (except topside of F2).
+"""Construct density epstein profile for any layer (except topside of F2).
 
-    Parameters
-    ----------
-    A1 : array-like
-        Amplitude of layer in m-3.
-    hm : array-like
-        Height of layer in km.
-    B : array-like
-        Thickness in km.
-    x : array-like
-        Altitude in km.
+Parameters
+----------
+A1 : array-like
+    Amplitude of layer in m-3.
+hm : array-like
+    Height of layer in km.
+B : array-like
+    Thickness in km.
+x : array-like
+    Altitude in km.
 
-    Returns
-    -------
-    density : array-like
-        Constructed density in m-3.
+Returns
+-------
+density : array-like
+    Constructed density in m-3.
 
-    Notes
-    -----
-    This function constructs density Epstein profile for any layer.
+Notes
+-----
+This function constructs density Epstein profile for any layer.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     density = np.zeros((A1.shape))
     alpha = (x - hm) / B
     exp = fexp(alpha)
@@ -2268,36 +2268,36 @@ def epstein_function_array(A1, hm, B, x):
 
 
 def epstein_function_top_array(A1, hmF2, B_F2_top, x):
-    """Construct density epstein profile for the topside of F2 layer.
+"""Construct density epstein profile for the topside of F2 layer.
 
-    Parameters
-    ----------
-    A1 : array-like
-        Amplitude of F2 layer in m-3.
-    hmF2 : array-like
-        Height of F2 layer in km.
-    B_F2_top : array-like
-        Thickness of topside F2 layer in km.
-    x : array-like
-        Altitude in km.
+Parameters
+----------
+A1 : array-like
+    Amplitude of F2 layer in m-3.
+hmF2 : array-like
+    Height of F2 layer in km.
+B_F2_top : array-like
+    Thickness of topside F2 layer in km.
+x : array-like
+    Altitude in km.
 
-    Returns
-    -------
-    density : array-like
-        Constructed density in m-3.
+Returns
+-------
+density : array-like
+    Constructed density in m-3.
 
-    Notes
-    -----
-    This function constructs density epstein profile for the topside of F2
-    layer.
+Notes
+-----
+This function constructs density epstein profile for the topside of F2
+layer.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     g = 0.125
     r = 100.
     dh = x - hmF2
@@ -2315,32 +2315,32 @@ def epstein_function_top_array(A1, hmF2, B_F2_top, x):
 
 
 def drop_function(x):
-    """Calculate drop function from a simple family of curve.
+"""Calculate drop function from a simple family of curve.
 
-    Parameters
-    ----------
-    x : array-like
-        Portion of the altitude array.
+Parameters
+----------
+x : array-like
+    Portion of the altitude array.
 
-    Returns
-    -------
-    y : array-like
-        Function that can be multiplied with x to reduce the influence of x.
+Returns
+-------
+y : array-like
+    Function that can be multiplied with x to reduce the influence of x.
 
-    Notes
-    -----
-    This is a drop function from a simple family of curve. It is used to
-    reduce the F1_top contribution for the F2_bot region, so that when the
-    summation of epsein functions is performed, the presence of F1 region
-    would not mess up with the value of NmF2.
+Notes
+-----
+This is a drop function from a simple family of curve. It is used to
+reduce the F1_top contribution for the F2_bot region, so that when the
+summation of epsein functions is performed, the presence of F1 region
+would not mess up with the value of NmF2.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     # degree of the drop (4 give a good result)
     n = 4
     nelem = x.size
@@ -2355,37 +2355,37 @@ def drop_function(x):
 
 
 def reconstruct_density_from_parameters(F2, F1, E, alt):
-    """Construct vertical EDP for 2 levels of solar activity.
+"""Construct vertical EDP for 2 levels of solar activity.
 
-    Parameters
-    ----------
-    F2 : dict
-        Dictionary of parameters for F2 layer.
-    F1 : dict
-        Dictionary of parameters for F1 layer.
-    E : dict
-        Dictionary of parameters for E layer.
-    alt : array-like
-        1-D array of altitudes [N_V] in km.
+Parameters
+----------
+F2 : dict
+    Dictionary of parameters for F2 layer.
+F1 : dict
+    Dictionary of parameters for F1 layer.
+E : dict
+    Dictionary of parameters for E layer.
+alt : array-like
+    1-D array of altitudes [N_V] in km.
 
-    Returns
-    -------
-    x_out : array-like
-        Electron density for two levels of solar activity [2, N_T, N_V, N_G]
-        in m-3.
+Returns
+-------
+x_out : array-like
+    Electron density for two levels of solar activity [2, N_T, N_V, N_G]
+    in m-3.
 
-    Notes
-    -----
-    This function calculates 3-D density from given dictionaries of
-    the parameters for 2 levels of solar activity.
+Notes
+-----
+This function calculates 3-D density from given dictionaries of
+the parameters for 2 levels of solar activity.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
-    """
+"""
     s = F2['Nm'].shape
     N_G = s[1]
     N_T = s[0]
@@ -2416,32 +2416,32 @@ def reconstruct_density_from_parameters(F2, F1, E, alt):
 
 
 def EDP_builder(x, aalt):
-    """Construct vertical EDP.
+"""Construct vertical EDP.
 
-    Parameters
-    ----------
-    x : array-like
-        Array where 1st dimention indicates the parameter (total 11
-        parameters), second dimension is time, and third is horizontal grid
-        [11, N_T, N_G].
-    aalt : array-like
-        1-D array of altitudes [N_V] in km.
+Parameters
+----------
+x : array-like
+    Array where 1st dimention indicates the parameter (total 11
+    parameters), second dimension is time, and third is horizontal grid
+    [11, N_T, N_G].
+aalt : array-like
+    1-D array of altitudes [N_V] in km.
 
-    Returns
-    -------
-    density_out : array-like
-        3-D electron density [N_T, N_V, N_G] in m-3.
+Returns
+-------
+density_out : array-like
+    3-D electron density [N_T, N_V, N_G] in m-3.
 
-    Notes
-    -----
-    This function builds the EDP from the provided parameters for all time
-    frames, all vertical and all horizontal points.
+Notes
+-----
+This function builds the EDP from the provided parameters for all time
+frames, all vertical and all horizontal points.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
 
     """
     # number of elements in time dimention
@@ -2571,43 +2571,43 @@ def EDP_builder(x, aalt):
 
 
 def day_of_the_month_corr(year, month, day):
-    """Calculate ftactions of influence of monthes "before" and "afer".
+"""Calculate ftactions of influence of monthes "before" and "afer".
 
-    Parameters
-    ----------
-    year : int
-        Given year.
-    month : int
-        Given month.
-    day : day
-        Given day.
+Parameters
+----------
+year : int
+    Given year.
+month : int
+    Given month.
+day : day
+    Given day.
 
-    Returns
-    -------
-    t_before : class:`dt.datetime
-        Consider mean values from this month as month "before".
-    t_after : class:`dt.datetime
-        Consider mean values from this month as month "after".
-    fraction1 : float
-        Fractional influence of month "before".
-    fraction2 : float
-        Fractional influence of month "after".
+Returns
+-------
+t_before : class:`dt.datetime
+    Consider mean values from this month as month "before".
+t_after : class:`dt.datetime
+    Consider mean values from this month as month "after".
+fraction1 : float
+    Fractional influence of month "before".
+fraction2 : float
+    Fractional influence of month "after".
 
-    Notes
-    -----
-    This function finds two months around the given day and calculates
-    fractions of influence for previous and following monthes.
+Notes
+-----
+This function finds two months around the given day and calculates
+fractions of influence for previous and following monthes.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792.
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792.
 
-    """
+"""
     # middles of the months around
     delta_month = dt.timedelta(days=+30)
     dtime0 = dt.datetime(year, month, 15)
@@ -2642,40 +2642,40 @@ def day_of_the_month_corr(year, month, day):
 
 def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
                                         F_after):
-    """Interpolate btw 2 middles of consequent months to the given day.
+"""Interpolate btw 2 middles of consequent months to the given day.
 
-    Parameters
-    ----------
-    fraction1 : float
-        Fractional influence of month "before".
-    fraction2 : float
-        Fractional influence of month "after".
-    F_before : dict
-        Dictionary of mean parametrs for month "before".
-    F_after : dict
-        Dictionary of mean parametrs for month "after".
+Parameters
+----------
+fraction1 : float
+    Fractional influence of month "before".
+fraction2 : float
+    Fractional influence of month "after".
+F_before : dict
+    Dictionary of mean parametrs for month "before".
+F_after : dict
+    Dictionary of mean parametrs for month "after".
 
-    Returns
-    -------
-    F_new : dict
-        Parameters interpolated according to given fractions.
+Returns
+-------
+F_new : dict
+    Parameters interpolated according to given fractions.
 
-    Notes
-    -----
-    This function interpolates between 2 middles of consequent months to the
-    specified day by using provided fractions previousely calculated by
-    function "day_of_the_month_corr".
+Notes
+-----
+This function interpolates between 2 middles of consequent months to the
+specified day by using provided fractions previousely calculated by
+function "day_of_the_month_corr".
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     F_new = F_before
     for key in F_before:
         F_new[key] = F_before[key] * fraction1 + F_after[key] * fraction2
@@ -2685,39 +2685,39 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
 
 
 def solar_interpolate(F_min, F_max, F107):
-    """Interpolate given array to provided F10.7 level.
+"""Interpolate given array to provided F10.7 level.
 
-    Parameters
-    ----------
-    F_min : array-like
-        Any given array of parameters that corresponds to solar min.
-    F_max : array-like
-        Any given array of parameters that corresponds to solar max.
-    F107 : float
-        Given solar flux index in SFU.
+Parameters
+----------
+F_min : array-like
+    Any given array of parameters that corresponds to solar min.
+F_max : array-like
+    Any given array of parameters that corresponds to solar max.
+F107 : float
+    Given solar flux index in SFU.
 
-    Returns
-    -------
-    F : array-like
-        Parameters interpolated to the given F10.7.
+Returns
+-------
+F : array-like
+    Parameters interpolated to the given F10.7.
 
-    Notes
-    -----
-    This function interpolates it between to a given F10.7. The
-    reference points are set in terms of IG12 coefficients of 0 and 100.
-    The F10.7 is first converted to IG12 and then the interpolation is
-    occured.
+Notes
+-----
+This function interpolates it between to a given F10.7. The
+reference points are set in terms of IG12 coefficients of 0 and 100.
+The F10.7 is first converted to IG12 and then the interpolation is
+occured.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     # min and max of IG12 Ionospheric Global Index
     IG12_min = 0.
     IG12_max = 100.
@@ -2734,38 +2734,38 @@ def solar_interpolate(F_min, F_max, F107):
 
 
 def solar_interpolation_of_dictionary(F, F107):
-    """Interpolate given dictionary to provided F10.7 level.
+"""Interpolate given dictionary to provided F10.7 level.
 
-    Parameters
-    ----------
-    F : dict
-        Dictionary of parametrs with 2 levels of solar activity
-        specified as 1st dimenstion.
-    F107 : float
-        Interpolate to this particular level of F10.7.
+Parameters
+----------
+F : dict
+    Dictionary of parametrs with 2 levels of solar activity
+    specified as 1st dimenstion.
+F107 : float
+    Interpolate to this particular level of F10.7.
 
-    Returns
-    -------
-    F_new : dict
-        Parameters interpolated to the given F10.7.
+Returns
+-------
+F_new : dict
+    Parameters interpolated to the given F10.7.
 
-    Notes
-    -----
-    This function looks at each key in the dictionary and interpolates
-    it between to a given F10.7. The reference points are set in terms
-    of IG12 coefficients of 0 and 100. The F10.7 is first converted to
-    IG12 and then the interpolation is occured.
+Notes
+-----
+This function looks at each key in the dictionary and interpolates
+it between to a given F10.7. The reference points are set in terms
+of IG12 coefficients of 0 and 100. The F10.7 is first converted to
+IG12 and then the interpolation is occured.
 
-    References
-    ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
-    """
+"""
     # Make dictionary with same elements as initial array
     F_new = F
 
@@ -2779,26 +2779,26 @@ def solar_interpolation_of_dictionary(F, F107):
 
 
 def adjust_longitude(lon, type):
-    """Adjust longitudes from 180 to 360 and back.
+"""Adjust longitudes from 180 to 360 and back.
 
-    Parameters
-    ----------
-    lon : array-like
-        Longitudes in degrees.
-    type : str
-        Indicates the type of adjustment.
+Parameters
+----------
+lon : array-like
+    Longitudes in degrees.
+type : str
+    Indicates the type of adjustment.
 
-    Returns
-    -------
-    lon : array-like
-        Adjusted longitude.
+Returns
+-------
+lon : array-like
+    Adjusted longitude.
 
-    Notes
-    -----
-    This function adjustst the array of longitudes to go from -180-180 or
-    from 0-360.
+Notes
+-----
+This function adjustst the array of longitudes to go from -180-180 or
+from 0-360.
 
-    """
+"""
     if isinstance(lon, np.ndarray):
 
         if type == 'to360':

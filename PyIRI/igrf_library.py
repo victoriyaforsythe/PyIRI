@@ -8,13 +8,13 @@
 
 """This library contains components for IGRF
 
-    References
-    ----------
-    .. [1] Alken et al. (2021). International geomagnetic reference field: the
-    thirteenth generation. Earth, Planets and Space, 73(49).
-    doi: 10.1186/s40623-020-01288-x
+References
+----------
+.. [1] Alken et al. (2021). International geomagnetic reference field: the
+thirteenth generation. Earth, Planets and Space, 73(49).
+doi: 10.1186/s40623-020-01288-x
 
-    """
+"""
 
 import numpy as np
 import os
@@ -22,26 +22,26 @@ from scipy import interpolate
 
 
 def inc2modip(inc, alat):
-    """Calculate modified dip angle from magnetic inclination.
+"""Calculate modified dip angle from magnetic inclination.
 
-    Parameters
-    ----------
-    inc : array-like
-        Magnetic inclination in degrees.
-    alat : array-like
-        Flattened array of latitudes in degrees.
+Parameters
+----------
+inc : array-like
+    Magnetic inclination in degrees.
+alat : array-like
+    Flattened array of latitudes in degrees.
 
-    Returns
-    -------
-    modip_deg : array-like
-        Modified dip angle in degrees.
+Returns
+-------
+modip_deg : array-like
+    Modified dip angle in degrees.
 
-    Notes
-    -----
-    This function calculates modified dip angle for a given inclination and
-    geographic latitude.
+Notes
+-----
+This function calculates modified dip angle for a given inclination and
+geographic latitude.
 
-    """
+"""
     alat_rad = np.deg2rad(alat)
     rad_arg = np.deg2rad((inc / np.sqrt(np.cos(alat_rad))))
     modip_rad = np.arctan(rad_arg)
@@ -52,23 +52,23 @@ def inc2modip(inc, alat):
 
 
 def inc2magnetic_dip_latitude(inc):
-    """Calculate magnetic dip latitude from magnetic inclination.
+"""Calculate magnetic dip latitude from magnetic inclination.
 
-    Parameters
-    ----------
-    inc : array-like
-        Magnetic inclination in degrees.
+Parameters
+----------
+inc : array-like
+    Magnetic inclination in degrees.
 
-    Returns
-    -------
-    magnetic_dip_latitude : array-like
-        Magnetic dip latitude in degrees.
+Returns
+-------
+magnetic_dip_latitude : array-like
+    Magnetic dip latitude in degrees.
 
-    Notes
-    -----
-    This function calculates magnetic dip latitude.
+Notes
+-----
+This function calculates magnetic dip latitude.
 
-    """
+"""
     arg = 0.5 * (np.tan(np.deg2rad(inc)))
     magnetic_dip_latitude = np.rad2deg(np.arctan(arg))
     # --------------------------------------------------------------------------------------
@@ -77,33 +77,33 @@ def inc2magnetic_dip_latitude(inc):
 
 
 def inclination(coeff_dir, date_decimal, alon, alat):
-    """Calculate magnetic inclination using IGRF13.
+"""Calculate magnetic inclination using IGRF13.
 
-    Parameters
-    ----------
-    coeff_dir : str
-        Where IGRF13 coefficients are located.
-    date_decimal : float
-        Decimal year
-    alon : array-like
-        Flattened array of geographic longitudes in degrees.
-    alat : array-like
-        Flattened array of geographic latitudes in degrees.
+Parameters
+----------
+coeff_dir : str
+    Where IGRF13 coefficients are located.
+date_decimal : float
+    Decimal year
+alon : array-like
+    Flattened array of geographic longitudes in degrees.
+alat : array-like
+    Flattened array of geographic latitudes in degrees.
 
-    Returns
-    -------
-    inc : array-like
-        Magnetic inclination in degrees.
+Returns
+-------
+inc : array-like
+    Magnetic inclination in degrees.
 
-    Notes
-    -----
-    This code is a slight modification of the IGRF13 pyIGRF release,
-    https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html
-    The reading of the IGRF coefficient file was modified to speded up the
-    process, and the main code was simlified to oly focus on the iclination
-    of magnetic field output for the given grid.
+Notes
+-----
+This code is a slight modification of the IGRF13 pyIGRF release,
+https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html
+The reading of the IGRF coefficient file was modified to speded up the
+process, and the main code was simlified to oly focus on the iclination
+of magnetic field output for the given grid.
 
-    """
+"""
     # Set altitude to 300 km
     aalt = np.zeros((alon.shape)) + 300.
     # open IGRF file and read to array the main table
@@ -144,40 +144,40 @@ def inclination(coeff_dir, date_decimal, alon, alat):
 
 
 def gg_to_geo(h, gdcolat):
-    """Compute geocentric colatitude and radius from geodetic colat and height.
+"""Compute geocentric colatitude and radius from geodetic colat and height.
 
-    Parameters
-    ----------
-    h : array-like
-        Altitude in kilometers.
-    gdcolat : array-like
-        Geodetic colatitude in degrees.
+Parameters
+----------
+h : array-like
+    Altitude in kilometers.
+gdcolat : array-like
+    Geodetic colatitude in degrees.
 
-    Returns
-    -------
-    rad : array-like
-        Geocentric radius in kilometers.
-    thc : array-like
-        Geocentric colatitude in degrees.
-    sd : array-like
-        Rotate B_X to gd_lat.
-    cd : array-like
-        Rotate B_Z to gd_lat.
+Returns
+-------
+rad : array-like
+    Geocentric radius in kilometers.
+thc : array-like
+    Geocentric colatitude in degrees.
+sd : array-like
+    Rotate B_X to gd_lat.
+cd : array-like
+    Rotate B_Z to gd_lat.
 
-    Notes
-    -----
-    IGRF-13 Alken et al., 2021.
+Notes
+-----
+IGRF-13 Alken et al., 2021.
 
-    References
-    ----------
-    ... [1] Equations (51)-(53) from "The main field" (chapter 4) by Langel,
-    R. A. in: "Geomagnetism", Volume 1, Jacobs, J. A., Academic Press,
-    1987.
-    ... [1] Malin, S.R.C. and Barraclough, D.R., 1981. An algorithm for
-    synthesizing the geomagnetic field. Computers & Geosciences, 7(4),
-    pp.401-405.
+References
+----------
+... [1] Equations (51)-(53) from "The main field" (chapter 4) by Langel,
+R. A. in: "Geomagnetism", Volume 1, Jacobs, J. A., Academic Press,
+1987.
+... [1] Malin, S.R.C. and Barraclough, D.R., 1981. An algorithm for
+synthesizing the geomagnetic field. Computers & Geosciences, 7(4),
+pp.401-405.
 
-    """
+"""
     # Use WGS-84 ellipsoid parameters
     eqrad = 6378.137  # equatorial radius
     flat = 1. / 298.257223563
@@ -202,38 +202,38 @@ def gg_to_geo(h, gdcolat):
 
 
 def geo_to_gg(radius, theta):
-    """Compute geodetic colatitude and vertical height above the ellipsoid.
+"""Compute geodetic colatitude and vertical height above the ellipsoid.
 
-    Parameters
-    ----------
-    radius : array-like
-        Geocentric radius in kilometers.
-    theta : array-like
-        Geocentric colatitude in degrees.
+Parameters
+----------
+radius : array-like
+    Geocentric radius in kilometers.
+theta : array-like
+    Geocentric colatitude in degrees.
 
-    Returns
-    -------
-    height : array-like
-        Altitude in kilometers.
-    beta : array-like
-        Geodetic colatitude.
+Returns
+-------
+height : array-like
+    Altitude in kilometers.
+beta : array-like
+    Geodetic colatitude.
 
-    Notes
-    -----
-    IGRF-13 Alken et al., 2021.
-    Compute geodetic colatitude and vertical height above the ellipsoid from
-    geocentric radius and colatitude. Round-off errors might lead to a
-    failure of the algorithm especially but not exclusively for points close
-    to the geographic poles. Corresponding geodetic coordinates are returned
-    as NaN.
+Notes
+-----
+IGRF-13 Alken et al., 2021.
+Compute geodetic colatitude and vertical height above the ellipsoid from
+geocentric radius and colatitude. Round-off errors might lead to a
+failure of the algorithm especially but not exclusively for points close
+to the geographic poles. Corresponding geodetic coordinates are returned
+as NaN.
 
-    References
-    ----------
-    ... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
-    geodetic coordinates", IEEE Transactions on Aerospace and Electronic
-    Systems}, 1994, vol. 30, num. 3, pp. 957-961
+References
+----------
+... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
+geodetic coordinates", IEEE Transactions on Aerospace and Electronic
+Systems}, 1994, vol. 30, num. 3, pp. 957-961
 
-    """
+"""
     # Use WGS-84 ellipsoid parameters
     a = 6378.137  # equatorial radius
     b = 6356.752  # polar radius
@@ -267,58 +267,58 @@ def geo_to_gg(radius, theta):
 
 def synth_values(coeffs, radius, theta, phi,
                  nmax=None, nmin=None, grid=None):
-    """Compute radial, colatitude and azimuthal field components.
+"""Compute radial, colatitude and azimuthal field components.
 
-    Parameters
-    ----------
-    coeffs : array-like
-        Coefficients of the spherical harmonic expansion. The last
-        dimension is equal to the number of coefficients, `N` at the grid
-        points.
-    radius : array-like
-        Array containing the radius in km.
-    theta : array-like
-        Array containing the colatitude in degrees.
-    phi : array-like
-        Array containing the longitude in degrees.
-    nmax : int
-        Maximum degree up to which expansion is to be used (default is given
-        by the ``coeffs``, but can also be smaller if specified.
-    nmin : int
-        Minimum degree from which expansion is to be used (defaults to 1).
-        Note that it will just skip the degrees smaller than ``nmin``, the
-        whole sequence of coefficients 1 through ``nmax`` must still be
-        given in ``coeffs``.
-    grid : bool
-        If ``True``, field components are computed on a regular grid. Arrays
-        ``theta`` and ``phi`` must have one dimension less than the output
-        grid since the grid will be created as their outer product (defaults
-        to ``False``).
+Parameters
+----------
+coeffs : array-like
+    Coefficients of the spherical harmonic expansion. The last
+    dimension is equal to the number of coefficients, `N` at the grid
+    points.
+radius : array-like
+    Array containing the radius in km.
+theta : array-like
+    Array containing the colatitude in degrees.
+phi : array-like
+    Array containing the longitude in degrees.
+nmax : int
+    Maximum degree up to which expansion is to be used (default is given
+    by the ``coeffs``, but can also be smaller if specified.
+nmin : int
+    Minimum degree from which expansion is to be used (defaults to 1).
+    Note that it will just skip the degrees smaller than ``nmin``, the
+    whole sequence of coefficients 1 through ``nmax`` must still be
+    given in ``coeffs``.
+grid : bool
+    If ``True``, field components are computed on a regular grid. Arrays
+    ``theta`` and ``phi`` must have one dimension less than the output
+    grid since the grid will be created as their outer product (defaults
+    to ``False``).
 
-    Returns
-    -------
-    B_radius : array-like
-        Radial field components in km.
-    B_theta : array-like
-        Colatitude field components in degrees.
-    B_phi : array-like
-        Azimuthal field components in degrees.
+Returns
+-------
+B_radius : array-like
+    Radial field components in km.
+B_theta : array-like
+    Colatitude field components in degrees.
+B_phi : array-like
+    Azimuthal field components in degrees.
 
-    Notes
-    -----
-    by IGRF-13 Alken et al., 2021
-    Based on chaosmagpy from Clemens Kloss (DTU Space, Copenhagen)
-    Computes radial, colatitude and azimuthal field components from the
-    magnetic potential field in terms of spherical harmonic coefficients.
-    A reduced version of the DTU synth_values chaosmagpy code.
+Notes
+-----
+by IGRF-13 Alken et al., 2021
+Based on chaosmagpy from Clemens Kloss (DTU Space, Copenhagen)
+Computes radial, colatitude and azimuthal field components from the
+magnetic potential field in terms of spherical harmonic coefficients.
+A reduced version of the DTU synth_values chaosmagpy code.
 
-    References
-    ----------
-    ... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
-    geodetic coordinates", IEEE Transactions on Aerospace and Electronic
-    Systems}, 1994, vol. 30, num. 3, pp. 957-961
+References
+----------
+... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
+geodetic coordinates", IEEE Transactions on Aerospace and Electronic
+Systems}, 1994, vol. 30, num. 3, pp. 957-961
 
-    """
+"""
 
     # ensure ndarray inputs
     coeffs = np.array(coeffs, dtype=float)
@@ -409,34 +409,34 @@ def synth_values(coeffs, radius, theta, phi,
 
 
 def legendre_poly(nmax, theta):
-    """Calculate associated Legendre polynomials `P(n,m)`.
+"""Calculate associated Legendre polynomials `P(n,m)`.
 
-    Parameters
-    ----------
-    nmax : int
-        Maximum degree up to which expansion.
-    theta : array-like
-        Array containing the colatitude in degrees.
+Parameters
+----------
+nmax : int
+    Maximum degree up to which expansion.
+theta : array-like
+    Array containing the colatitude in degrees.
 
-    Returns
-    -------
-    Pnm : array-like
-        Evaluated values and derivatives.
+Returns
+-------
+Pnm : array-like
+    Evaluated values and derivatives.
 
-    Notes
-    -----
-    by IGRF-13 Alken et al., 2021
-    Returns associated Legendre polynomials `P(n,m)` (Schmidt
-    quasi-normalized), and the derivative :math:`dP(n,m)/d\\theta` evaluated
-    at :math:`\\theta`.
+Notes
+-----
+by IGRF-13 Alken et al., 2021
+Returns associated Legendre polynomials `P(n,m)` (Schmidt
+quasi-normalized), and the derivative :math:`dP(n,m)/d\\theta` evaluated
+at :math:`\\theta`.
 
-    References
-    ----------
-    ... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
-    geodetic coordinates", IEEE Transactions on Aerospace and Electronic
-    Systems}, 1994, vol. 30, num. 3, pp. 957-961.
+References
+----------
+... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
+geodetic coordinates", IEEE Transactions on Aerospace and Electronic
+Systems}, 1994, vol. 30, num. 3, pp. 957-961.
 
-    """
+"""
     costh = np.cos(np.radians(theta))
     sinth = np.sqrt(1 - costh**2)
     Pnm = np.zeros((nmax + 1, nmax + 2) + costh.shape)
@@ -473,35 +473,35 @@ def legendre_poly(nmax, theta):
 
 
 def xyz2dhif(x, y, z):
-    """Calculate declination, intensity, inclination of mag field.
+"""Calculate declination, intensity, inclination of mag field.
 
-    Parameters
-    ----------
-    x : array-like
-        North component of the magnetic field in nT.
-    y : array-like
-        East component of the magnetic field in nT.
-    y : array-like
-        Vertical component of the magnetic field in nT.
+Parameters
+----------
+x : array-like
+    North component of the magnetic field in nT.
+y : array-like
+    East component of the magnetic field in nT.
+y : array-like
+    Vertical component of the magnetic field in nT.
 
-    Returns
-    -------
-    dec : array-like
-        Declination of the magnetic field in degrees.
-    hoz : array-like
-        Horizontal intensity of the magnetic field in nT.
-    inc : array-like
-        Inclination of the magnetic field in degrees.
-    eff : array-like
-        Total intensity of the magnetic filed in nT.
+Returns
+-------
+dec : array-like
+    Declination of the magnetic field in degrees.
+hoz : array-like
+    Horizontal intensity of the magnetic field in nT.
+inc : array-like
+    Inclination of the magnetic field in degrees.
+eff : array-like
+    Total intensity of the magnetic filed in nT.
 
-    Notes
-    -----
-    by IGRF-13 Alken et al., 2021
-    Calculate D, H, I and F from (X, Y, Z)
-    Based on code from D. Kerridge, 2019.
+Notes
+-----
+by IGRF-13 Alken et al., 2021
+Calculate D, H, I and F from (X, Y, Z)
+Based on code from D. Kerridge, 2019.
 
-    """
+"""
     hsq = x * x + y * y
     hoz = np.sqrt(hsq)
     eff = np.sqrt(hsq + z * z)
