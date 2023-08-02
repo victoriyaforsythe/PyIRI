@@ -32,28 +32,28 @@ import os
 
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
-    """Outputs monthly mean ionospheric parameters.
+    """Outpute monthly mean ionospheric parameters.
 
     Parameters
     ----------
     year : int
-        Year
+        Year.
     mth : int
-        Month
+        Month.
     aUT : array-like
-        Array of universal time (UT) in hours
-        Must be Numpy array of any size [N_T]
+        Array of universal time (UT) in hours.
+        Must be Numpy array of any size [N_T].
     alon : array-like
-        Flattened array of geographic longitudes in degrees
-        Must be Numpy array of any size [N_G]
+        Flattened array of geographic longitudes in degrees.
+        Must be Numpy array of any size [N_G].
     alat : array-like
-        Flattened array of geographic latitudes in degrees
-        Must be Numpy array of any size [N_G]
+        Flattened array of geographic latitudes in degrees.
+        Must be Numpy array of any size [N_G].
     coeff_dir : str
-        Place where coefficients are
+        Place where coefficients are.
     ccir_or_ursi : int
-        If 0 is given CCIR will be used for F2 critical frequency
-        If 1 then URSI
+        If 0 is given CCIR will be used for F2 critical frequency.
+        If 1 then URSI.
 
     Returns
     -------
@@ -61,8 +61,8 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
         'Nm' is peak density of F2 region in m-3.
         'fo' is critical frequency of F2 region in MHz.
         'M3000' is the obliquity factor for a distance of 3,000 km.
-        Defined as refracted in the ionosphere, can be received at a distance
-        of 3,000 km, unitless.
+        Defined as refracted in the ionosphere, can be received at a
+        distance of 3,000 km, unitless.
         'hm' is height of the F2 peak in km.
         'B_topi is top thickness of the F2 region in km.
         'B_bot' is bottom thickness of the F2 region in km.
@@ -211,35 +211,35 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi):
 
 def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
                      ccir_or_ursi):
-    """Outputs ionospheric parameters for a particular day.
+    """Outpute ionospheric parameters for a particular day.
 
     Parameters
     ----------
     year : int
-        Year
+        Year.
     mth : int
-        Month
+        Month.
     day : int
-        Day
+        Day.
     aUT : array-like
-        Array of universal time (UT) in hours
-        Must be Numpy array of any size [N_T]
+        Array of universal time (UT) in hours.
+        Must be Numpy array of any size [N_T].
     alon : array-like
-        Flattened array of geographic longitudes in degrees
-        Must be Numpy array of any size [N_G]
+        Flattened array of geographic longitudes in degrees.
+        Must be Numpy array of any size [N_G].
     alat : array-like
-        Flattened array of geographic latitudes in degrees
-        Must be Numpy array of any size [N_G]
+        Flattened array of geographic latitudes in degrees.
+        Must be Numpy array of any size [N_G].
     aalt : array-like
-        Array of altitudes in km
-        Must be Numpy array of any size [N_V]
+        Array of altitudes in km.
+        Must be Numpy array of any size [N_V].
     F107 : float
-        User provided F10.7 solar flux index in SFU
+        User provided F10.7 solar flux index in SFU.
     coeff_dir : str
-        Place where coefficients are located
+        Place where coefficients are located.
     ccir_or_ursi : int
-        If 0 is given CCIR will be used for F2 critical frequency
-        If 1 then URSI coefficients
+        If 0 is given CCIR will be used for F2 critical frequency.
+        If 1 then URSI coefficients.
 
     Returns
     -------
@@ -277,12 +277,12 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     sun : dict
         'lon' is longitude of subsolar point in degrees.
         'lat' is latitude of subsolar point in degrees.
-        Shape [N_G]
+        Shape [N_G].
     mag : dict
         'inc' is inclination of the magnetic field in degrees.
         'modip' is modified dip angle in degrees.
         'mag_dip_lat' is magnetic dip latitude in degrees.
-        Shape [N_G]
+        Shape [N_G].
     EDP : array-like
         Electron density profiles in m-3 with shape [N_T, N_V, N_G]
 
@@ -355,25 +355,25 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
 
 def read_ccir_ursi_coeff(mth, coeff_dir):
-    """Reads coefficients from CCIR, URSI, and Es.
+    """Reade coefficients from CCIR, URSI, and Es.
 
     Parameters
     ----------
     mth : int
-        Month
+        Month.
     coeff_dir : str
-        Place where the coefficint files are
+        Place where the coefficint files are.
 
     Returns
     -------
     F_fof2_CCIR : array-like
-        CCIR coefficients for F2 frequency
+        CCIR coefficients for F2 frequency.
     F_fof2_URSI : array-like
-        URSI coefficients for F2 frequency
+        URSI coefficients for F2 frequency.
     F_M3000 : array-like
-        CCIR coefficients for M3000
+        CCIR coefficients for M3000.
     F_Es_median : array-like
-        Bradley coefficients for Es
+        Bradley coefficients for Es.
 
     Notes
     -----
@@ -494,19 +494,19 @@ def read_ccir_ursi_coeff(mth, coeff_dir):
 
 
 def set_diurnal_functions(nj, time_array):
-    """Calculates diurnal Fourier function components.
+    """Calculate diurnal Fourier function components.
 
     Parameters
     ----------
     nj : array-like
-        The highest order of diurnal variation
+        The highest order of diurnal variation.
     time_array : array-like
-        Array of UTs in hours
+        Array of UTs in hours.
 
     Returns
     -------
     D : array-like
-        Diurnal functions
+        Diurnal functions.
 
     Notes
     -----
@@ -556,21 +556,21 @@ def set_diurnal_functions(nj, time_array):
 
 
 def diurnal_functions(time_array):
-    """Sets diurnal functions for F2, M3000, and Es.
+    """Set diurnal functions for F2, M3000, and Es.
 
     Parameters
     ----------
     time_array : array-like
-        Array of UTs in hours
+        Array of UTs in hours.
 
     Returns
     -------
     D_f0f2 : array-like
-        Diurnal functions for foF2
+        Diurnal functions for foF2.
     D_M3000 : array-like
-        Diurnal functions for M3000
+        Diurnal functions for M3000.
     D_Es_median : array-like
-        Diurnal functions for Es
+        Diurnal functions for Es.
 
     Notes
     -----
@@ -604,22 +604,22 @@ def diurnal_functions(time_array):
 
 
 def set_global_functions(Q, nk, alon, alat, modip):
-    """Sets global functions.
+    """Set global functions.
 
     Parameters
     ----------
     Q : array-like
-        Vector of highest order of sin(x)
+        Vector of highest order of sin(x).
     nk : array-like
         Highest order of geographic extension, or how many
         functions are there e.g. there are 76 functions in
-        Table 3 on page 18 of Jones & Graham 1966
+        Table 3 on page 18 of Jones & Graham 1966.
     alon : array-like
-        Flattened array of geographic longitudes in degrees
+        Flattened array of geographic longitudes in degrees.
     alat : array-like
-        Flattened array of geographic latitudes in degrees
+        Flattened array of geographic latitudes in degrees.
     modip : array-like
-        Modified dip angle in degrees
+        Modified dip angle in degrees.
 
     Returns
     -------
@@ -663,25 +663,25 @@ def set_global_functions(Q, nk, alon, alat, modip):
 
 
 def set_gl_G(alon, alat, modip):
-    """Calculates global functions.
+    """Calculate global functions.
 
     Parameters
     ----------
     alon : array-like
-        Flattened array of geographic longitudes in degrees
+        Flattened array of geographic longitudes in degrees.
     alat : array-like
-        Flattened array of geographic latitudes in degrees
+        Flattened array of geographic latitudes in degrees.
     modip : array-like
-        Modified dip angle in degrees
+        Modified dip angle in degrees.
 
     Returns
     -------
     G_fof2 : array-like
-        Global functions for F2 region
+        Global functions for F2 region.
     G_M3000 : array-like
-        Global functions for M3000 propagation parameter
+        Global functions for M3000 propagation parameter.
     G_Es_median : array-like
-        Global functions for Es region
+        Global functions for Es region.
 
     Notes
     -----
@@ -714,37 +714,37 @@ def set_gl_G(alon, alat, modip):
 
 def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
           F_fof2_coeff, F_M3000_coeff, F_Es_median):
-    """Calculates foF2, M3000 propagetion parameter, and foEs.
+    """Calculate foF2, M3000 propagetion parameter, and foEs.
 
     Parameters
     ----------
     D_f0f2 : array-like
-        Diurnal functions for F2 region
+        Diurnal functions for F2 region.
     D_M3000 : array-like
-        Diurnal functions for M3000 propagation parameter
+        Diurnal functions for M3000 propagation parameter.
     D_Es_median : array-like
-        Diurnal functions for Es region
+        Diurnal functions for Es region.
     G_fof2 : array-like
-        Global functions for F2 region
+        Global functions for F2 region.
     G_M3000 : array-like
-        Global functions for M3000 propagation parameter
+        Global functions for M3000 propagation parameter.
     G_Es_median : array-like
-        Global functions for Es region
+        Global functions for Es region.
     F_fof2_coeff : array-like
-        CCIR or URCI coefficients
+        CCIR or URCI coefficients.
     F_M3000_coeff : array-like
-        CCIR coefficients
+        CCIR coefficients.
     F_Es_median : array-like
-        Bradley Es coefficients
+        Bradley Es coefficients.
 
     Returns
     -------
     gamma_f0f2 : array-like
-        Critical frequency of F2 layer
+        Critical frequency of F2 layer.
     gamma_M3000 : array-like
-        M3000 propagation parameter
+        M3000 propagation parameter.
     gamma_Es_median : array-like
-        Critical frequency of Es layer
+        Critical frequency of Es layer.
 
     Notes
     -----
@@ -781,21 +781,21 @@ def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
 
 
 def highest_power_of_extension():
-    """Provides highest power of extension.
+    """Provide highest power of extension.
 
     Returns
     -------
     const : dict
-        Dictionary that has QM, nk, and nj parameters
+        Dictionary that has QM, nk, and nj parameters.
 
     Notes
     -----
     This function sets a common set of constants that define the power of
     etensions.
-    QM = array of highest power of sin(x)
-    nk = highest order of geographic extension
-    e.g. there are 76 functions in Table 3 on page 18 in Jones & Graham 1965
-    nj = highest order in diurnal variation
+    QM = array of highest power of sin(x).
+    nk = highest order of geographic extension.
+    e.g. there are 76 functions in Table 3 on page 18 in Jones & Graham 1965.
+    nj = highest order in diurnal variation.
 
     References
     ----------
@@ -845,17 +845,17 @@ def highest_power_of_extension():
 
 
 def juldat(times):
-    """Calculates the Julian time given calendar date and time.
+    """Calculate the Julian time given calendar date and time.
 
     Parameters
     ----------
     times : class:`dt.datetime
-        Juliantime in days
+        Juliantime in days.
 
     Returns
     -------
     julian_datetime : float
-        Julian date
+        Julian date.
 
     Notes
     -----
@@ -888,24 +888,24 @@ def juldat(times):
 
 
 def subsolar_point(juliantime):
-    """Finds location of subsolar point.
+    """Find location of subsolar point.
 
     Parameters
     ----------
     juliantime : float
-        Juliantime in days
+        Juliantime in days.
 
     Returns
     -------
     lonsun : float
-        Longitude of the sun in degrees
+        Longitude of the sun in degrees.
     latsun : float
-        Latitude of the sun in degrees
+        Latitude of the sun in degrees.
 
     Notes
     -----
     This function returns the lon and lat of subsolar point for a given
-    Juliantime Latitude of subsolar point is same as solar declination angle
+    Juliantime Latitude of subsolar point is same as solar declination angle.
 
     """
     # number of centuries from J2000
@@ -956,23 +956,23 @@ def subsolar_point(juliantime):
 
 
 def solar_zenith(lon_sun, lat_sun, lon_observer, lat_observer):
-    """Caclulates solar zenith angle from known location of the sun.
+    """Caclulate solar zenith angle from known location of the sun.
 
     Parameters
     ----------
     lon_sun : array-like
-        Longitude of the sun in degrees
+        Longitude of the sun in degrees.
     lat_sun : array-like
-        Latitude of the sun in degrees
+        Latitude of the sun in degrees.
     lon_observer : array-like
-        Longitude of the observer in degrees
+        Longitude of the observer in degrees.
     lat_observer : array-like
-        Latitude of the observer in degrees
+        Latitude of the observer in degrees.
 
     Returns
     -------
     azenith : array-like
-        Solar zenith angle
+        Solar zenith angle.
 
     Notes
     -----
@@ -1019,36 +1019,36 @@ def solar_zenith(lon_sun, lat_sun, lon_observer, lat_observer):
 
 
 def solzen_timearray_grid(year, mth, day, T0, alon, alat):
-    """Caclulates solar zenith angle.
+    """Caclulate solar zenith angle.
 
     Parameters
     ----------
     year : int
-        Year
+        Year.
     mth : int
-        Month
+        Month.
     day : int
-        Day
+        Day.
     T0 : array-like
-        Array of UTs in hours
+        Array of UTs in hours.
     alon : array-like
-        Flattened array of longitudes in degrees
+        Flattened array of longitudes in degrees.
     alat : array-like
-        Flattened array of latitudes in degrees
+        Flattened array of latitudes in degrees.
 
     Returns
     -------
     solzen : array-like
-        Solar zenith angle
+        Solar zenith angle.
     aslon : array-like
-        Longitude of subsolar point in degrees
+        Longitude of subsolar point in degrees.
     aslat : array-like
-        Latitude of subsolar point in degrees
+        Latitude of subsolar point in degrees.
 
     Notes
     -----
     This function returns solar zenith angle for the given year, month,
-    day, array of UT, and arrays of lon and lat of the grid
+    day, array of UT, and arrays of lon and lat of the grid.
 
     """
     # check size of the grid arrays
@@ -1077,17 +1077,17 @@ def solzen_timearray_grid(year, mth, day, T0, alon, alat):
 
 
 def solzen_effective(chi):
-    """Caclulates effective solar zenith angle.
+    """Caclulate effective solar zenith angle.
 
     Parameters
     ----------
     chi : array-like
-        Solar zenith angle (deg)
+        Solar zenith angle (deg).
 
     Returns
     -------
     chi_eff : array-like
-        Effective solar zenith angle (deg)
+        Effective solar zenith angle (deg).
 
     Notes
     -----
@@ -1132,23 +1132,23 @@ def solzen_effective(chi):
 
 
 def foE(mth, solzen_effective, alat, f107):
-    """Caclulates critical freqeuency of E region.
+    """Caclulate critical freqeuency of E region.
 
     Parameters
     ----------
     mth : int
-        Month
+        Month.
     solzen_effective : array-like
-        Effective solar zenith angle
+        Effective solar zenith angle.
     alat : array-like
-        Flattened array of latitudes in degrees
+        Flattened array of latitudes in degrees.
     f107 : float
-        F10.7 solar flux in SFU
+        F10.7 solar flux in SFU.
 
     Returns
     -------
     foE : array-like
-        critical frequency of E region in MHz
+        critical frequency of E region in MHz.
 
     Notes
     -----
@@ -1219,36 +1219,36 @@ def foE(mth, solzen_effective, alat, f107):
 
 
 def gammaE(year, mth, time, alon, alat, aIG):
-    """Caclulates numerical maps for critical freqeuency of E region.
+    """Caclulate numerical maps for critical freqeuency of E region.
 
     Parameters
     ----------
     year : int
-        Year
+        Year.
     mth : int
-        Month
+        Month.
     time : array-like
-        Array of UTs in hours
+        Array of UTs in hours.
     alon : array-like
-        Flattened array of longitudes in degrees
+        Flattened array of longitudes in degrees.
     alat : array-like
-        Flattened array of latitudes in degrees
+        Flattened array of latitudes in degrees.
     aIG : array-like
-        Min and max of IG12 index
+        Min and max of IG12 index.
 
     Returns
     -------
     gamma_E : array-like
-        critical frequency of E region in MHz
+        critical frequency of E region in MHz.
     slon : array-like
-        Longitude of subsolar point in degrees
+        Longitude of subsolar point in degrees.
     slat : array-like
-        Latitude of subsolar point in degrees
+        Latitude of subsolar point in degrees.
 
     Notes
     -----
     This function caclulates numerical maps for FoE for 2 levels of solar
-    activity
+    activity.
 
     References
     ----------
@@ -1282,31 +1282,31 @@ def gammaE(year, mth, time, alon, alat, aIG):
 
 
 def Probability_F1(year, mth, time, alon, alat, mag_dip_lat, aIG):
-    """Calculates probability occurence of F1 layer.
+    """Calculate probability occurence of F1 layer.
 
     Parameters
     ----------
     year : int
-        Year
+        Year.
     mth : int
-        Month
+        Month.
     time : array-like
-        Array of UTs in hours
+        Array of UTs in hours.
     alon : array-like
-        Flattened array of longitudes in degrees
+        Flattened array of longitudes in degrees.
     alat : array-like
-        Flattened array of latitudes in degrees
+        Flattened array of latitudes in degrees.
     mag_dip_lat : array-like
-        Flattened array of magnetic dip latitudes in degrees
+        Flattened array of magnetic dip latitudes in degrees.
     aIG : array-like
-        Min and Max of IG12
+        Min and Max of IG12.
 
     Returns
     -------
     a_P : array-like
-        Probability occurrence of F1 layer
+        Probability occurrence of F1 layer.
     a_foF1 : array-like
-        Critical freqeuncy of F1 layer in MHz
+        Critical freqeuncy of F1 layer in MHz.
 
     Notes
     -----
@@ -1377,18 +1377,18 @@ def Probability_F1(year, mth, time, alon, alat, mag_dip_lat, aIG):
 
 
 def fexp(x):
-    """Exponent without overflow.
+    """Calculate exponent without overflow.
 
     Parameters
     ----------
 
     x : array-like
-        x
+        Any input.
 
     Returns
     -------
     y : array-like
-        y=exp(x)
+        Exponent of x.
 
     Notes
     -----
@@ -1418,35 +1418,35 @@ def fexp(x):
 
 
 def freq_to_Nm(foF2, foF1, foE, foEs):
-    """Converts critical frequency to plasma density.
+    """Convert critical frequency to plasma density.
 
     Parameters
     ----------
 
     foF2 : array-like
-        Critical frequency of F2 layer in MHz
+        Critical frequency of F2 layer in MHz.
     foF1 : array-like
-        Critical frequency of F1 layer in MHz
+        Critical frequency of F1 layer in MHz.
     foE : array-like
-        Critical frequency of E layer in MHz
+        Critical frequency of E layer in MHz.
     foEs : array-like
-        Critical frequency of Es layer in MHz
+        Critical frequency of Es layer in MHz.
 
     Returns
     -------
     NmF2 : array-like
-        Peak density of F2 layer in m-3
+        Peak density of F2 layer in m-3.
     NmF1 : array-like
-        Peak density of F1 layer in m-3
+        Peak density of F1 layer in m-3.
     NmE : array-like
-        Peak density of E layer in m-3
+        Peak density of E layer in m-3.
     NmEs : array-like
-        Peak density of Es layer in m-3
+        Peak density of Es layer in m-3.
 
     Notes
     -----
     This function returns maximum density for the given critical frequency and
-    limits it to 1 if it is below zero
+    limits it to 1 if it is below zero.
 
     """
     # F2 peak
@@ -1472,29 +1472,29 @@ def freq_to_Nm(foF2, foF1, foE, foEs):
 
 
 def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
-    """Returns height of F1 layer.
+    """Return height of F1 layer.
 
     Parameters
     ----------
 
     NmF2 : array-like
-        Peak density of F2 layer in m-3
+        Peak density of F2 layer in m-3.
     NmF1 : array-like
-        Peak density of F1 layer in m-3
+        Peak density of F1 layer in m-3.
     hmF2 : array-like
-        Height of F2 layer in km
+        Height of F2 layer in km.
     B_F2_bot : array-like
-        Thickness of F2 bottom layer in km
+        Thickness of F2 bottom layer in km.
 
     Returns
     -------
     hmF1 : array-like
-        Height of F1 layer in km
+        Height of F1 layer in km.
 
     Notes
     -----
     This function calculates hmF1 from known shape of F2 bottom side, where
-    it drops to NmF1
+    it drops to NmF1.
 
     References
     ----------
@@ -1530,22 +1530,22 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
 
 
 def find_B_F1_bot(hmF1, hmE, P_F1):
-    """Returns thickness of F1 layer.
+    """Return thickness of F1 layer.
 
     Parameters
     ----------
 
     hmF1 : array-like
-        Height of F1 layer in km
+        Height of F1 layer in km.
     hmE : array-like
-        Height of E layer in km
+        Height of E layer in km.
     P_F1 : array-like
-        Probability of observing F1 layer
+        Probability of observing F1 layer.
 
     Returns
     -------
     B_F1_bot : array-like
-        Thickness of F1 layer in km
+        Thickness of F1 layer in km.
 
     Notes
     -----
@@ -1584,30 +1584,30 @@ def find_B_F1_bot(hmF1, hmE, P_F1):
 
 
 def hm_IRI(M3000, foE, foF2, modip, aIG):
-    """Returns height of the ionospheric layers.
+    """Return height of the ionospheric layers.
 
     Parameters
     ----------
 
     M3000 : array-like
-        Propagation parameter for F2 region related to hmF2
+        Propagation parameter for F2 region related to hmF2.
     foE : array-like
-        Critical frequency of E region in MHz
+        Critical frequency of E region in MHz.
     foF2 : array-like
-        Critical frequency of F2 region in MHz
+        Critical frequency of F2 region in MHz.
     modip : array-like
-        Modified dip angle in degrees
+        Modified dip angle in degrees.
     aIG : array-like
-        Min and max of IG12 index
+        Min and max of IG12 index.
 
     Returns
     -------
     hmF2 : array-like
-        Height of F2 layer in km
+        Height of F2 layer in km.
     hmE : array-like
-        Height of E layer in km
+        Height of E layer in km.
     hmEs : array-like
-        Height of Es layer in km
+        Height of Es layer in km.
 
     Notes
     -----
@@ -1671,37 +1671,37 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
 
 
 def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
-    """Returns thicknesses of ionospheric layers.
+    """Return thicknesses of ionospheric layers.
 
     Parameters
     ----------
     foF2 : array-like
-        Critical frequency of F2 region in MHz
+        Critical frequency of F2 region in MHz.
     M3000 : array-like
-        Propagation parameter for F2 region related to hmF2
+        Propagation parameter for F2 region related to hmF2.
     hmF2 : array-like
-        Height of the F2 layer
+        Height of the F2 layer.
     hmE : array-like
-        Height of the E layer
+        Height of the E layer.
     mth : int
-        Month of the year
+        Month of the year.
     aIG : array-like
-        Min and max of IG12 index
+        Min and max of IG12 index.
 
     Returns
     -------
     B_F2_bot : array-like
-        Thickness of F2 bottom in km
+        Thickness of F2 bottom in km.
     B_F2_top : array-like
-        Thickness of F2 top in km
+        Thickness of F2 top in km.
     B_E_bot : array-like
-        Thickness of E bottom in km
+        Thickness of E bottom in km.
     B_E_top : array-like
-        Thickness of E top in km
+        Thickness of E top in km.
     B_Es_bot : array-like
-        Thickness of Es bottom in km
+        Thickness of Es bottom in km.
     B_Es_top : array-like
-        Thickness of Es top in km
+        Thickness of Es top in km.
 
     Notes
     -----
@@ -1760,23 +1760,23 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
 
 
 def epstein(Nm, hm, B, alt):
-    """Epstein function for given parameters.
+    """Calculate Epstein function for given parameters.
 
     Parameters
     ----------
     Nm : array-like
-        Peak density in m-3
+        Peak density in m-3.
     hm : array-like
-        Height of peak density in km
+        Height of peak density in km.
     B : array-like
-        Thickness of the layer in km
+        Thickness of the layer in km.
     alt : array-like
-        Altitude array in km
+        Altitude array in km.
 
     Returns
     -------
     res : array-like
-        Constructed Epstein profile in m-3
+        Constructed Epstein profile in m-3.
 
     Notes
     -----
@@ -1792,17 +1792,17 @@ def epstein(Nm, hm, B, alt):
 
 
 def decimal_year(dtime):
-    """Returns decimal year.
+    """Return decimal year.
 
     Parameters
     ----------
     dtime : class:`dt.datetime
-        Given datetime
+        Given datetime.
 
     Returns
     -------
     date_decimal : float
-        Decimal year
+        Decimal year.
 
     Notes
     -----
@@ -1843,25 +1843,25 @@ def decimal_year(dtime):
 
 
 def set_geo_grid(dlon, dlat):
-    """Sets geographical grid for given horizontal resolution.
+    """Set geographical grid for given horizontal resolution.
 
     Parameters
     ----------
     dlon : float
-        Longitudinal step size in degrees
+        Longitudinal step size in degrees.
     dlat : float
-        Latitudinal step size in degrees
+        Latitudinal step size in degrees.
 
     Returns
     -------
     alon : array-like
-        Flattened coordinates of longitudes in degrees
+        Flattened coordinates of longitudes in degrees.
     alat : array-like
-        Flattened coordinates of latitudes in degrees
+        Flattened coordinates of latitudes in degrees.
     alon_2d : array-like
-        Reshaped 2-D array of longitudes in degrees
+        Reshaped 2-D array of longitudes in degrees.
     alat_2d : array-like
-        Reshaped 2-D array of latitudes in degrees
+        Reshaped 2-D array of latitudes in degrees.
 
     Notes
     -----
@@ -1877,17 +1877,17 @@ def set_geo_grid(dlon, dlat):
 
 
 def set_alt_grid(dalt):
-    """Sets an altitdue array with given vertical resolution.
+    """Set an altitdue array with given vertical resolution.
 
     Parameters
     ----------
     dalt : float
-        Vertical step in km
+        Vertical step in km.
 
     Returns
     -------
     aalt : array-like
-        Altitude array in km
+        Altitude array in km.
 
     Notes
     -----
@@ -1901,25 +1901,25 @@ def set_alt_grid(dalt):
 
 
 def set_temporal_array(dUT):
-    """Sets a time array with given time step.
+    """Set a time array with given time step.
 
     Parameters
     ----------
     dUT : float
-        Time step in hours
+        Time step in hours.
 
     Returns
     -------
     aUT : array-like
-        Universal time array in hours
+        Universal time array in hours.
     ahour : array-like
-        int array of hours
+        int array of hours.
     aminute : array-like
-        int array of minutes
+        int array of minutes.
     asecond : array-like
-        int array of seconds
+        int array of seconds.
     atime_frame_strings : array-like
-        String array of time stamps HHMM
+        String array of time stamps HHMM.
 
     Notes
     -----
@@ -1938,17 +1938,17 @@ def set_temporal_array(dUT):
 
 
 def freq2den(f):
-    """Converts ionospheric frequency to plasma density.
+    """Convert ionospheric frequency to plasma density.
 
     Parameters
     ----------
     f : array-like
-        ionospheric freqeuncy in MHz
+        ionospheric freqeuncy in MHz.
 
     Returns
     -------
     d : array-like
-        plasma density in m-3
+        plasma density in m-3.
 
     Notes
     -----
@@ -1980,21 +1980,21 @@ def freq2den(f):
 
 
 def R12_2_F107(R12):
-    """Converts R12 to F10.7 coefficients.
+    """Convert R12 to F10.7 coefficients.
 
     Parameters
     ----------
     R12 : float or array-like
-        12-month sunspot number
+        12-month sunspot number.
 
     Returns
     -------
     F107 : float or array-like
-        Solar flux at 10.7 in SFU
+        Solar flux at 10.7 in SFU.
 
     Notes
     -----
-    This function converts R12 to F10.7
+    This function converts R12 to F10.7.
 
     """
     # **************************************************************************
@@ -2022,21 +2022,21 @@ def R12_2_F107(R12):
 
 
 def F107_2_R12(F107):
-    """Converts F10.7 to R12 coefficients.
+    """Convert F10.7 to R12 coefficients.
 
     Parameters
     ----------
     F107 : float or array-like
-        Solar flux at 10.7 in SFU
+        Solar flux at 10.7 in SFU.
 
     Returns
     -------
     R12 : float or array-like
-        12-month sunspot number
+        12-month sunspot number.
 
     Notes
     -----
-    This function converts F10.7 to R12
+    This function converts F10.7 to R12.
 
     """
     # **************************************************************************
@@ -2067,21 +2067,21 @@ def F107_2_R12(F107):
 
 
 def R12_2_IG12(R12):
-    """Converts R12 to IG12 coefficients.
+    """Convert R12 to IG12 coefficients.
 
     Parameters
     ----------
     R12 : float or array-like
-        Sunspot number coefficient R12
+        Sunspot number coefficient R12.
 
     Returns
     -------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient
+        Ionosonde Gloabal coeffcient.
 
     Notes
     -----
-    This function converts R12 to IG12
+    This function converts R12 to IG12.
 
     """
     IG12 = 12.349 + 1.468 * R12 - 0.00268 * R12**2
@@ -2091,21 +2091,21 @@ def R12_2_IG12(R12):
 
 
 def IG12_2_R12(IG12):
-    """Converts IG12 to R12 coefficients.
+    """Convert IG12 to R12 coefficients.
 
     Parameters
     ----------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient
+        Ionosonde Gloabal coeffcient.
 
     Returns
     -------
     R12 : float or array-like
-        Sunspot number coefficient R12
+        Sunspot number coefficient R12.
 
     Notes
     -----
-    This function converts IG12 to R12
+    This function converts IG12 to R12.
 
     References
     ----------
@@ -2125,21 +2125,21 @@ def IG12_2_R12(IG12):
 
 
 def F107_2_IG12(F107):
-    """Converts F10.7 to IG12 coefficients.
+    """Convert F10.7 to IG12 coefficients.
 
     Parameters
     ----------
     F107 : float or array-like
-        Solar flux F10.7 voefficient in SFU
+        Solar flux F10.7 voefficient in SFU.
 
     Returns
     -------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient
+        Ionosonde Gloabal coeffcient.
 
     Notes
     -----
-    This function converts F10.7 to IG12
+    This function converts F10.7 to IG12.
 
     References
     ----------
@@ -2159,21 +2159,21 @@ def F107_2_IG12(F107):
 
 
 def IG12_2_F107(IG12):
-    """Converts IG12 to F10.7 coefficients.
+    """Convert IG12 to F10.7 coefficients.
 
     Parameters
     ----------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient
+        Ionosonde Gloabal coeffcient.
 
     Returns
     -------
     F107 : float or array-like
-        Solar flux F10.7 voefficient in SFU
+        Solar flux F10.7 voefficient in SFU.
 
     Notes
     -----
-    This function converts IG12 to F10.7
+    This function converts IG12 to F10.7.
 
     References
     ----------
@@ -2193,17 +2193,17 @@ def IG12_2_F107(IG12):
 
 
 def quadratic(coeff):
-    """Solves quadratic equation for given coefficients a, b, c.
+    """Solve quadratic equation for given coefficients a, b, c.
 
     Parameters
     ----------
     coeff : array-like
-        a,b,c coefficients
+        a,b,c coefficients.
 
     Returns
     -------
     [root1, root2] : array-like
-        2-D array with 2 roots
+        2-D array with 2 roots.
 
     Notes
     -----
@@ -2225,23 +2225,23 @@ def quadratic(coeff):
 
 
 def epstein_function_array(A1, hm, B, x):
-    """Constructs density epstein profile for any layer (except topside of F2).
+    """Construct density epstein profile for any layer (except topside of F2).
 
     Parameters
     ----------
     A1 : array-like
-        Amplitude of layer in m-3
+        Amplitude of layer in m-3.
     hm : array-like
-        Height of layer in km
+        Height of layer in km.
     B : array-like
-        Thickness in km
+        Thickness in km.
     x : array-like
-        Altitude in km
+        Altitude in km.
 
     Returns
     -------
     density : array-like
-        Constructed density in m-3
+        Constructed density in m-3.
 
     Notes
     -----
@@ -2268,23 +2268,23 @@ def epstein_function_array(A1, hm, B, x):
 
 
 def epstein_function_top_array(A1, hmF2, B_F2_top, x):
-    """Constructs density epstein profile for the topside of F2 layer.
+    """Construct density epstein profile for the topside of F2 layer.
 
     Parameters
     ----------
     A1 : array-like
-        Amplitude of F2 layer in m-3
+        Amplitude of F2 layer in m-3.
     hmF2 : array-like
-        Height of F2 layer in km
+        Height of F2 layer in km.
     B_F2_top : array-like
-        Thickness of topside F2 layer in km
+        Thickness of topside F2 layer in km.
     x : array-like
-        Altitude in km
+        Altitude in km.
 
     Returns
     -------
     density : array-like
-        Constructed density in m-3
+        Constructed density in m-3.
 
     Notes
     -----
@@ -2315,12 +2315,12 @@ def epstein_function_top_array(A1, hmF2, B_F2_top, x):
 
 
 def drop_function(x):
-    """Drop function from a simple family of curve.
+    """Calculate drop function from a simple family of curve.
 
     Parameters
     ----------
     x : array-like
-        Portion of the altitude array
+        Portion of the altitude array.
 
     Returns
     -------
@@ -2332,7 +2332,7 @@ def drop_function(x):
     This is a drop function from a simple family of curve. It is used to
     reduce the F1_top contribution for the F2_bot region, so that when the
     summation of epsein functions is performed, the presence of F1 region
-    would not mess up with the value of NmF2
+    would not mess up with the value of NmF2.
 
     References
     ----------
@@ -2355,29 +2355,29 @@ def drop_function(x):
 
 
 def reconstruct_density_from_parameters(F2, F1, E, alt):
-    """Constructs vertical EDP for 2 levels of solar activity.
+    """Construct vertical EDP for 2 levels of solar activity.
 
     Parameters
     ----------
     F2 : dict
-        Dictionary of parameters for F2 layer
+        Dictionary of parameters for F2 layer.
     F1 : dict
-        Dictionary of parameters for F1 layer
+        Dictionary of parameters for F1 layer.
     E : dict
-        Dictionary of parameters for E layer
+        Dictionary of parameters for E layer.
     alt : array-like
-        1-D array of altitudes [N_V] in km
+        1-D array of altitudes [N_V] in km.
 
     Returns
     -------
     x_out : array-like
         Electron density for two levels of solar activity [2, N_T, N_V, N_G]
-        in m-3
+        in m-3.
 
     Notes
     -----
     This function calculates 3-D density from given dictionaries of
-    the parameters for 2 levels of solar activity
+    the parameters for 2 levels of solar activity.
 
     References
     ----------
@@ -2416,26 +2416,26 @@ def reconstruct_density_from_parameters(F2, F1, E, alt):
 
 
 def EDP_builder(x, aalt):
-    """Constructs vertical EDP.
+    """Construct vertical EDP.
 
     Parameters
     ----------
     x : array-like
         Array where 1st dimention indicates the parameter (total 11
         parameters), second dimension is time, and third is horizontal grid
-        [11, N_T, N_G]
+        [11, N_T, N_G].
     aalt : array-like
-        1-D array of altitudes [N_V] in km
+        1-D array of altitudes [N_V] in km.
 
     Returns
     -------
     density_out : array-like
-        3-D electron density [N_T, N_V, N_G] in m-3
+        3-D electron density [N_T, N_V, N_G] in m-3.
 
     Notes
     -----
     This function builds the EDP from the provided parameters for all time
-    frames, all vertical and all horizontal points
+    frames, all vertical and all horizontal points.
 
     References
     ----------
@@ -2571,32 +2571,32 @@ def EDP_builder(x, aalt):
 
 
 def day_of_the_month_corr(year, month, day):
-    """Calculates ftactions of influence of monthes "before" and "afer".
+    """Calculate ftactions of influence of monthes "before" and "afer".
 
     Parameters
     ----------
     year : int
-        Given year
+        Given year.
     month : int
-        Given month
+        Given month.
     day : day
-        Given day
+        Given day.
 
     Returns
     -------
     t_before : class:`dt.datetime
-        Consider mean values from this month as month "before"
+        Consider mean values from this month as month "before".
     t_after : class:`dt.datetime
-        Consider mean values from this month as month "after"
+        Consider mean values from this month as month "after".
     fraction1 : float
-        Fractional influence of month "before"
+        Fractional influence of month "before".
     fraction2 : float
-        Fractional influence of month "after"
+        Fractional influence of month "after".
 
     Notes
     -----
     This function finds two months around the given day and calculates
-    fractions of influence for previous and following monthes
+    fractions of influence for previous and following monthes.
 
     References
     ----------
@@ -2605,7 +2605,7 @@ def day_of_the_month_corr(year, month, day):
     Space Weather.
     .. [2] Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792.
 
     """
     # middles of the months around
@@ -2642,29 +2642,29 @@ def day_of_the_month_corr(year, month, day):
 
 def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
                                         F_after):
-    """Interpolates btw 2 middles of consequent months to the given day.
+    """Interpolate btw 2 middles of consequent months to the given day.
 
     Parameters
     ----------
     fraction1 : float
-        Fractional influence of month "before"
+        Fractional influence of month "before".
     fraction2 : float
-        Fractional influence of month "after"
+        Fractional influence of month "after".
     F_before : dict
-        Dictionary of mean parametrs for month "before"
+        Dictionary of mean parametrs for month "before".
     F_after : dict
-        Dictionary of mean parametrs for month "after"
+        Dictionary of mean parametrs for month "after".
 
     Returns
     -------
     F_new : dict
-        Parameters interpolated according to given fractions
+        Parameters interpolated according to given fractions.
 
     Notes
     -----
     This function interpolates between 2 middles of consequent months to the
     specified day by using provided fractions previousely calculated by
-    function "day_of_the_month_corr"
+    function "day_of_the_month_corr".
 
     References
     ----------
@@ -2685,21 +2685,21 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
 
 
 def solar_interpolate(F_min, F_max, F107):
-    """Interpolates given array to provided F10.7 level.
+    """Interpolate given array to provided F10.7 level.
 
     Parameters
     ----------
     F_min : array-like
-        Any given array of parameters that corresponds to solar min
+        Any given array of parameters that corresponds to solar min.
     F_max : array-like
-        Any given array of parameters that corresponds to solar max
+        Any given array of parameters that corresponds to solar max.
     F107 : float
-        Given solar flux index in SFU
+        Given solar flux index in SFU.
 
     Returns
     -------
     F : array-like
-        Parameters interpolated to the given F10.7
+        Parameters interpolated to the given F10.7.
 
     Notes
     -----
@@ -2734,20 +2734,20 @@ def solar_interpolate(F_min, F_max, F107):
 
 
 def solar_interpolation_of_dictionary(F, F107):
-    """Interpolates given dictionary to provided F10.7 level.
+    """Interpolate given dictionary to provided F10.7 level.
 
     Parameters
     ----------
     F : dict
         Dictionary of parametrs with 2 levels of solar activity
-        specified as 1st dimenstion
+        specified as 1st dimenstion.
     F107 : float
-        Interpolate to this particular level of F10.7
+        Interpolate to this particular level of F10.7.
 
     Returns
     -------
     F_new : dict
-        Parameters interpolated to the given F10.7
+        Parameters interpolated to the given F10.7.
 
     Notes
     -----
@@ -2784,14 +2784,14 @@ def adjust_longitude(lon, type):
     Parameters
     ----------
     lon : array-like
-        Longitudes
+        Longitudes in degrees.
     type : str
-        Indicates the type of adjustment
+        Indicates the type of adjustment.
 
     Returns
     -------
     lon : array-like
-        Adjusted longitude
+        Adjusted longitude.
 
     Notes
     -----

@@ -22,7 +22,7 @@ from scipy import interpolate
 
 
 def inc2modip(inc, alat):
-    """Calculates modified dip angle from magnetic inclination.
+    """Calculate modified dip angle from magnetic inclination.
 
     Parameters
     ----------
@@ -52,7 +52,7 @@ def inc2modip(inc, alat):
 
 
 def inc2magnetic_dip_latitude(inc):
-    """Calculates magnetic dip latitude from magnetic inclination.
+    """Calculate magnetic dip latitude from magnetic inclination.
 
     Parameters
     ----------
@@ -77,7 +77,7 @@ def inc2magnetic_dip_latitude(inc):
 
 
 def inclination(coeff_dir, date_decimal, alon, alat):
-    """Calculates magnetic inclination using IGRF13.
+    """Calculate magnetic inclination using IGRF13.
 
     Parameters
     ----------
@@ -86,9 +86,9 @@ def inclination(coeff_dir, date_decimal, alon, alat):
     date_decimal : float
         Decimal year
     alon : array-like
-        Flattened array of geographic longitudes in degrees
+        Flattened array of geographic longitudes in degrees.
     alat : array-like
-        Flattened array of geographic latitudes in degrees
+        Flattened array of geographic latitudes in degrees.
 
     Returns
     -------
@@ -144,7 +144,7 @@ def inclination(coeff_dir, date_decimal, alon, alat):
 
 
 def gg_to_geo(h, gdcolat):
-    """Computes geocentric colatitude and radius from geodetic colat and height.
+    """Compute geocentric colatitude and radius from geodetic colat and height.
 
     Parameters
     ----------
@@ -267,7 +267,7 @@ def geo_to_gg(radius, theta):
 
 def synth_values(coeffs, radius, theta, phi,
                  nmax=None, nmin=None, grid=None):
-    """Computes radial, colatitude and azimuthal field components.
+    """Compute radial, colatitude and azimuthal field components.
 
     Parameters
     ----------
@@ -409,7 +409,7 @@ def synth_values(coeffs, radius, theta, phi,
 
 
 def legendre_poly(nmax, theta):
-    """Returns associated Legendre polynomials `P(n,m)`.
+    """Calculate associated Legendre polynomials `P(n,m)`.
 
     Parameters
     ----------
@@ -434,7 +434,7 @@ def legendre_poly(nmax, theta):
     ----------
     ... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
     geodetic coordinates", IEEE Transactions on Aerospace and Electronic
-    Systems}, 1994, vol. 30, num. 3, pp. 957-961
+    Systems}, 1994, vol. 30, num. 3, pp. 957-961.
 
     """
     costh = np.cos(np.radians(theta))
@@ -473,7 +473,7 @@ def legendre_poly(nmax, theta):
 
 
 def xyz2dhif(x, y, z):
-    """Calculates declination, intensity, inclination of mag field.
+    """Calculate declination, intensity, inclination of mag field.
 
     Parameters
     ----------
