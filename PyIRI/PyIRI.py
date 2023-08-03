@@ -1,8 +1,27 @@
-# #############################################################################
-# Distribution statement A. Approved for public release. Distribution is
-# unlimited.
-#      This work was supported by the Office of Naval Research
-# #############################################################################
+#!/usr/bin/env python
+# --------------------------------------------------------
+# Distribution statement A. Approved for public release.
+# Distribution is unlimited.
+# This work was supported by the Office of Naval Research.
+# --------------------------------------------------------
+"""General interface with examples of how to use PyIRI.
+
+References
+----------
+.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+International Reference Ionosphere Modeling Implemented in Python,
+Space Weather.
+.. [2] Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+.. [3] Nava et al. (2008). A new version of the nequick ionosphere
+electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
+490 doi: 10.1016/j.jastp.2008.01.015
+.. [4] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+in ionospheric mapping 476 by numerical methods.
+
+"""
+
 from importlib import resources
 import main_library as ml
 import numpy as np

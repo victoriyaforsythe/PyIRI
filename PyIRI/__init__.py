@@ -1,4 +1,4 @@
-"""Core library for PyIRI."""
+"""Core library imports for PyIRI."""
 
 import importlib
 
