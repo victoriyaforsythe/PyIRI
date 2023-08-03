@@ -1,0 +1,9 @@
+graft PyIRI/coefficients
+
+include *.rst
+include *.md
+include LICENSE
+
+include *.cfg
+include *.toml
+include .zenodo.json
