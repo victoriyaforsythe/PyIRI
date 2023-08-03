@@ -8,7 +8,21 @@ from PyIRI import pyiri  # noqa F401
 from PyIRI import plotting  # noqa F401
 
 # Set version
-__version__ = importlib.metadata.version('PyIRI')
+try:
+    __version__ = importlib.metadata.version('PyIRI')
+except AttributeError:
+    import importlib_metadata
+    __version__ = importlib_metadata.version('PyIRI')
+    del importlib_metadata
 
 # Determine the coefficient root directory
-coeff_dir = str(importlib.resources.files(__package__).joinpath('coefficients'))
+try:
+    coeff_dir = str(importlib.resources.files(__package__).joinpath(
+        'coefficients'))
+except AttributeError:
+    import os
+    coeff_dir = os.path.join(os.path.realpath(os.path.dirname(__file__)),
+                             'coefficients')
+    del os
+
+del importlib
