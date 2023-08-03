@@ -24,7 +24,7 @@ in ionospheric mapping 476 by numerical methods.
 
 import numpy as np
 
-from PyIRI import coeff_dir
+import PyIRI
 import PyIRI.main_library as ml
 import PyIRI.plotting as plot
 
@@ -98,7 +98,8 @@ def run_iri_reg_grid(year, month, day, f107, hr_res=1, lat_res=1, lon_res=1,
     # can be done. If you need to run IRI for a particular day, you can just
     # use this function
     f2, f1, epeak, es_peak, sun, mag, edens_prof = ml.IRI_density_1day(
-        year, month, day, ahr, alon, alat, aalt, f107, coeff_dir, ccir_or_ursi)
+        year, month, day, ahr, alon, alat, aalt, f107, PyIRI.coeff_dir,
+        ccir_or_ursi)
 
     return grid_loc, f2, f1, epeak, es_peak, sun, mag, edens_prof
 
@@ -174,7 +175,7 @@ def run_seas_iri_reg_grid(year, month, day, hr_res=1, lat_res=1, lon_res=1,
     # corresponds to Ionospheric Global (IG) index levels of 0 and 100.
 
     f2, f1, epeak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
-        year, month, ahr, alon, alat, coeff_dir, ccir_or_ursi)
+        year, month, ahr, alon, alat, PyIRI.coeff_dir, ccir_or_ursi)
 
     # -------------------------------------------------------------------------
     # Montly mean density for min and max of solar activity:
