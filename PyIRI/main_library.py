@@ -24,10 +24,11 @@ in ionospheric mapping 476 by numerical methods.
 
 import datetime as dt
 from fortranformat import FortranRecordReader
-import igrf_library as igrf
 import math
 import numpy as np
 import os
+
+import PyIRI.igrf_library as igrf
 
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
@@ -659,7 +660,7 @@ def set_global_functions(Q, nk, alon, alat, modip):
 
     """
     Gk = np.zeros((nk, alon.size))
-    k = 0.
+    k = 0
     for j in range(0, len(Q)):
         for i in range(0, Q[j]):
             for m in range(0, 2):
