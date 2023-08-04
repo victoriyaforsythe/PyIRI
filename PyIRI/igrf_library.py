@@ -471,14 +471,16 @@ def legendre_poly(nmax, theta):
     Pnm[0, 2] = -Pnm[1, 1]
     Pnm[1, 2] = Pnm[1, 0]
     for n in range(2, nmax + 1):
+        n = int(n)
         Pnm[0, n + 1] = - np.sqrt((n * n + n) / 2.) * Pnm[n, 1]
-        Pnm[1, n + 1] = ((np.sqrt(2. * (n * n + n)) * Pnm[n, 0]
-                          - np.sqrt((n * n + n - 2)) * Pnm[n, 2]) / 2.)
+        Pnm[1, n + 1] = ((np.sqrt(2.0 * (n * n + n)) * Pnm[n, 0]
+                          - np.sqrt((n * n + n - 2)) * Pnm[n, 2]) / 2.0)
         for m in np.arange(2, n):
-            Pnm_part1 = np.sqrt((n + m) * (n - m + 1)) * Pnm[n, m - 1.]
-            Pnm_part2 = np.sqrt((n + m + 1.) * (n - m)) * Pnm[n, m + 1]
+            m = int(m)
+            Pnm_part1 = np.sqrt((n + m) * (n - m + 1)) * Pnm[n, m - 1]
+            Pnm_part2 = np.sqrt((n + m + 1.0) * (n - m)) * Pnm[n, m + 1]
             Pnm[m, n + 1] = 0.5 * Pnm_part1 - Pnm_part2
-        Pnm[n, n + 1] = np.sqrt(2. * n) * Pnm[n, n - 1.] / 2.
+        Pnm[n, n + 1] = np.sqrt(2. * n) * Pnm[n, n - 1] / 2.0
 
     return Pnm
 

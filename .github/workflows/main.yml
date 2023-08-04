@@ -47,6 +47,9 @@ jobs:
     - name: Evaluate complexity
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
+    - name: Test import success
+      run: python -c "import PyIRI; print(PyIRI.__version__)"
+
 # TODO(#5): Enable after unit tests are available
 #    - name: Test with pytest
 #      run: pytest
