@@ -4,13 +4,14 @@
 # Distribution is unlimited.
 # This work was supported by the Office of Naval Research.
 # ----------------------------------------------------------
-"""This library contains components for IGRF.
+"""
+   This library contains components for IGRF.
 
 References
 ----------
-.. [1] Alken et al. (2021). International geomagnetic reference field: the
-thirteenth generation. Earth, Planets and Space, 73(49).
-doi: 10.1186/s40623-020-01288-x
+Alken et al. (2021). International geomagnetic reference field: the
+thirteenth generation. Earth, Planets and Space, 73(49),
+https://doi.org/10.1186/s40623-020-01288-x.
 
 """
 
@@ -176,12 +177,13 @@ def gg_to_geo(h, gdcolat):
 
     References
     ----------
-    ... [1] Equations (51)-(53) from "The main field" (chapter 4) by Langel,
+    Equations (51)-(53) from "The main field" (chapter 4) by Langel,
     R. A. in: "Geomagnetism", Volume 1, Jacobs, J. A., Academic Press,
     1987.
-    ... [1] Malin, S.R.C. and Barraclough, D.R., 1981. An algorithm for
+
+    Malin, S.R.C. and Barraclough, D.R., 1981. An algorithm for
     synthesizing the geomagnetic field. Computers & Geosciences, 7(4),
-    pp.401-405.
+    pp. 401-405.
 
     """
     # Use WGS-84 ellipsoid parameters
@@ -234,9 +236,9 @@ def geo_to_gg(radius, theta):
 
     References
     ----------
-    ... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
+    Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
     geodetic coordinates", IEEE Transactions on Aerospace and Electronic
-    Systems}, 1994, vol. 30, num. 3, pp. 957-961
+    Systems}, 1994, vol. 30, num. 3, pp. 957-961.
 
     """
     # Use WGS-84 ellipsoid parameters
@@ -323,9 +325,9 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
 
     References
     ----------
-    ... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
+    Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
     geodetic coordinates", IEEE Transactions on Aerospace and Electronic
-    Systems}, 1994, vol. 30, num. 3, pp. 957-961
+    Systems}, 1994, vol. 30, num. 3, pp. 957-961.
 
     """
     # Ensure ndarray inputs
@@ -335,7 +337,7 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
     phi = np.array(phi, dtype=float)
     if np.amin(theta) <= 0.0 or np.amax(theta) >= 180.0:
         if np.amin(theta) == 0.0 or np.amax(theta) == 180.0:
-            print('Included = yes')
+            print('Determining magnetic inclination.')
         else:
             raise ValueError('Colatitude outside bounds [0, 180].')
 
@@ -442,7 +444,7 @@ def legendre_poly(nmax, theta):
 
     References
     ----------
-    ... [1] Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
+    Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
     geodetic coordinates", IEEE Transactions on Aerospace and Electronic
     Systems}, 1994, vol. 30, num. 3, pp. 957-961.
 

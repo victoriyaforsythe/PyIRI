@@ -3,9 +3,6 @@
 Application Programming Interface
 =================================
 
-.. automodule:: PyIRI.pyiri
-    :members:
-
 
 .. automodule:: PyIRI.main_library
     :members:

@@ -8,19 +8,20 @@
 
 References
 ----------
-.. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
 International Reference Ionosphere Modeling Implemented in Python,
 Space Weather.
-.. [2] Bilitza et al. (2022), The International Reference Ionosphere
-model: A review and description of an ionospheric benchmark, Reviews
-of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
-.. [3] Nava et al. (2008). A new version of the nequick ionosphere
-electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
-490 doi: 10.1016/j.jastp.2008.01.015
-.. [4] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-in ionospheric mapping 476 by numerical methods.
 
-"""
+Bilitza et al. (2022), The International Reference Ionosphere
+model: A review and description of an ionospheric benchmark, Reviews
+of Geophysics, 60, https://doi.org/10.1029/2022RG000792.
+
+Nava et al. (2008). A new version of the nequick ionosphere
+electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
+https://doi.org/10.1016/j.jastp.2008.01.015.
+
+Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+in ionospheric mapping by numerical methods."""
 
 import datetime as dt
 from fortranformat import FortranRecordReader
@@ -28,6 +29,7 @@ import math
 import numpy as np
 import os
 
+import PyIRI
 import PyIRI.igrf_library as igrf
 
 
@@ -106,7 +108,7 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -303,7 +305,7 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -408,12 +410,14 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+
+    Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
     in ionospheric mapping 476 by numerical methods.
-    .. [3] Bradley, P. A. (2003). Ingesting a sporadic-e model to iri.
+
+    Bradley, P. A. (2003). Ingesting a sporadic-e model to iri.
     Adv. Space Res., 31(3), 577-588.
 
     """
@@ -541,10 +545,11 @@ def set_diurnal_functions(nj, time_array):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+
+    Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
     in ionospheric mapping 476 by numerical methods.
 
     """
@@ -600,10 +605,11 @@ def diurnal_functions(time_array):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+
+    Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
     in ionospheric mapping 476 by numerical methods.
 
     """
@@ -652,10 +658,11 @@ def set_global_functions(Q, nk, alon, alat, modip):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
+
+    Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
     in ionospheric mapping 476 by numerical methods.
 
     """
@@ -708,10 +715,11 @@ def set_gl_G(alon, alat, modip):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
+
+    Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
     and geographic variations of ionospheric data by numerical methods,
     control of instability, ITU Telecommunication Journal , 32 (1), 18–28.
 
@@ -770,7 +778,7 @@ def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -815,10 +823,11 @@ def highest_power_of_extension():
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
+
+    Jones, W. B., & Gallet, R. M. (1965). Representation of diurnal
     and geographic variations of ionospheric data by numerical methods,
     control of instability, ITU Telecommunication Journal , 32 (1), 18–28.
 
@@ -864,7 +873,7 @@ def juldat(times):
 
     Parameters
     ----------
-    times : class:`dt.datetime
+    times : class:`dt.datetime`
         Julian time in days.
 
     Returns
@@ -1124,10 +1133,11 @@ def solzen_effective(chi):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Nava et al. (2008). A new version of the nequick ionosphere
+
+    Nava et al. (2008). A new version of the nequick ionosphere
     electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
     490 doi: 10.1016/j.jastp.2008.01.015
 
@@ -1179,10 +1189,11 @@ def foE(mth, solzen_effective, alat, f107):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Nava et al. (2008). A new version of the nequick ionosphere
+
+    Nava et al. (2008). A new version of the nequick ionosphere
     electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
     490 doi: 10.1016/j.jastp.2008.01.015
 
@@ -1246,7 +1257,7 @@ def gammaE(year, mth, utime, alon, alat, aIG):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -1307,10 +1318,11 @@ def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -1485,7 +1497,7 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -1539,7 +1551,7 @@ def find_B_F1_bot(hmF1, hmE, P_F1):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -1582,10 +1594,11 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -1674,7 +1687,7 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -1760,7 +1773,7 @@ def decimal_year(dtime):
 
     Parameters
     ----------
-    dtime : class:`dt.datetime
+    dtime : class:`dt.datetime`
         Given datetime.
 
     Returns
@@ -1993,7 +2006,7 @@ def IG12_2_R12(IG12):
 
     References
     ----------
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -2025,10 +2038,11 @@ def F107_2_IG12(F107):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -2058,10 +2072,11 @@ def IG12_2_F107(IG12):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -2130,7 +2145,7 @@ def epstein_function_array(A1, hm, B, x):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -2173,7 +2188,7 @@ def epstein_function_top_array(A1, hmF2, B_F2_top, x):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -2214,7 +2229,7 @@ def drop_function(x):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -2258,7 +2273,7 @@ def reconstruct_density_from_parameters(F2, F1, E, alt):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -2315,7 +2330,7 @@ def EDP_builder(x, aalt):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
@@ -2463,9 +2478,9 @@ def day_of_the_month_corr(year, month, day):
 
     Returns
     -------
-    t_before : class:`dt.datetime
+    t_before : class:`dt.datetime`
         Consider mean values from this month as month "before".
-    t_after : class:`dt.datetime
+    t_after : class:`dt.datetime`
         Consider mean values from this month as month "after".
     fraction1 : float
         Fractional influence of month "before".
@@ -2479,10 +2494,11 @@ def day_of_the_month_corr(year, month, day):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792.
 
@@ -2546,10 +2562,11 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -2587,10 +2604,11 @@ def solar_interpolate(F_min, F_max, F107):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -2634,10 +2652,11 @@ def solar_interpolation_of_dictionary(F, F107):
 
     References
     ----------
-    .. [1] Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
-    .. [2] Bilitza et al. (2022), The International Reference Ionosphere
+
+    Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
 
@@ -2747,3 +2766,248 @@ def adjust_longitude(lon, type):
                 lon = lon - 24.
 
     return lon
+
+
+def create_reg_grid(hr_res=1, lat_res=1, lon_res=1, alt_res=10, alt_min=0,
+                    alt_max=700):
+    """Run IRI for a single day on a regular grid.
+
+    Parameters
+    ----------
+    hr_res : int or float
+        Time resolution in hours (default=1)
+    lat_res : int or float
+        Latitude resolution in degrees (default=1)
+    lon_res : int or float
+        Longitude resolution in degrees (default=1)
+    alt_res : int or float
+        Altitude resolution in km (default=10)
+    alt_min : int or float
+        Altitude minimum in km (default=0)
+    alt_max : int or float
+        Altitude maximum in km (default=700)
+
+    Returns
+    -------
+    alon : array-like
+        1D longitude grid
+    alat : array-like
+        1D latitude grid
+    alon_2d : array-like
+        2D longitude grid
+    alat_2d : array-like
+        2D latitude grid
+    aalt : array-like
+        Altitude grid
+    ahr : array-like
+        UT grid
+
+    Notes
+    -----
+    This function creates a regular global grid in Geographic coordinates
+    using given spatial resolution lon_res, lat_res. In case you want to run
+    IRI in magnetic coordinates, you can obtain a regular grid in magnetic
+    coordinates, then convert it to geographic coordinates using your own
+    methods, and then use these 1-D alon and alat arrays. Similarly, if you
+    are interested in regional grid, then use your own alon and alat 1-D
+    arrays. alon and alat can also be irregular arrays. In case you need to
+    run IRI for 1 grid point, define alon and alat as NumPy arrays that have
+    only 1 element. Size of alon and alat is [N_G].
+    This function creates creates an array of altitudes for the veritical
+    dimension of electron density profiles. Any 1-D Numpy array in [km] would
+    work, regularly or irregularly spaced.
+    This function also creates time array aUT using a given temporal
+    resolution hr_res in hours.
+    E.g. if hr_res = 0.25 it will lead to 15-minutes time
+    resolution. You can define aUT your own way, just keep it 1-D and
+    expressed in hours. It can be regularly or irregularly spaced array. If
+    you want to run PyIRI for just 1 time frame, then define aUT as NumPy
+    arrays that have only 1 element. Size of aUT is [N_T].
+
+    """
+
+    alon, alat, alon_2d, alat_2d = set_geo_grid(lon_res, lat_res)
+
+    aalt = np.arange(alt_min, alt_max, alt_res)
+
+    ahr, _, _, _, _ = set_temporal_array(hr_res)
+
+    return alon, alat, alon_2d, alat_2d, aalt, ahr
+
+
+def run_iri_reg_grid(year, month, day, f107, hr_res=1, lat_res=1, lon_res=1,
+                     alt_res=10, alt_min=0, alt_max=700, ccir_or_ursi=0):
+    """Run IRI for a single day on a regular grid.
+
+    Parameters
+    ----------
+    year : int
+        Four digit year in C.E.
+    month : int
+        Integer month (range 1-12)
+    day : int
+        Integer day of month (range 1-31)
+    f107 : int or float
+        F10.7 index for the given day
+    hr_res : int or float
+        Time resolution in hours (default=1)
+    lat_res : int or float
+        Latitude resolution in degrees (default=1)
+    lon_res : int or float
+        Longitude resolution in degrees (default=1)
+    alt_res : int or float
+        Altitude resolution in km (default=10)
+    alt_min : int or float
+        Altitude minimum in km (default=0)
+    alt_max : int or float
+        Altitude maximum in km (default=700)
+    ccir_or_ursi : int
+        If 0 use CCIR coefficients, if 1 use URSI coefficients
+
+    Returns
+    -------
+    alon : array-like
+        1D longitude grid
+    alat : array-like
+        1D latitude grid
+    alon_2d : array-like
+        2D longitude grid
+    alat_2d : array-like
+        2D latitude grid
+    aalt : array-like
+        Altitude grid
+    ahr : array-like
+        UT grid
+    f2 : array-like
+        F2 peak
+    f1 : array-like
+        F1 peak
+    epeak : array-like
+        E peak
+    es_peak : array-like
+        Sporadic E (Es) peak
+    sun : array-like
+        Solar zenith angle in degrees
+    mag : array-like
+        Magnetic inclination in degrees
+    edens_prof : array-like
+        Electron density profile in per cubic m
+
+    See Also
+    --------
+    create_reg_grid output is `grid_loc`
+
+    """
+    # Define the grids
+    alon, alat, alon_2d, alat_2d, aalt, ahr = create_reg_grid(
+        hr_res=hr_res, lat_res=lat_res, lon_res=lon_res,
+        alt_res=alt_res, alt_min=alt_min,
+        alt_max=alt_max)
+    # -------------------------------------------------------------------------
+    # Monthly mean density for min and max of solar activity:
+    # -------------------------------------------------------------------------
+    # The original IRI model further interpolates between 2 levels of solar
+    # activity to estimate density for a particular level of F10.7.
+    # Additionally, it interpolates between 2 consecutive months to make a
+    # smooth seasonal transition. Here is an example of how this interpolation
+    # can be done. If you need to run IRI for a particular day, you can just
+    # use this function
+    f2, f1, epeak, es_peak, sun, mag, edens_prof = IRI_density_1day(
+        year, month, day, ahr, alon, alat, aalt, f107, PyIRI.coeff_dir,
+        ccir_or_ursi)
+
+    return alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak,\
+        es_peak, sun, mag, edens_prof
+
+
+def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
+                          alt_res=10, alt_min=0, alt_max=700, ccir_or_ursi=0):
+    """Run IRI for montly mean parameters on a regular grid.
+
+    Parameters
+    ----------
+    year : int
+        Four digit year in C.E.
+    month : int
+        Integer month (range 1-12)
+    f107 : int or float
+        F10.7 index for the given day
+    hr_res : int or float
+        Time resolution in hours (default=1)
+    lat_res : int or float
+        Latitude resolution in degrees (default=1)
+    lon_res : int or float
+        Longitude resolution in degrees (default=1)
+    alt_res : int or float
+        Altitude resolution in km (default=10)
+    alt_min : int or float
+        Altitude minimum in km (default=0)
+    alt_max : int or float
+        Altitude maximum in km (default=700)
+    ccir_or_ursi : int
+        If 0 use CCIR coefficients, if 1 use URSI coefficients
+
+    Returns
+    -------
+    alon : array-like
+        1D longitude grid
+    alat : array-like
+        1D latitude grid
+    alon_2d : array-like
+        2D longitude grid
+    alat_2d : array-like
+        2D latitude grid
+    aalt : array-like
+        Altitude grid
+    ahr : array-like
+        UT grid
+    f2 : array-like
+        F2 peak
+    f1 : array-like
+        F1 peak
+    epeak : array-like
+        E peak
+    es_peak : array-like
+        Sporadic E (Es) peak
+    sun : array-like
+        Solar zenith angle in degrees
+    mag : array-like
+        Magnetic inclination in degrees
+    edens_prof : array-like
+        Electron density profile in per cubic m
+
+    See Also
+    --------
+    create_reg_grid output is `grid_loc`
+
+    """
+    # Define the grids
+    alon, alat, alon_2d, alat_2d, aalt, ahr = create_reg_grid(
+        hr_res=hr_res, lat_res=lat_res, lon_res=lon_res,
+        alt_res=alt_res, alt_min=alt_min,
+        alt_max=alt_max)
+
+    # -------------------------------------------------------------------------
+    # Monthly mean ionospheric parameters for min and max of solar activity:
+    # -------------------------------------------------------------------------
+    # This is how PyIRI needs to be called to obtain montly mean values for all
+    # ionospheric parameters, for min and max conditions of solar activity:
+    # year and month should be integers, and ahr and alon, alat should be 1-D
+    # NumPy arrays. alon and alat should have the same size. coeff_dir is the
+    # coefficient directory. Matrix size for all the output parameters is
+    # [N_T, N_G, 2], where 2 indicates min and max of the solar activity that
+    # corresponds to Ionospheric Global (IG) index levels of 0 and 100.
+
+    f2, f1, epeak, es_peak, sun, mag = IRI_monthly_mean_par(
+        year, month, ahr, alon, alat, PyIRI.coeff_dir, ccir_or_ursi)
+
+    # -------------------------------------------------------------------------
+    # Montly mean density for min and max of solar activity:
+    # -------------------------------------------------------------------------
+    # Construct electron dnesity profiles for min and max levels of solar
+    # activity for monthly mean parameters.  The result will have the following
+    # dimensions [2, N_T, N_V, N_G]
+    edens_prof = reconstruct_density_from_parameters(f2, f1, epeak, aalt)
+
+    return alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak, es_peak, \
+        sun, mag, edens_prof

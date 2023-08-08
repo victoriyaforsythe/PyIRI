@@ -2,7 +2,7 @@ Contributing
 ============
 
 Bug reports, feature suggestions, and other contributions are greatly
-appreciated!  pysat is a community-driven project and welcomes both feedback and
+appreciated!  PyIRI is a community-driven project and welcomes both feedback and
 contributions.
 
 Short version
@@ -74,7 +74,7 @@ To set up `PyIRI` for local development:
   flake8 . --count --select=D,E,F,H,W --show-source --statistics
   ```
 
-  Note that pysat uses the `flake-docstrings` and `hacking` packages to ensure
+  Note that PyIRI uses the `flake-docstrings` and `hacking` packages to ensure
   standards in docstring formatting.
 
 
@@ -88,7 +88,7 @@ To set up `PyIRI` for local development:
   git commit -m "AAA: Brief description of your changes"
   ```
   Where AAA is a standard shorthand for the type of change (eg, BUG or DOC).
-  `pysat` follows the [numpy development workflow](https://numpy.org/doc/stable/dev/development_workflow.html),
+  `PyIRI` follows the [numpy development workflow](https://numpy.org/doc/stable/dev/development_workflow.html),
   see the discussion there for a full list of this shorthand notation.  
 
 9. Once you are happy with the local changes, push to GitHub:
@@ -99,7 +99,7 @@ To set up `PyIRI` for local development:
 
 10. Submit a pull request through the GitHub website. Pull requests should be
    made to the ``develop`` branch.  Note that automated tests will be run on
-   github actions, but these must be initialized by a member of the pysat team.
+   github actions, but these must be initialized by a member of the PyIRI team.
 
 Pull Request Guidelines
 -----------------------
@@ -125,7 +125,7 @@ all tests on your local system first.
 Project Style Guidelines
 ------------------------
 
-In general, pysat follows PEP8 and numpydoc guidelines.  Pytest runs the unit
+In general, PyIRI follows PEP8 and numpydoc guidelines.  Pytest runs the unit
 and integration tests, flake8 checks for style, and sphinx-build performs
 documentation tests.  However, there are certain additional style elements that
 have been adopted to ensure the project maintains a consistent coding style.
