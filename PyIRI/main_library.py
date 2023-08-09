@@ -21,7 +21,9 @@ electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
 https://doi.org/10.1016/j.jastp.2008.01.015.
 
 Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-in ionospheric mapping by numerical methods."""
+in ionospheric mapping by numerical methods.
+
+"""
 
 import datetime as dt
 from fortranformat import FortranRecordReader
@@ -311,15 +313,16 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
     """
     print('PyIRI: IRI_density_1day:------------------------------------------')
-    print('Determining parameters and electron density for 1 day: \
-           year=' + str(year) + ', month=' + str(mth) + ', day=' + str(day))
+    print(''.join(['Determining parameters and electron density for 1 day: ',
+                   'year=', str(year), ', month=', str(mth), ', day=',
+                   str(day)]))
     print('For UT = ', aUT)
     print('Longitude = ', alon)
     print('Latitude = ', alat)
-    print('Provided F10.7=' + str(F107))
+    print('Provided F10.7={:.2f}'.format(F107))
 
     acoeff = ['CCIR', 'URSI']
-    print('For NmF2 determination ' + acoeff[ccir_or_ursi] + '  used.')
+    print('For NmF2 determination {:} used.'.format(acoeff[ccir_or_ursi]))
 
     # find out what monthly means are needed first and what their weights
     # will be
@@ -2895,7 +2898,7 @@ def run_iri_reg_grid(year, month, day, f107, hr_res=1, lat_res=1, lon_res=1,
 
     See Also
     --------
-    create_reg_grid output is `grid_loc`
+    create_reg_grid
 
     """
     # Define the grids
@@ -2916,8 +2919,8 @@ def run_iri_reg_grid(year, month, day, f107, hr_res=1, lat_res=1, lon_res=1,
         year, month, day, ahr, alon, alat, aalt, f107, PyIRI.coeff_dir,
         ccir_or_ursi)
 
-    return alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak,\
-        es_peak, sun, mag, edens_prof
+    return (alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak,
+            es_peak, sun, mag, edens_prof)
 
 
 def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
@@ -2978,7 +2981,7 @@ def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
 
     See Also
     --------
-    create_reg_grid output is `grid_loc`
+    create_reg_grid
 
     """
     # Define the grids
@@ -3009,5 +3012,5 @@ def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
     # dimensions [2, N_T, N_V, N_G]
     edens_prof = reconstruct_density_from_parameters(f2, f1, epeak, aalt)
 
-    return alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak, es_peak, \
-        sun, mag, edens_prof
+    return (alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak, es_peak,
+            sun, mag, edens_prof)

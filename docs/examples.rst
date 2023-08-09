@@ -1,7 +1,8 @@
 Examples
 ========
 
-Here are some examples that demonstrate how to use PyIRI.
+Here are some examples that demonstrate how to use PyIRI. Jupyter notebooks are
+also available in the `GitHub Repository <https://github.com/victoriyaforsythe/PyIRI/tree/main/docs/tutorials>`_.
 
 .. toctree::
    examples/ex_monthly_mean_parameters.rst
