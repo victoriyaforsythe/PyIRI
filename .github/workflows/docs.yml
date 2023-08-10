@@ -1,0 +1,38 @@
+# This workflow will install Python dependencies and check the sphinx build,
+# links in the docs, and the readability of the zenodo file. For more
+# information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Documentation Check
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ["ubuntu-latest"]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]  # Highest supported Python version
+
+    name: Documentation tests
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[doc]
+
+    - name: Check documentation build
+      run: sphinx-build -E -b html docs dist/docs
+
+    - name: Check documentation links
+      run: sphinx-build -b linkcheck docs dist/docs
+
+    - name: Load .zenodo.json to check for errors
+      run: python -c "import json; json.loads(open('.zenodo.json').read())"
