@@ -177,7 +177,7 @@ mag dictionary contains:
 
 ::
 
-   plot.PyIRI_plot_hmnF2_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
+   plot.PyIRI_plot_hmF2_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
    UT_plot, plot_dir, plot_name='PyIRI_hmF2_min_max.pdf')
 
 
@@ -190,7 +190,7 @@ mag dictionary contains:
 
 ::
 
-   plot.PyIRI_plot_NmF1_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
+   plot.PyIRI_plot_NmF1_min_max(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
    UT_plot, plot_dir, plot_name='PyIRI_NmF1_min_max.pdf')
 
 
@@ -201,7 +201,7 @@ mag dictionary contains:
 
 ::
 
-   plot.PyIRI_plot_foF1_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
+   plot.PyIRI_plot_foF1_min_max(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
    UT_plot, plot_dir, plot_name='PyIRI_foF1_min_max.pdf')
 
 
