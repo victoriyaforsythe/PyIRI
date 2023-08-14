@@ -4,8 +4,7 @@
 # Distribution is unlimited.
 # This work was supported by the Office of Naval Research.
 # ----------------------------------------------------------
-"""
-   This library contains components for IGRF.
+"""This library contains components for IGRF.
 
 References
 ----------
