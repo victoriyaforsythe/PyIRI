@@ -14,7 +14,7 @@ Space Weather.
 
 Bilitza et al. (2022), The International Reference Ionosphere
 model: A review and description of an ionospheric benchmark, Reviews
-of Geophysics, 60, https://doi.org/10.1029/2022RG000792.
+of Geophysics, 60.
 
 Nava et al. (2008). A new version of the nequick ionosphere
 electron density model. J. Atmos. Sol. Terr. Phys., 70 (15).
