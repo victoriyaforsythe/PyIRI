@@ -9,8 +9,7 @@
 References
 ----------
 Alken et al. (2021). International geomagnetic reference field: the
-thirteenth generation. Earth, Planets and Space, 73(49),
-doi:10.1186/s40623-020-01288-x.
+thirteenth generation. Earth, Planets and Space, 73(49).
 
 """
 
