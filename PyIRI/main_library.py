@@ -1613,7 +1613,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
     R12_min_max = np.array([IG12_2_R12(aIG[0]), IG12_2_R12(aIG[1])])
 
     # E
-    hmE = 120. + np.zeros((M3000.shape))
+    hmE = 110. + np.zeros((M3000.shape))
 
     # F2
     # based on BSE-1979 IRI Option developed by Bilitza et al. (1979)
