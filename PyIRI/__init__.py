@@ -24,7 +24,6 @@ if resources is None:
                              'coefficients')
     del os
 else:
-    coeff_dir = str(importlib.resources.files(__package__).joinpath(
-        'coefficients'))
+    coeff_dir = str(resources.files(__package__).joinpath('coefficients'))
 
 del metadata, resources
