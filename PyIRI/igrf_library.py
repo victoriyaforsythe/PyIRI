@@ -15,7 +15,6 @@ thirteenth generation. Earth, Planets and Space, 73(49).
 
 import numpy as np
 import os
-import scipy
 from scipy import interpolate
 
 
