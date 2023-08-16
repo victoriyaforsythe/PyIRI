@@ -144,7 +144,7 @@ def inclination(coeff_dir, date_decimal, alon, alat):
     # Compute the four non-linear components
     dec, hoz, inc, eff = xyz2dhif(X, Y, Z)
 
-    # return only inclanation because that is what we need for PyIRI
+    # return only inclination because that is what we need for PyIRI
     return inc
 
 
