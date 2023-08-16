@@ -14,11 +14,10 @@ Space Weather.
 
 Bilitza et al. (2022), The International Reference Ionosphere
 model: A review and description of an ionospheric benchmark, Reviews
-of Geophysics, 60, https://doi.org/10.1029/2022RG000792.
+of Geophysics, 60.
 
 Nava et al. (2008). A new version of the nequick ionosphere
-electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
-https://doi.org/10.1016/j.jastp.2008.01.015.
+electron density model. J. Atmos. Sol. Terr. Phys., 70 (15).
 
 Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
 in ionospheric mapping by numerical methods.
@@ -1327,7 +1326,7 @@ def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     # make arrays to hold numerical maps for 2 levels of solar activity
@@ -1603,7 +1602,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     s = M3000.shape
@@ -1613,7 +1612,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
     R12_min_max = np.array([IG12_2_R12(aIG[0]), IG12_2_R12(aIG[1])])
 
     # E
-    hmE = 120. + np.zeros((M3000.shape))
+    hmE = 110. + np.zeros((M3000.shape))
 
     # F2
     # based on BSE-1979 IRI Option developed by Bilitza et al. (1979)
@@ -2011,7 +2010,7 @@ def IG12_2_R12(IG12):
     ----------
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     a = -0.00268
@@ -2047,7 +2046,7 @@ def F107_2_IG12(F107):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     R12 = F107_2_R12(F107)
@@ -2081,7 +2080,7 @@ def IG12_2_F107(IG12):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     R12 = IG12_2_R12(IG12)
@@ -2503,7 +2502,7 @@ def day_of_the_month_corr(year, month, day):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792.
+    of Geophysics, 60.
 
     """
     # middles of the months around
@@ -2571,7 +2570,7 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     F_new = F_before
@@ -2613,7 +2612,7 @@ def solar_interpolate(F_min, F_max, F107):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     # min and max of IG12 Ionospheric Global Index
@@ -2661,7 +2660,7 @@ def solar_interpolation_of_dictionary(F, F107):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     # Make dictionary with same elements as initial array

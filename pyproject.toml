@@ -36,6 +36,7 @@ dependencies = [
   "fortranformat",
   "matplotlib",
   "numpy",
+  "scipy"
 ]
 
 [project.optional-dependencies]
