@@ -16,7 +16,7 @@ Bilitza et al. (2022), The International Reference Ionosphere
 model: A review and description of an ionospheric benchmark, Reviews
 of Geophysics, 60.
 
-Nava et al. (2008). A new version of the nequick ionosphere
+Nava et al. (2008). A new version of the NeQuick ionosphere
 electron density model. J. Atmos. Sol. Terr. Phys., 70 (15).
 
 Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
@@ -153,12 +153,12 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
         F_fof2_c = F_c_URSI
 
     # --------------------------------------------------------------------------
-    # Multiply matricies (F_D U)F_G
+    # Multiply matrices (F_D U)F_G
     foF2, M3000, foEs = gamma(D_f0f2, D_M3000, D_Es_med, G_fof2, G_M3000,
                               G_Es_med, F_fof2_c, F_M3000_c, F_Es_med)
 
     # --------------------------------------------------------------------------
-    # Probability of F1 layer to apear
+    # Probability of F1 layer to appear
     P_F1, foF1 = Probability_F1(year, mth, aUT, alon, alat, mag_dip_lat, aIG)
 
     # --------------------------------------------------------------------------
@@ -374,7 +374,7 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
     mth : int
         Month.
     coeff_dir : str
-        Place where the coefficint files are.
+        Place where the coefficient files are.
     output_quartiles : bool
         Return an additional output, the upper and lower quartiles of the
         Bradley coefficients for Es (default=False)
@@ -397,9 +397,9 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
     Notes
     -----
     This function sets the combination of sin and cos functions that define
-    the diurnal destribution of the parameters and that can be further
+    the diurnal distribution of the parameters and that can be further
     multiplied by the coefficients U_jk (from CCIR, URSI, and Es maps).
-    The desired eequation can be found in the Technical Note Advances in
+    The desired equation can be found in the Technical Note Advances in
     Ionospheric Mapping by Numerical Methods, Jones & Graham 1966. Equation
     (c) page 38.
     Acknowledgement for Es coefficients:
@@ -408,7 +408,7 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
     This work was sponsored by U.S. Navy as part of the SS-267 program.
     The final development work and production of the foEs maps was supported
     by the U.S Information Agency.
-    Acknowledgemets to Doug Drob (NRL) for giving me these coefficients.
+    Acknowledgments to Doug Drob (NRL) for giving me these coefficients.
 
     References
     ----------
@@ -479,14 +479,14 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
     F_M3000_2 = np.reshape(array2, F.shape, order='F')
 
     # for Es:
-    # these number are the excact format for the files, even though some
+    # these number are the exact format for the files, even though some
     # numbers will be zeroes.
     nk = 76
     H = 17
     ns = 6
 
     F = np.zeros((H, nk, ns))
-    # Each file starts with 60 indexies, we will not need them, therefore
+    # Each file starts with 60 indexes, we will not need them, therefore
     # skip it
     skip_coeff = np.zeros((6, 10))
     array1 = array0_E[skip_coeff.size:(skip_coeff.size + F.size)]
@@ -539,9 +539,9 @@ def set_diurnal_functions(nj, time_array):
     Notes
     -----
     This function sets the combination of sin and cos functions that define
-    the diurnal destribution of the parameters and that can be further
+    the diurnal distribution of the parameters and that can be further
     multiplied by the coefficients U_jk (from CCIR, URSI, and Es maps).
-    The desired eequation can be found in the Technical Note Advances in
+    The desired equation can be found in the Technical Note Advances in
     Ionospheric Mapping by Numerical Methods, Jones & Graham 1966. Equation
     (c) page 38.
 
@@ -712,7 +712,7 @@ def set_gl_G(alon, alat, modip):
 
     Notes
     -----
-    This function sets Geographic Coodrdinate Functions G_k(position) page
+    This function sets Geographic Coordinate Functions G_k(position) page
     # 18 of Jones & Graham 1965 for F0F2, M3000, and Es coefficients
 
     References
@@ -741,7 +741,7 @@ def set_gl_G(alon, alat, modip):
 
 def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
           F_fof2_coeff, F_M3000_coeff, F_Es_median):
-    """Calculate foF2, M3000 propagetion parameter, and foEs.
+    """Calculate foF2, M3000 propagation parameter, and foEs.
 
     Parameters
     ----------
@@ -775,7 +775,7 @@ def gamma(D_f0f2, D_M3000, D_Es_median, G_fof2, G_M3000, G_Es_median,
 
     Notes
     -----
-    This function caclulates numerical maps for F0F2, M3000, and Es for 2
+    This function calculates numerical maps for F0F2, M3000, and Es for 2
     levels of solar activity (min, max) using matrix multiplication
 
     References
@@ -817,7 +817,7 @@ def highest_power_of_extension():
     Notes
     -----
     This function sets a common set of constants that define the power of
-    etensions.
+    expansions.
     QM = array of highest power of sin(x).
     nk = highest order of geographic extension.
     e.g. there are 76 functions in Table 3 on page 18 in Jones & Graham 1965.
@@ -892,7 +892,7 @@ def juldat(times):
     -----
     This function calculates the Julian time given calendar date and time
     in np.datetime64 array. This function is consistent with NOVAS, The
-    US Navy Observatory Astromony Software Library and algorythm by Fliegel
+    US Navy Observatory Astronomy Software Library and algorithm by Fliegel
     and Van Flander.
 
     """
@@ -941,7 +941,7 @@ def subsolar_point(juliantime):
     # number of centuries from J2000
     t = (juliantime - 2451545.) / 36525.
 
-    # mean longitude corrected for aberation (deg)
+    # mean longitude corrected for aberration (deg)
     lms = np.mod(280.460 + 36000.771 * t, 360.)
 
     # mean anomaly (deg)
@@ -975,7 +975,7 @@ def subsolar_point(juliantime):
     den = np.cos(np.deg2rad(ecplon)) / np.cos(np.deg2rad(decsun))
     sunra = np.rad2deg(np.arctan2(num, den))
 
-    # longitude of the sun indegrees
+    # longitude of the sun in degrees
     lonsun = -(tgmst - sunra)
 
     # lonsun=adjust_longitude(lonsun, 'to180')
@@ -1128,7 +1128,7 @@ def solzen_effective(chi):
     This function calculates effective solar zenith angle as a function of
     solar zenith angle and solar zenith angle at day-night transition,
     according to the Titheridge model. f2 is used during daytime, and f1
-    during nightime, and the exponential day-night transition is used to
+    during nighttime, and the exponential day-night transition is used to
     ensure the continuity of foE and its first derivative at solar terminator
     [Nava et al, 2008 "A new version of the NeQuick ionosphere electron
     density model"]
@@ -1139,7 +1139,7 @@ def solzen_effective(chi):
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
-    Nava et al. (2008). A new version of the nequick ionosphere
+    Nava et al. (2008). A new version of the NeQuick ionosphere
     electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
     490 doi: 10.1016/j.jastp.2008.01.015
 
@@ -1161,7 +1161,7 @@ def solzen_effective(chi):
 
 
 def foE(mth, solzen_effective, alat, f107):
-    """Calculate critical freqeuency of E region.
+    """Calculate critical frequency of E region.
 
     Parameters
     ----------
@@ -1195,7 +1195,7 @@ def foE(mth, solzen_effective, alat, f107):
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
-    Nava et al. (2008). A new version of the nequick ionosphere
+    Nava et al. (2008). A new version of the NeQuick ionosphere
     electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
     490 doi: 10.1016/j.jastp.2008.01.015
 
@@ -1226,7 +1226,7 @@ def foE(mth, solzen_effective, alat, f107):
 
 
 def gammaE(year, mth, utime, alon, alat, aIG):
-    """Calculate numerical maps for critical freqeuency of E region.
+    """Calculate numerical maps for critical frequency of E region.
 
     Parameters
     ----------
@@ -1254,7 +1254,7 @@ def gammaE(year, mth, utime, alon, alat, aIG):
 
     Notes
     -----
-    This function caclulates numerical maps for FoE for 2 levels of solar
+    This function calculates numerical maps for FoE for 2 levels of solar
     activity.
 
     References
@@ -1288,7 +1288,7 @@ def gammaE(year, mth, utime, alon, alat, aIG):
 
 
 def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
-    """Calculate probability occurence of F1 layer.
+    """Calculate probability occurrence of F1 layer.
 
     Parameters
     ----------
@@ -1312,11 +1312,11 @@ def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
     a_P : array-like
         Probability occurrence of F1 layer.
     a_foF1 : array-like
-        Critical freqeuncy of F1 layer in MHz.
+        Critical frequency of F1 layer in MHz.
 
     Notes
     -----
-    This function caclulates numerical maps probability of F1 layer.
+    This function calculates numerical maps probability of F1 layer.
 
     References
     ----------
@@ -1336,7 +1336,7 @@ def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
     a_mag_dip_lat_abs = np.zeros((utime.size, alon.size, 2))
     a_solzen = np.zeros((utime.size, alon.size, 2))
 
-    # add 2 levels of solar activity for mag_dip_lat, by using same elemetns
+    # add 2 levels of solar activity for mag_dip_lat, by using same elements
     # empty array, swap axises before filling with same elements of modip,
     # swap back to match M3000 array shape
     a_mag_dip_lat_abs = np.swapaxes(a_mag_dip_lat_abs, 1, 2)
@@ -1397,7 +1397,7 @@ def fexp(x):
 
     Notes
     -----
-    This function function caclulates exp(x) with restrictions to not cause
+    This function function calculates exp(x) with restrictions to not cause
     overflow.
 
     """
@@ -1617,7 +1617,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
     # F2
     # based on BSE-1979 IRI Option developed by Bilitza et al. (1979)
     # see 3.3.1 of IRI 2020 Review by Bilitza et al. 2022
-    # add 2 levels of solar activity for modip, by using same elemetns
+    # add 2 levels of solar activity for modip, by using same elements
     # empty array, swap axises before filling with same elements of modip,
     # swap back to match M3000 array shape
     modip_2levels = M3000 * 0.
@@ -1760,7 +1760,7 @@ def epstein(Nm, hm, B, alt):
 
     Notes
     -----
-    This function returns epstein function for given parameters.
+    This function returns Epstein function for given parameters.
     In a typical Epstein function: X = Nm, Y = hm, Z = B, and W = alt.
 
     """
@@ -1836,7 +1836,7 @@ def set_geo_grid(dlon, dlat):
 
 
 def set_alt_grid(dalt):
-    """Set an altitdue array with given vertical resolution.
+    """Set an altitude array with given vertical resolution.
 
     Parameters
     ----------
@@ -1900,7 +1900,7 @@ def freq2den(freq):
     Parameters
     ----------
     freq : array-like
-        ionospheric freqeuncy in MHz.
+        ionospheric frequency in MHz.
 
     Returns
     -------
@@ -1977,7 +1977,7 @@ def R12_2_IG12(R12):
     Returns
     -------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+        Ionosonde Global Coefficient.
 
     Notes
     -----
@@ -1995,7 +1995,7 @@ def IG12_2_R12(IG12):
     Parameters
     ----------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+        Ionosonde Global coefficient.
 
     Returns
     -------
@@ -2027,12 +2027,12 @@ def F107_2_IG12(F107):
     Parameters
     ----------
     F107 : float or array-like
-        Solar flux F10.7 voefficient in SFU.
+        Solar flux F10.7 coefficient in SFU.
 
     Returns
     -------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+        Ionosonde Global coefficient.
 
     Notes
     -----
@@ -2061,12 +2061,12 @@ def IG12_2_F107(IG12):
     Parameters
     ----------
     IG12 : float or array-like
-        Ionosonde Gloabal coeffcient.
+        Ionosonde Global coefficient.
 
     Returns
     -------
     F107 : float or array-like
-        Solar flux F10.7 voefficient in SFU.
+        Solar flux F10.7 coefficient in SFU.
 
     Notes
     -----
@@ -2123,7 +2123,7 @@ def quadratic(coeff):
 
 
 def epstein_function_array(A1, hm, B, x):
-    """Construct density epstein profile for any layer (except topside of F2).
+    """Construct density Epstein profile for any layer (except topside of F2).
 
     Parameters
     ----------
@@ -2165,7 +2165,7 @@ def epstein_function_array(A1, hm, B, x):
 
 
 def epstein_function_top_array(A1, hmF2, B_F2_top, x):
-    """Construct density epstein profile for the topside of F2 layer.
+    """Construct density Epstein profile for the topside of F2 layer.
 
     Parameters
     ----------
@@ -2185,7 +2185,7 @@ def epstein_function_top_array(A1, hmF2, B_F2_top, x):
 
     Notes
     -----
-    This function constructs density epstein profile for the topside of F2
+    This function constructs density Epstein profile for the topside of F2
     layer.
 
     References
@@ -2226,7 +2226,7 @@ def drop_function(x):
     -----
     This is a drop function from a simple family of curve. It is used to
     reduce the F1_top contribution for the F2_bot region, so that when the
-    summation of epsein functions is performed, the presence of F1 region
+    summation of Epstein functions is performed, the presence of F1 region
     would not mess up with the value of NmF2.
 
     References
@@ -2383,7 +2383,7 @@ def EDP_builder(x, aalt):
     B_F1_bot[np.where(B_F1_bot <= 0)] = 10
     B_F2_top[np.where(B_F2_top <= 0)] = 30
 
-    # array of hmFs with same dimentions as result, to later search
+    # array of hmFs with same dimensions as result, to later search
     # using argwhere
     a_alt = np.full(shape1, aalt, order='F')
     a_alt = np.swapaxes(a_alt, 0, 1)
@@ -2405,7 +2405,7 @@ def EDP_builder(x, aalt):
     a_A2 = 4. * a_NmF1
     a_A3 = 4. * a_NmE
 
-    # !!! do not use a[0], because all 3 dimentions are needed. this is
+    # !!! do not use a[0], because all 3 dimensions are needed. this is
     # the same as density[a]= density[a[0], a[1], a[2]]
 
     # F2 top (same for yes F1 and no F1)
@@ -2467,7 +2467,7 @@ def EDP_builder(x, aalt):
 
 
 def day_of_the_month_corr(year, month, day):
-    """Calculate ftactions of influence of monthes "before" and "afer".
+    """Find fractions of influence of months "before" and "after".
 
     Parameters
     ----------
@@ -2492,7 +2492,7 @@ def day_of_the_month_corr(year, month, day):
     Notes
     -----
     This function finds two months around the given day and calculates
-    fractions of influence for previous and following monthes.
+    fractions of influence for previous and following months.
 
     References
     ----------
@@ -2547,9 +2547,9 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
     fraction2 : float
         Fractional influence of month "after".
     F_before : dict
-        Dictionary of mean parametrs for month "before".
+        Dictionary of mean parameters for month "before".
     F_after : dict
-        Dictionary of mean parametrs for month "after".
+        Dictionary of mean parameters for month "after".
 
     Returns
     -------
@@ -2559,7 +2559,7 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
     Notes
     -----
     This function interpolates between 2 middles of consequent months to the
-    specified day by using provided fractions previousely calculated by
+    specified day by using provided fractions previously calculated by
     function "day_of_the_month_corr".
 
     References
@@ -2602,7 +2602,7 @@ def solar_interpolate(F_min, F_max, F107):
     This function interpolates it between to a given F10.7. The
     reference points are set in terms of IG12 coefficients of 0 and 100.
     The F10.7 is first converted to IG12 and then the interpolation is
-    occured.
+    occurred.
 
     References
     ----------
@@ -2635,8 +2635,8 @@ def solar_interpolation_of_dictionary(F, F107):
     Parameters
     ----------
     F : dict
-        Dictionary of parametrs with 2 levels of solar activity
-        specified as 1st dimenstion.
+        Dictionary of parameters with 2 levels of solar activity
+        specified as 1st dimension.
     F107 : float
         Interpolate to this particular level of F10.7.
 
@@ -2650,7 +2650,7 @@ def solar_interpolation_of_dictionary(F, F107):
     This function looks at each key in the dictionary and interpolates
     it between to a given F10.7. The reference points are set in terms
     of IG12 coefficients of 0 and 100. The F10.7 is first converted to
-    IG12 and then the interpolation is occured.
+    IG12 and then the interpolation is occurred.
 
     References
     ----------
@@ -2692,7 +2692,7 @@ def adjust_longitude(lon, type):
 
     Notes
     -----
-    This function adjustst the array of longitudes to go from -180-180 or
+    This function adjusts the array of longitudes to go from -180-180 or
     from 0-360.
 
     """
@@ -2815,7 +2815,7 @@ def create_reg_grid(hr_res=1, lat_res=1, lon_res=1, alt_res=10, alt_min=0,
     arrays. alon and alat can also be irregular arrays. In case you need to
     run IRI for 1 grid point, define alon and alat as NumPy arrays that have
     only 1 element. Size of alon and alat is [N_G].
-    This function creates creates an array of altitudes for the veritical
+    This function creates creates an array of altitudes for the vertical
     dimension of electron density profiles. Any 1-D Numpy array in [km] would
     work, regularly or irregularly spaced.
     This function also creates time array aUT using a given temporal
@@ -2924,7 +2924,7 @@ def run_iri_reg_grid(year, month, day, f107, hr_res=1, lat_res=1, lon_res=1,
 
 def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
                           alt_res=10, alt_min=0, alt_max=700, ccir_or_ursi=0):
-    """Run IRI for montly mean parameters on a regular grid.
+    """Run IRI for monthly mean parameters on a regular grid.
 
     Parameters
     ----------
@@ -2992,7 +2992,7 @@ def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
     # -------------------------------------------------------------------------
     # Monthly mean ionospheric parameters for min and max of solar activity:
     # -------------------------------------------------------------------------
-    # This is how PyIRI needs to be called to obtain montly mean values for all
+    # This is how PyIRI needs to be called to find monthly mean values for all
     # ionospheric parameters, for min and max conditions of solar activity:
     # year and month should be integers, and ahr and alon, alat should be 1-D
     # NumPy arrays. alon and alat should have the same size. coeff_dir is the
@@ -3004,9 +3004,9 @@ def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
         year, month, ahr, alon, alat, PyIRI.coeff_dir, ccir_or_ursi)
 
     # -------------------------------------------------------------------------
-    # Montly mean density for min and max of solar activity:
+    # Monthly mean density for min and max of solar activity:
     # -------------------------------------------------------------------------
-    # Construct electron dnesity profiles for min and max levels of solar
+    # Construct electron density profiles for min and max levels of solar
     # activity for monthly mean parameters.  The result will have the following
     # dimensions [2, N_T, N_V, N_G]
     edens_prof = reconstruct_density_from_parameters(f2, f1, epeak, aalt)

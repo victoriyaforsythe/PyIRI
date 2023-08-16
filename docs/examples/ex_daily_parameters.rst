@@ -1,11 +1,11 @@
-Example 2: Daily Ionospheric Prameters
-======================================
+Example 2: Daily Ionospheric Parameters
+=======================================
 
 PyIRI can calculate daily ionospheric parameters for the user provided grid.
 The estimation of the parameters occurs simultaneously at all grid points
 and for all desired diurnal time frames. The parameters are obtained by
 linearly interpolating between min and max levels of solar activity, and
-by interpolation between meadian montly values to the day of interest. 
+by interpolation between median monthly values to the day of interest. 
 
 1. Import libraries:
 
@@ -264,7 +264,7 @@ edp array:
     :align: center
     :alt: Global distribution of foEs for min and max levels of solar activity.
 
-14. Plot electron density veritical profiles from one location.
+14. Plot electron density vertical profiles from one location.
     Make sure this location belongs to alon and alat arrays.
 
 ::

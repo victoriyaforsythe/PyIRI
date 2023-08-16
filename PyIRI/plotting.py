@@ -4,7 +4,7 @@
 # Distribution is unlimited.
 # This work was supported by the Office of Naval Research.
 # ---------------------------------------------------------
-"""This library contains components visualisation routines for PyIRI.
+"""This library contains components visualization routines for PyIRI.
 
 """
 

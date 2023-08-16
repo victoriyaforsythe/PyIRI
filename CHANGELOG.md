@@ -4,6 +4,7 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.0.2 (XX-XX-2023)
 * Fixed issues with PEP-8 compliance and problems calling importlib
+* Fixed spelling in docstrings and examples
 
 ## 0.0.1 (08-10-2023)
 * Alpha release
