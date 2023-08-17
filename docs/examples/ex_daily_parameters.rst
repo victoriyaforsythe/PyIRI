@@ -48,8 +48,8 @@ by interpolation between median monthly values to the day of interest.
 
 ::
 
-   lon_res = 5
-   lat_res = 5
+   dlon = 5
+   dlat = 5
    alon_2d, alat_2d = np.mgrid[-180:180 + dlon:dlon, -90:90 + dlat:dlat]
    alon = np.reshape(alon_2d, alon_2d.size)
    alat = np.reshape(alat_2d, alat_2d.size)
