@@ -1,5 +1,5 @@
-Example 3: Daily Ionospheric Prameters For a Single Location
-============================================================
+Example 3: Daily Ionospheric Parameters For a Single Location
+=============================================================
 
 In case you are interested in a single location (as opposed to the grid)
 PyIRI can evaluate parameters at this location if it is passed as a 1-element
@@ -94,7 +94,7 @@ f1 dictionary contains:
 
 -  critical frequency 'fo' in MHz
 
--  probability occurrence of F1 reion 'P'
+-  probability occurrence of F1 region 'P'
 
 -  height of the peak 'hm' in km
 
@@ -164,7 +164,7 @@ edp array:
 .. image:: Figs/PyIRI_diurnal.pdf
     :width: 600px
     :align: center
-    :alt: Diurnal variation of the ionospheric parametes.
+    :alt: Diurnal variation of the ionospheric parameters.
 
 10. Plot diurnal variation of electron density:
 
