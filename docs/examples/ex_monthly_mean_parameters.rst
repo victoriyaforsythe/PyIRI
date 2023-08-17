@@ -1,5 +1,5 @@
-Example 1: Monthly Mean Ionospheric Prameters
-=============================================
+Example 1: Monthly Mean Ionospheric Parameters
+==============================================
 
 PyIRI can calculate monthly mean ionospheric parameters
 for the user provided grid. The estimation of the parameters
@@ -88,7 +88,7 @@ f1 dictionary contains:
 
 -  critical frequency 'fo' in MHz
 
--  probability occurrence of F1 reion 'P'
+-  probability occurrence of F1 region 'P'
 
 -  height of the peak 'hm' in km
 
@@ -257,14 +257,14 @@ Here is an example for regularly spaced array:
    alt_max = 700
    aalt = np.arange(alt_min, alt_max, alt_res)
 
-13. Construct electron density form the paraemters:
+13. Construct electron density form the parameters:
 
 ::
 
    edens_prof = ml.reconstruct_density_from_parameters(f2, f1, e_peak, aalt)
    print('edens_prof has shape: ', edens_prof.shape)
 
-14. Plot electron density veritical profiles from one location.
+14. Plot electron density vertical profiles from one location.
     Make sure this location belongs to alon and alat arrays.
 
 ::
