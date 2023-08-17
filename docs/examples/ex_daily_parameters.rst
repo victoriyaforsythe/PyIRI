@@ -100,7 +100,7 @@ f1 dictionary contains:
 
 -  critical frequency 'fo' in MHz
 
--  probability occurrence of F1 reion 'P'
+-  probability occurrence of F1 region 'P'
 
 -  height of the peak 'hm' in km
 
