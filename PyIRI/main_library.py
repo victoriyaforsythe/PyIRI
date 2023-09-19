@@ -118,7 +118,7 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     # Set limits for solar driver based of IG12 = 0 - 100.
     aIG = np.array([0., 100.])
 
-    print('Model parameters are being determinaed for 2 levels of solar'
+    print('Model parameters are being determined for 2 levels of solar'
           'activity at F10.7=69.3 and 135.2 SFU')
     acoeff = ['CCIR', 'URSI']
     print('For NmF2 determination ' + acoeff[ccir_or_ursi] + ' used.')
