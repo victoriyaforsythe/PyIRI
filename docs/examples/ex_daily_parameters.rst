@@ -194,7 +194,7 @@ edp array:
 
 ::
 
-   plot.PyIRI_plot_hmnF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
+   plot.PyIRI_plot_hmF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
    UT_plot, plot_dir, plot_name='PyIRI_hmF2.pdf')
 
 
