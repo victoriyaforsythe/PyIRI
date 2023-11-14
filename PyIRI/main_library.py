@@ -2343,7 +2343,6 @@ def reconstruct_density_from_parameters_1level(F2, F1, E, alt):
 
     N_T = s[0]
     N_G = s[1]
-    N_V = alt.size
 
     x = np.full((11, N_T, N_G), np.nan)
 
