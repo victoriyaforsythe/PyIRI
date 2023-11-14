@@ -15,9 +15,9 @@ doi:10.1186/s40623-020-01288-x.
 
 """
 
+import logger
 import numpy as np
 import os
-from PyIRI import logger
 from scipy import interpolate
 
 
@@ -336,11 +336,8 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
     radius = np.array(radius, dtype=float) / 6371.2  # Earth's average radius
     theta = np.array(theta, dtype=float)
     phi = np.array(phi, dtype=float)
-    if np.amin(theta) <= 0.0 or np.amax(theta) >= 180.0:
-        if np.amin(theta) == 0.0 or np.amax(theta) == 180.0:
-	    logger.warning("Determining magnetic inclination.")
-        else:
-            raise ValueError('Colatitude outside bounds [0, 180].')
+    if (np.amin(theta) < 0.0) | (np.amax(theta) > 180.0):
+        raise ValueError('Colatitude outside bounds [0, 180].')
 
     if nmin < 1:
         raise ValueError('Only positive nmin allowed.')
@@ -352,8 +349,6 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
     else:
         assert nmax > 0, 'Only positive nmax allowed.'
     if nmax > nmax_coeffs:
-	strprint = "Given nmax and nmin is incompatible with number of model coeffts"
-	logger.warning(strprint)
         nmax = nmax_coeffs
     if nmax < nmin:
         raise ValueError(f'Nothing to compute: nmax < nmin ({nmax} < {nmin}.)')

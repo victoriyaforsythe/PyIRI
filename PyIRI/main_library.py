@@ -28,11 +28,11 @@ in ionospheric mapping by numerical methods.
 
 import datetime as dt
 from fortranformat import FortranRecordReader
+import logger
 import math
 import numpy as np
 import os
 
-from PyIRI import logger
 import PyIRI
 import PyIRI.igrf_library as igrf
 
