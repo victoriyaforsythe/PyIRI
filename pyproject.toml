@@ -34,6 +34,7 @@ keywords = [
 ]
 dependencies = [
   "fortranformat",
+  "logger",
   "matplotlib",
   "numpy",
   "scipy"
