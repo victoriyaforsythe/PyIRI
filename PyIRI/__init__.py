@@ -9,6 +9,12 @@ except ImportError:
     import os
     osflag = True
 
+# Define a logger object to allow easier log handling
+import logging
+logging.raiseExceptions = False
+logger = logging.getLogger('pyiri_logger')
+
+# Import the package modules and top-level classes
 from PyIRI import igrf_library  # noqa F401
 from PyIRI import main_library  # noqa F401
 from PyIRI import plotting  # noqa F401
