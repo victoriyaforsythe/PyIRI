@@ -13,8 +13,10 @@ The most recent citation can be found at `Zenodo
 release.
 
 * Forsythe, V., et al. (2023).
-  ADD NAME HERE (Version 0.0.1). Zenodo.
-  doi:ADD_DOI_HERE
+  PyIRI: Whole-Globe Approach to the
+  International Reference Ionosphere Modeling Implemented in Python,
+  Space Weather, ESS Open Archive, September 28, 2023,
+  doi:10.22541/essoar.169592556.61105365/v1
 
 .. code-block:: latex
 

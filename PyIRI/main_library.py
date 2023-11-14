@@ -10,7 +10,8 @@ References
 ----------
 Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
 International Reference Ionosphere Modeling Implemented in Python,
-Space Weather.
+Space Weather, ESS Open Archive, September 28, 2023,
+doi:10.22541/essoar.169592556.61105365/v1.
 
 Bilitza et al. (2022), The International Reference Ionosphere
 model: A review and description of an ionospheric benchmark, Reviews
@@ -351,17 +352,14 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     sun = fractional_correction_of_dictionary(fr1, fr2, sun_1, sun_2)
     mag = fractional_correction_of_dictionary(fr1, fr2, mag_1, mag_2)
 
-    # construct density
-    EDP_min_max = reconstruct_density_from_parameters(F2, F1, E, aalt)
-
-    # interpolate in solar activity
-    EDP = solar_interpolate(EDP_min_max[0, :], EDP_min_max[1, :], F107)
-
     # interpolate parameters in solar activity
     F2 = solar_interpolation_of_dictionary(F2, F107)
     F1 = solar_interpolation_of_dictionary(F1, F107)
     E = solar_interpolation_of_dictionary(E, F107)
     Es = solar_interpolation_of_dictionary(Es, F107)
+
+    # construct density
+    EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
 
     print('-----------------------------------------------------------------')
     return F2, F1, E, Es, sun, mag, EDP
@@ -2307,6 +2305,63 @@ def reconstruct_density_from_parameters(F2, F1, E, alt):
         x_out[isolar, :, :, :] = EDP
 
     return x_out
+
+
+def reconstruct_density_from_parameters_1level(F2, F1, E, alt):
+    """Construct vertical EDP for 1 level of solar activity.
+
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary of parameters for F2 layer.
+    F1 : dict
+        Dictionary of parameters for F1 layer.
+    E : dict
+        Dictionary of parameters for E layer.
+    alt : array-like
+        1-D array of altitudes [N_V] in km.
+
+    Returns
+    -------
+    x_out : array-like
+        Electron density for two levels of solar activity [N_T, N_V, N_G]
+        in m-3.
+
+    Notes
+    -----
+    This function calculates 3-D density from given dictionaries of
+    the parameters for 1 level of solar activity.
+
+    References
+    ----------
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    International Reference Ionosphere Modeling Implemented in Python,
+    Space Weather.
+
+    """
+    s = F2['Nm'].shape
+
+    N_T = s[0]
+    N_G = s[1]
+    N_V = alt.size
+
+    x = np.full((11, N_T, N_G), np.nan)
+
+    x[0, :, :] = F2['Nm'][:, :]
+    x[1, :, :] = F1['Nm'][:, :]
+    x[2, :, :] = E['Nm'][:, :]
+    x[3, :, :] = F2['hm'][:, :]
+    x[4, :, :] = F1['hm'][:, :]
+    x[5, :, :] = E['hm'][:, :]
+    x[6, :, :] = F2['B_bot'][:, :]
+    x[7, :, :] = F2['B_top'][:, :]
+    x[8, :, :] = F1['B_bot'][:, :]
+    x[9, :, :] = E['B_bot'][:, :]
+    x[10, :, :] = E['B_top'][:, :]
+
+    EDP = EDP_builder(x, alt)
+
+    return EDP
 
 
 def EDP_builder(x, aalt):
