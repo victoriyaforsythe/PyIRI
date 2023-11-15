@@ -4,8 +4,7 @@
 # Distribution is unlimited.
 # This work was supported by the Office of Naval Research.
 # ----------------------------------------------------------
-"""
-   This library contains components for IGRF.
+"""This library contains components for IGRF.
 
 References
 ----------
@@ -15,7 +14,6 @@ doi:10.1186/s40623-020-01288-x.
 
 """
 
-import logger
 import numpy as np
 import os
 from scipy import interpolate
