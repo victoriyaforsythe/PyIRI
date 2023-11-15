@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/).
   construction of the EDP for the final result.
 * Changed E-region height from 120 km to 110 km.
 * Added a link in the docs to the journal publication.
-* Print statements were deleted or replaces with logged. 
+* Print statements were deleted or replaced with logging messages. 
 
 ## 0.0.1 (08-10-2023)
 * Alpha release
