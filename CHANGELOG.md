@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## 0.0.2 (XX-XX-2023)
+## 0.0.2 (11-15-2023)
 * The order of interpolation was changed. Previously the EDPs were
   constructed for 2 levels of solar activity and then interpolated in between.
   This was changed to the interpolation between parameters and the
