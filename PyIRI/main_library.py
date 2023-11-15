@@ -28,14 +28,13 @@ in ionospheric mapping by numerical methods.
 
 import datetime as dt
 from fortranformat import FortranRecordReader
-from PyIRI import logger
 import math
 import numpy as np
 import os
 
 import PyIRI
 import PyIRI.igrf_library as igrf
-
+from PyIRI import logger
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     """Output monthly mean ionospheric parameters.
