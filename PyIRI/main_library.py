@@ -11,15 +11,15 @@ References
 Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
 International Reference Ionosphere Modeling Implemented in Python,
 Space Weather, ESS Open Archive, September 28, 2023,
-doi: 10.22541/essoar.169592556.61105365/v1.
+doi:10.22541/essoar.169592556.61105365/v1.
 
 Bilitza et al. (2022), The International Reference Ionosphere
 model: A review and description of an ionospheric benchmark, Reviews
-of Geophysics, 60, doi: 10.1029/2022RG000792.
+of Geophysics, 60, doi:10.1029/2022RG000792.
 
 Nava et al. (2008). A new version of the nequick ionosphere
 electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
-doi: 10.1016/j.jastp.2008.01.015.
+doi:10.1016/j.jastp.2008.01.015.
 
 Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
 in ionospheric mapping by numerical methods.
