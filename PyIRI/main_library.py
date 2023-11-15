@@ -119,8 +119,6 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     # Set limits for solar driver based of IG12 = 0 - 100.
     aIG = np.array([0., 100.])
 
-    acoeff = ['CCIR', 'URSI']
-
     # Date and time for the middle of the month (day=15) that will be used to
     # find magnetic inclination
     dtime = dt.datetime(year, mth, 15)
@@ -310,7 +308,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     Space Weather.
 
     """
-    acoeff = ['CCIR', 'URSI']
 
     # find out what monthly means are needed first and what their weights
     # will be
