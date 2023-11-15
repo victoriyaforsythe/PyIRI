@@ -1,5 +1,10 @@
 """Core library imports for PyIRI."""
 
+# Define a logger object to allow easier log handling
+import logging
+logging.raiseExceptions = False
+logger = logging.getLogger('pyiri_logger')
+
 osflag = False
 try:
     from importlib import metadata
@@ -8,11 +13,6 @@ except ImportError:
     import importlib_metadata as metadata
     import os
     osflag = True
-
-# Define a logger object to allow easier log handling
-import logging
-logging.raiseExceptions = False
-logger = logging.getLogger('pyiri_logger')
 
 # Import the package modules and top-level classes
 from PyIRI import igrf_library  # noqa F401
