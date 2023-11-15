@@ -16,7 +16,7 @@ release.
   PyIRI: Whole-Globe Approach to the
   International Reference Ionosphere Modeling Implemented in Python,
   Space Weather, ESS Open Archive, September 28, 2023,
-  doi:10.22541/essoar.169592556.61105365/v1
+  doi: 10.22541/essoar.169592556.61105365/v1
 
 .. code-block:: latex
 

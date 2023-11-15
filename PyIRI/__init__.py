@@ -1,5 +1,10 @@
 """Core library imports for PyIRI."""
 
+# Define a logger object to allow easier log handling
+import logging
+logging.raiseExceptions = False
+logger = logging.getLogger('pyiri_logger')
+
 osflag = False
 try:
     from importlib import metadata
@@ -9,6 +14,7 @@ except ImportError:
     import os
     osflag = True
 
+# Import the package modules and top-level classes
 from PyIRI import igrf_library  # noqa F401
 from PyIRI import main_library  # noqa F401
 from PyIRI import plotting  # noqa F401

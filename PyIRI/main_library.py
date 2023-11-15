@@ -15,7 +15,7 @@ doi:10.22541/essoar.169592556.61105365/v1.
 
 Bilitza et al. (2022), The International Reference Ionosphere
 model: A review and description of an ionospheric benchmark, Reviews
-of Geophysics, 60, doi:10.1029/2022RG000792.
+of Geophysics, 60.
 
 Nava et al. (2008). A new version of the nequick ionosphere
 electron density model. J. Atmos. Sol. Terr. Phys., 70 (15),
@@ -34,6 +34,7 @@ import os
 
 import PyIRI
 import PyIRI.igrf_library as igrf
+from PyIRI import logger
 
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
@@ -118,11 +119,6 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     """
     # Set limits for solar driver based of IG12 = 0 - 100.
     aIG = np.array([0., 100.])
-
-    print('Model parameters are being determined for 2 levels of solar'
-          'activity at F10.7=69.3 and 135.2 SFU')
-    acoeff = ['CCIR', 'URSI']
-    print('For NmF2 determination ' + acoeff[ccir_or_ursi] + ' used.')
 
     # Date and time for the middle of the month (day=15) that will be used to
     # find magnetic inclination
@@ -313,17 +309,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     Space Weather.
 
     """
-    print('PyIRI: IRI_density_1day:------------------------------------------')
-    print(''.join(['Determining parameters and electron density for 1 day: ',
-                   'year=', str(year), ', month=', str(mth), ', day=',
-                   str(day)]))
-    print('For UT = ', aUT)
-    print('Longitude = ', alon)
-    print('Latitude = ', alat)
-    print('Provided F10.7={:.2f}'.format(F107))
-
-    acoeff = ['CCIR', 'URSI']
-    print('For NmF2 determination {:} used.'.format(acoeff[ccir_or_ursi]))
 
     # find out what monthly means are needed first and what their weights
     # will be
@@ -344,7 +329,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
                                                                coeff_dir,
                                                                ccir_or_ursi)
 
-    print('Mean monthly parameters are calculated')
     F2 = fractional_correction_of_dictionary(fr1, fr2, F2_1, F2_2)
     F1 = fractional_correction_of_dictionary(fr1, fr2, F1_1, F1_2)
     E = fractional_correction_of_dictionary(fr1, fr2, E_1, E_2)
@@ -361,7 +345,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     # construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
 
-    print('-----------------------------------------------------------------')
     return F2, F1, E, Es, sun, mag, EDP
 
 
@@ -427,11 +410,9 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
 
     # check that month goes from 1 to 12
     if (mth < 1) | (mth > 12):
-        flag = ''.join(['Error: In read_ccir_coeff_and_interpolate month ',
-                        'is < 1 or > 12!'])
-        print(flag)
+        logger.error("Error: month is out of 1-12 range")
 
-    # add 10 to the month becasue the file numeration goes from 11 to 22.
+    # add 10 to the month because the file numeration goes from 11 to 22.
     cm = str(mth + 10)
 
     # F region coefficients:
@@ -557,7 +538,7 @@ def set_diurnal_functions(nj, time_array):
     # check that time array goes from 0-24:
     if (np.min(time_array) < 0) | (np.max(time_array) > 24):
         flag = 'Error: in set_diurnal_functions time array min < 0 or max > 24'
-        print(flag)
+        logger.error(flag)
 
     D = np.zeros((nj, time_array.size))
 
@@ -1325,7 +1306,7 @@ def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     # make arrays to hold numerical maps for 2 levels of solar activity
@@ -1601,7 +1582,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     s = M3000.shape
@@ -2009,7 +1990,7 @@ def IG12_2_R12(IG12):
     ----------
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     a = -0.00268
@@ -2045,7 +2026,7 @@ def F107_2_IG12(F107):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     R12 = F107_2_R12(F107)
@@ -2079,7 +2060,7 @@ def IG12_2_F107(IG12):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     R12 = IG12_2_R12(IG12)
@@ -2557,7 +2538,7 @@ def day_of_the_month_corr(year, month, day):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792.
+    of Geophysics, 60.
 
     """
     # middles of the months around
@@ -2625,7 +2606,7 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     F_new = F_before
@@ -2667,7 +2648,7 @@ def solar_interpolate(F_min, F_max, F107):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     # min and max of IG12 Ionospheric Global Index
@@ -2715,7 +2696,7 @@ def solar_interpolation_of_dictionary(F, F107):
 
     Bilitza et al. (2022), The International Reference Ionosphere
     model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60, e2022RG000792. https://doi.org/10.1029/2022RG000792
+    of Geophysics, 60.
 
     """
     # Make dictionary with same elements as initial array
