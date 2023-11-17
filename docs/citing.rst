@@ -8,9 +8,8 @@ PyIRI used will improve the reproducibility of your presented results.
 PyIRI
 -----
 
-The most recent citation can be found at `Zenodo
-<https://zenodo.org/>`_.  The examples here are from the first
-release.
+The most recent citation can be found at `Zenodo <https://zenodo.org/>`_.  The
+examples here are from the second release.
 
 * Forsythe, V., et al. (2023).
   PyIRI: Whole-Globe Approach to the
@@ -23,11 +22,10 @@ release.
   @software{PyIRI,
     author       = {Forsythe, V. and
                     Burrell, A.G.},
-    title        = {ADD TITLE},
-    month        = MONTH,
-    year         = 2022,
+    title        = {victoriyaforsythe/PyIRI},
+    year         = 2023,
     publisher    = {Zenodo},
-    version      = {v0.0.1},
-    doi          = {DOI},
-    url          = {URL}
+    version      = {v0.0.2},
+    doi          = {10.5281/zenodo.8235172},
+    url          = {https://github.com/victoriyaforsythe/PyIRI}
   }
