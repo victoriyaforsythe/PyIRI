@@ -50,11 +50,10 @@ jobs:
     - name: Test import success
       run: python -c "import PyIRI; print(PyIRI.__version__)"
 
-# TODO(#5): Enable after unit tests are available
-#    - name: Test with pytest
-#      run: pytest
-#
-#    - name: Publish results to coveralls
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      run: coveralls --rcfile=pyproject.toml --service=github
+    - name: Test with pytest
+      run: pytest
+
+    - name: Publish results to coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: coveralls --rcfile=pyproject.toml --service=github
