@@ -45,6 +45,9 @@ test = [
   "flake8",
   "flake8-docstrings",
   "hacking >= 1.0",
+  "pytest",
+  "pytest-cov",
+  "pytest-ordering"
 ]
 doc = [
   "extras_require",
@@ -56,4 +59,7 @@ doc = [
 ]
 
 [project.urls]
+Documentation = "https://pyiri.readthedocs.io/en/latest/"
 Source = "https://github.com/victoriyaforsythe/PyIRI"
+
+[tool.coverage.report]
