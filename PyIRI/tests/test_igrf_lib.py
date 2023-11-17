@@ -43,7 +43,7 @@ class TestIGRFLibUtil(object):
                                  84.85281374, 70.71067812, 56.56854249,
                                  42.42640687, 28.28427125, 14.14213562, 0.0,
                                  14.14213562, 28.28427125, 42.42640687,
-                                 56.56854249,70.71067812, 84.85281374,
+                                 56.56854249, 70.71067812, 84.85281374,
                                  98.99494937, 113.13708499])
         self.inc_out = np.array([-35.26438968, -35.26438968, -35.26438968,
                                  -35.26438968, -35.26438968, -35.26438968,
@@ -201,4 +201,3 @@ class TestIGRFLibUtil(object):
         np.testing.assert_almost_equal(inc, self.inc_out[index], 6)
         np.testing.assert_almost_equal(eff, self.eff_out[index], 6)
         return
-

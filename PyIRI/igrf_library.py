@@ -89,7 +89,7 @@ def inc2modip(inc, alat):
 
     """
     inc = verify_inclination(inc)
-    
+
     alat_rad = np.deg2rad(alat)
     rad_arg = np.deg2rad((inc / np.sqrt(np.cos(alat_rad))))
     modip_rad = np.arctan(rad_arg)
