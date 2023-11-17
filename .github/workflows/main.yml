@@ -51,7 +51,7 @@ jobs:
       run: python -c "import PyIRI; print(PyIRI.__version__)"
 
     - name: Test with pytest
-      run: pytest
+      run: pytest --cov=PyTest
 
     - name: Publish results to coveralls
       env:
