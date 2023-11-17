@@ -12,7 +12,7 @@ officially supports Python 3.9+.
 1. fortranformat
 2. matplotlib
 3. numpy
-3. scipy
+4. scipy
 
 
 Installation Options
