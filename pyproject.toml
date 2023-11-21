@@ -47,7 +47,6 @@ test = [
   "hacking >= 1.0",
   "pytest",
   "pytest-cov",
-  "pytest-ordering"
 ]
 doc = [
   "extras_require",
