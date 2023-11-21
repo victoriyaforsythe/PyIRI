@@ -8,7 +8,6 @@ Here is an example for year = 2020, month = 4, day =15, F10.7 = 150.
 ::
 
 
-   import PyIRI
    import PyIRI.main_library as ml
 
 

@@ -6,6 +6,9 @@ adheres to [Semantic Versioning](https://semver.org/).
 * Added unit tests for the IGRF library functions that do not use IGRF
   coefficients.
 * Added pytest and coveralls to main CI tests.
+* Updated the README to include more links and information
+* Updated the documentation to include more citation information, correct
+  the installation instructions, and improve the examples
 
 ## 0.0.2 (11-15-2023)
 * The order of interpolation was changed. Previously the EDPs were
