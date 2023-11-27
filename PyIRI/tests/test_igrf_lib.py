@@ -18,7 +18,7 @@ class TestIGRFLibUtil(object):
     """Test class for igrf_library functions that do not use coefficients."""
 
     def setup_method(self):
-        """Initialize all tests."""
+        """Initialize for every test."""
         # Specify inputs
         self.inc_in = np.arange(-90.0, 90.0, 10.0)
         self.lat_in = np.arange(-90.0, 90.0, 10.0)
@@ -60,7 +60,7 @@ class TestIGRFLibUtil(object):
         return
 
     def teardown_method(self):
-        """Clean up all tests."""
+        """Clean up after every test."""
         del self.inc_in, self.lat_in, self.modip_out, self.mlat_out
         del self.dec_out, self.hoz_out, self.inc_out, self.eff_out
         return
