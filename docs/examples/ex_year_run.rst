@@ -1,4 +1,4 @@
-Example 2: Yearly run
+Example 5: Yearly run
 =====================
 
 PyIRI can calculate time series of the ionospheric parameters for the 
