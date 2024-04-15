@@ -15,3 +15,6 @@ also available in the `GitHub Repository <https://github.com/victoriyaforsythe/P
 
 .. toctree::
    examples/ex_terminal_friendly.rst
+
+.. toctree::
+   examples/ex_year_run.rst
