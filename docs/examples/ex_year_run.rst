@@ -179,6 +179,6 @@ interest.
 
 
 .. image:: Figs/PyIRI_Continuous_Time_Series.pdf
-    :width: 400px
+    :width: 600px
     :align: center
     :alt: Yearly NmF2 at one location.
