@@ -178,7 +178,6 @@ interest.
     ax_plot.legend(loc='upper left', prop={'size': 10})
 
 
-
 .. image:: Figs/PyIRI_Continuous_Time_Series.pdf
     :width: 600px
     :align: center
