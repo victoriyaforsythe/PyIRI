@@ -48,8 +48,8 @@ by interpolation between median monthly values to the day of interest.
 
 ::
 
-   lon_res = 5
-   lat_res = 5
+   dlon = 5
+   dlat = 5
    alon_2d, alat_2d = np.mgrid[-180:180 + dlon:dlon, -90:90 + dlat:dlat]
    alon = np.reshape(alon_2d, alon_2d.size)
    alat = np.reshape(alat_2d, alat_2d.size)
@@ -100,7 +100,7 @@ f1 dictionary contains:
 
 -  critical frequency 'fo' in MHz
 
--  probability occurrence of F1 reion 'P'
+-  probability occurrence of F1 region 'P'
 
 -  height of the peak 'hm' in km
 
@@ -194,7 +194,7 @@ edp array:
 
 ::
 
-   plot.PyIRI_plot_hmnF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
+   plot.PyIRI_plot_hmF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
    UT_plot, plot_dir, plot_name='PyIRI_hmF2.pdf')
 
 
@@ -218,7 +218,7 @@ edp array:
 
 ::
 
-   plot.PyIRI_plot_foF1(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
+   plot.PyIRI_plot_foF1(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
    UT_plot, plot_dir, plot_name='PyIRI_foF1.pdf')
 
 

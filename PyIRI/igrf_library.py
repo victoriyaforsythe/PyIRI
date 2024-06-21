@@ -9,13 +9,62 @@
 References
 ----------
 Alken et al. (2021). International geomagnetic reference field: the
-thirteenth generation. Earth, Planets and Space, 73(49).
+thirteenth generation. Earth, Planets and Space, 73(49),
+doi:10.1186/s40623-020-01288-x.
 
 """
 
 import numpy as np
 import os
 from scipy import interpolate
+
+
+def verify_inclination(inc):
+    """Test the validity of an inclination input.
+
+    Parameters
+    ----------
+    inc : int, float, or array-like
+        Magnetic inclination in degrees.
+
+    Returns
+    -------
+    inc : int, float, or array-like
+        Magnetic inclination in degrees
+
+    Raises
+    ------
+    ValueError
+        If inclination is not between -90 and 90 degrees
+
+    """
+    # Ensure the inclination to be tested is a numpy array
+    test_inc = np.asarray(inc)
+    if test_inc.shape == ():
+        test_inc = np.asarray([inc])
+
+    # Get a mask that specifies if each inclination is realistic
+    good_inc = (test_inc <= 90.0) & (test_inc >= -90.0)
+
+    # Return original input if all are good, correct or raise error otherwise
+    if good_inc.all():
+        return inc
+    else:
+        # Adjust values within a small tolerance
+        test_inc[(test_inc > 90.0) & (test_inc <= 90.1)] = 90.0
+        test_inc[(test_inc < -90.0) & (test_inc >= -90.1)] = -90.0
+        good_inc = (test_inc <= 90.0) & (test_inc >= -90.0)
+
+        if good_inc.all():
+            # Return the adjusted input using the original type
+            if isinstance(inc, (float, int, np.floating, np.integer)):
+                return test_inc[0].astype(type(inc))
+            elif isinstance(inc, list):
+                return list(test_inc)
+            else:
+                return test_inc
+        else:
+            raise ValueError('unrealistic magnetic inclination value(s)')
 
 
 def inc2modip(inc, alat):
@@ -39,6 +88,8 @@ def inc2modip(inc, alat):
     geographic latitude.
 
     """
+    inc = verify_inclination(inc)
+
     alat_rad = np.deg2rad(alat)
     rad_arg = np.deg2rad((inc / np.sqrt(np.cos(alat_rad))))
     modip_rad = np.arctan(rad_arg)
@@ -65,6 +116,7 @@ def inc2magnetic_dip_latitude(inc):
     This function calculates magnetic dip latitude.
 
     """
+    inc = verify_inclination(inc)
     arg = 0.5 * (np.tan(np.deg2rad(inc)))
     magnetic_dip_latitude = np.rad2deg(np.arctan(arg))
 
@@ -333,11 +385,8 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
     radius = np.array(radius, dtype=float) / 6371.2  # Earth's average radius
     theta = np.array(theta, dtype=float)
     phi = np.array(phi, dtype=float)
-    if np.amin(theta) <= 0.0 or np.amax(theta) >= 180.0:
-        if np.amin(theta) == 0.0 or np.amax(theta) == 180.0:
-            print('Determining magnetic inclination.')
-        else:
-            raise ValueError('Colatitude outside bounds [0, 180].')
+    if (np.amin(theta) < 0.0) | (np.amax(theta) > 180.0):
+        raise ValueError('Colatitude outside bounds [0, 180].')
 
     if nmin < 1:
         raise ValueError('Only positive nmin allowed.')
@@ -349,9 +398,6 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
     else:
         assert nmax > 0, 'Only positive nmax allowed.'
     if nmax > nmax_coeffs:
-        print('Supplied nmax = {0} and nmin = {1} is '
-              'incompatible with number of model coefficients. '
-              'Using nmax = {2} instead.'.format(nmax, nmin, nmax_coeffs))
         nmax = nmax_coeffs
     if nmax < nmin:
         raise ValueError(f'Nothing to compute: nmax < nmin ({nmax} < {nmin}.)')

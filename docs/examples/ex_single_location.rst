@@ -94,7 +94,7 @@ f1 dictionary contains:
 
 -  critical frequency 'fo' in MHz
 
--  probability occurrence of F1 reion 'P'
+-  probability occurrence of F1 region 'P'
 
 -  height of the peak 'hm' in km
 
@@ -164,7 +164,7 @@ edp array:
 .. image:: Figs/PyIRI_diurnal.pdf
     :width: 600px
     :align: center
-    :alt: Diurnal variation of the ionospheric parameter.
+    :alt: Diurnal variation of the ionospheric parameters.
 
 10. Plot diurnal variation of electron density:
 

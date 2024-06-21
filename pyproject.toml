@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PyIRI"
-version = "0.0.1"
+version = "0.0.2"
 description = "Python implementation of International Reference Ionosphere"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -41,10 +41,12 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "coveralls < 3.3",
+  "coveralls",
   "flake8",
   "flake8-docstrings",
   "hacking >= 1.0",
+  "pytest",
+  "pytest-cov",
 ]
 doc = [
   "extras_require",
@@ -56,4 +58,7 @@ doc = [
 ]
 
 [project.urls]
+Documentation = "https://pyiri.readthedocs.io/en/latest/"
 Source = "https://github.com/victoriyaforsythe/PyIRI"
+
+[tool.coverage.report]
