@@ -201,3 +201,36 @@ class TestIGRFLibUtil(object):
         np.testing.assert_almost_equal(inc, self.inc_out[index], 6)
         np.testing.assert_almost_equal(eff, self.eff_out[index], 6)
         return
+
+    def test_bad_lengendre_poly_nmax(self):
+        """Test Legendre polynomial expansion failure with bad index input."""
+
+        with pytest.raises(IndexError) as ierr:
+            ilib.legendre_poly(0, self.lat_in)
+
+        assert str(ierr.value).find('out of bounds') >= 0, \
+            "unexpected error message: {:s}".format(str(ierr.value))
+        return
+
+    @pytest.mark.parametrize('nmax', [1, 10, 100])
+    def test_good_lengendre_poly(self, nmax):
+        """Test Legendre polynomial expansion with different expansions.
+
+        Parameters
+        ----------
+        nmax : int
+            Positive integer specifying the degree of expansion.
+
+        """
+        # Get the polynomial expansion
+        out = ilib.legendre_poly(nmax, self.lat_in)
+
+        # Test the output shape
+        assert out.shape == (nmax + 1, nmax + 2, 18)
+
+        # Test select values
+        assert np.all(out[0, 0] == 1.0)
+        assert np.all(out[1, 1] == -out[0, 2])
+        assert np.all(out[1, 2] == out[1, 0])
+        assert np.isfinite(out).all()
+        return
