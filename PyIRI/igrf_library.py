@@ -470,7 +470,7 @@ def legendre_poly(nmax, theta):
     Parameters
     ----------
     nmax : int
-        Maximum degree up to which expansion.
+        Maximum degree up to which expansion, with a minimum value of one.
     theta : array-like
         Array containing the colatitude in degrees.
 
@@ -478,6 +478,11 @@ def legendre_poly(nmax, theta):
     -------
     Pnm : array-like
         Evaluated values and derivatives.
+
+    Raises
+    ------
+    IndexError
+        If nmax is less than 1
 
     Notes
     -----
@@ -488,6 +493,8 @@ def legendre_poly(nmax, theta):
 
     References
     ----------
+    Langel, R. A. "Chapter four: Main field." Geomagnetism, edited by JA Jacobs
+    1 (1987).
     Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
     geodetic coordinates", IEEE Transactions on Aerospace and Electronic
     Systems}, 1994, vol. 30, num. 3, pp. 957-961.
