@@ -351,7 +351,7 @@ class TestIGRFLibCoeff(object):
         return
 
     def test_inclination_bad_coeff_dir(self):
-        "Test the failure to calculate inclination with a bad IGRF path."""
+        """Test the failure to calculate inclination with a bad IGRF path."""
         with pytest.raises(IOError) as ierr:
             ilib.inclination(".", self.date_in, self.lon_in, self.lat_in)
 
