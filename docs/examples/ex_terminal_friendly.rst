@@ -1,4 +1,4 @@
-Example 4: Terminal Friendly PyIRI Runs
+Example 5: Terminal Friendly PyIRI Runs
 =======================================
 
 In case you want to use a regularly spaced global grid and to run

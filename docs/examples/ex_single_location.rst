@@ -1,3 +1,5 @@
+.. _exthree:
+
 Example 3: Daily Ionospheric Parameters For a Single Location
 =============================================================
 
