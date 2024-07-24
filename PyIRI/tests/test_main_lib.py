@@ -38,10 +38,6 @@ def create_test_grid(lon_res=60.0, lat_res=30.0, alt_res=100.0, hr_res=6.0,
 
     Returns
     -------
-    lon_coords : np.array
-        1D array of unique longitudes
-    lat_coords : np.array
-        1D array of unique latitudes
     lons : np.array
         1D array of longitudes, gridded then flattened
     lats : np.array
