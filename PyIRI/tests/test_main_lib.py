@@ -144,7 +144,7 @@ class TestVTEC(object):
         # Update the altitude grid to be irregular
         self.alts = np.array([100.0, 150.0, 210.0, 280.0, 370.0, 470.0, 580.0,
                               700.0, 930.0, 1070.0])
-                     
+
         # Get the EDP
         self.set_edp()
 
