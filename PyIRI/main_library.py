@@ -3074,6 +3074,11 @@ def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
     vtec : np.array
         Vertical Total Electron Content in TECU with dimensions of [N_T, N_G]
 
+    Raises
+    ------
+    ValueError
+        If `min_alt` and `max_alt` result in no density data to integrate.
+
     Notes
     -----
     Providing `aalt` allows irregular altitude grids to be used.
@@ -3095,6 +3100,9 @@ def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
     alt_mask = (aalt >= min_alt) & (aalt <= max_alt)
     new_v = alt_mask.sum()
 
+    if new_v == 0:
+        raise ValueError('Altitude range contains no values')
+
     # Get the distance between each electron density point in meters
     alt_res = (aalt[1:] - aalt[:-1]) * 1000.0  # km to meters
     uniq_res = np.unique(alt_res[alt_mask[:-1]])
@@ -3102,8 +3110,12 @@ def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
     if uniq_res.size == 1:
         dist = np.full(shape=(new_v, num_t * num_g), fill_value=uniq_res[0])
     else:
-        alt_res = list(alt_res[alt_mask])
-        alt_res.append(alt_res[-1])
+        alt_res = list(alt_res[alt_mask[:-1]])
+        if len(alt_res) < new_v:
+            # If all values are good, the resolution array will be one short.
+            # Pad with the last value.
+            alt_res.append(alt_res[-1])
+
         dist = np.full(shape=(num_t * num_g, new_v),
                        fill_value=alt_res).transpose()
 
