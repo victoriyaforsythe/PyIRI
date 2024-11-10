@@ -3072,3 +3072,82 @@ def run_seas_iri_reg_grid(year, month, hr_res=1, lat_res=1, lon_res=1,
 
     return (alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak, es_peak,
             sun, mag, edens_prof)
+
+
+def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
+    """Calculate Vertical Total Electron Content (VTEC) from electron density.
+
+    Parameters
+    ----------
+    edp : np.array
+        Electron density profile in per cubic m with dimensions of
+        [N_T, N_V, N_G]
+    aalt : np.array
+        Altitude array with altitude in km used to create the `edp`, has
+        dimensions of [N_V].
+    min_alt : float
+        Minimum allowable altitude in km to include in TEC calculation
+        (default=0.0)
+    max_alt : float
+        Maximum allowable altitude in km to include in TEC calculation
+        (default=202000.0)
+
+    Returns
+    -------
+    vtec : np.array
+        Vertical Total Electron Content in TECU with dimensions of [N_T, N_G]
+
+    Raises
+    ------
+    ValueError
+        If `min_alt` and `max_alt` result in no density data to integrate.
+
+    Notes
+    -----
+    Providing `aalt` allows irregular altitude grids to be used.
+
+    Supplying `min_alt` and `max_alt` will not extend the electron density
+    integration range, only limit it.  Current limits extend from the ground
+    to the altitude of the GPS satellite constellation.
+
+    1 TECU = 10^16 electrons per square meter
+
+    """
+    # Get the different dimensions
+    num_t, num_v, num_g = edp.shape
+
+    # Reshape the electron density information to be flat in the time-space dims
+    edp_vert = edp.swapaxes(0, 1).reshape(num_v, num_t * num_g)
+
+    # Select the good altitude range
+    alt_mask = (aalt >= min_alt) & (aalt <= max_alt)
+    new_v = alt_mask.sum()
+
+    if new_v == 0:
+        raise ValueError('Altitude range contains no values')
+
+    # Get the distance between each electron density point in meters
+    alt_res = (aalt[1:] - aalt[:-1]) * 1000.0  # km to meters
+    uniq_res = np.unique(alt_res[alt_mask[:-1]])
+
+    if uniq_res.size == 1:
+        dist = np.full(shape=(new_v, num_t * num_g), fill_value=uniq_res[0])
+    else:
+        alt_res = list(alt_res[alt_mask[:-1]])
+        if len(alt_res) < new_v:
+            # If all values are good, the resolution array will be one short.
+            # Pad with the last value.
+            alt_res.append(alt_res[-1])
+
+        dist = np.full(shape=(num_t * num_g, new_v),
+                       fill_value=alt_res).transpose()
+
+    # Calculate the VTEC by summing the electron density over the desired
+    # altitude range at each time-space point.  At every altitude, the electron
+    # density is multiplied by the height covered by that density value
+    vtec = (edp_vert[alt_mask] * dist).sum(axis=0)
+
+    # Convert to TECU and reshape to have unflattened time-space dims
+    vtec = vtec.reshape((num_t, num_g)) * 1.0e-16
+
+    return vtec

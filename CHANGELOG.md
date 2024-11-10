@@ -11,6 +11,7 @@ adheres to [Semantic Versioning](https://semver.org/).
   the installation instructions, and improve the examples.
 * Added logger and fixed merge conflicts between @aburrell and
   @victoriyaforsythe develop branches
+* Added a function to calculate vertical TEC
 
 ## 0.0.2 (11-15-2023)
 * The order of interpolation was changed. Previously the EDPs were
