@@ -156,12 +156,12 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
                               G_Es_med, F_fof2_c, F_M3000_c, F_Es_med)
 
     # --------------------------------------------------------------------------
-    # Probability of F1 layer to appear
-    P_F1, foF1 = Probability_F1(year, mth, aUT, alon, alat, mag_dip_lat, aIG)
+    # Solar driven E region and locations of subsolar points
+    foE, solzen, solzen_eff, slon, slat = gammaE(year, mth, aUT, alon, alat, aIG)
 
     # --------------------------------------------------------------------------
-    # Solar driven E region and locations of subsolar points
-    foE, slon, slat = gammaE(year, mth, aUT, alon, alat, aIG)
+    # Probability of F1 layer to appear
+    P_F1, foF1 = Probability_F1(year, mth, aUT, alon, alat, mag_dip_lat, aIG, foE)
 
     # --------------------------------------------------------------------------
     # Convert critical frequency to the electron density (m-3)
@@ -206,7 +206,9 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
          'fo': foE,
          'hm': hmE,
          'B_bot': B_E_bot,
-         'B_top': B_E_top}
+         'B_top': B_E_top,
+         'solzen': solzen,
+         'solzen_eff': solzen_eff}
     Es = {'Nm': NmEs,
           'fo': foEs,
           'hm': hmEs,
@@ -1227,6 +1229,10 @@ def gammaE(year, mth, utime, alon, alat, aIG):
     -------
     gamma_E : array-like
         critical frequency of E region in MHz.
+    solzen : array-like
+        Solar zenith angle in degrees.
+    solzen_eff : array-like
+        Effective solar zenith angle in degrees.
     slon : array-like
         Longitude of subsolar point in degrees.
     slat : array-like
@@ -1256,6 +1262,8 @@ def gammaE(year, mth, utime, alon, alat, aIG):
 
     # make arrays to hold numerical maps for 2 levels of solar activity
     gamma_E = np.zeros((utime.size, alon.size, 2))
+    solzen_out = np.zeros((utime.size, alon.size, 2))
+    solzen_eff_out = np.zeros((utime.size, alon.size, 2))
 
     # min and max of solar activity
     aF107_min_max = np.array([IG12_2_F107(aIG[0]), IG12_2_F107(aIG[1])])
@@ -1263,11 +1271,13 @@ def gammaE(year, mth, utime, alon, alat, aIG):
     # find numerical maps for 2 levels of solar activity
     for isol in range(0, 2):
         gamma_E[:, :, isol] = foE(mth, solzen_eff, alat, aF107_min_max[isol])
+        solzen_out[:, :, isol] = np.full((utime.size, alon.size), solzen)
+        solzen_eff_out[:, :, isol] = np.full((utime.size, alon.size), solzen_eff)
 
-    return gamma_E, slon, slat
+    return gamma_E, solzen_out, solzen_eff_out, slon, slat
 
 
-def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
+def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG, foE):
     """Calculate probability occurrence of F1 layer.
 
     Parameters
@@ -1286,6 +1296,8 @@ def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
         Flattened array of magnetic dip latitudes in degrees.
     aIG : array-like
         Min and Max of IG12.
+    foE : array-like
+        E-region critical frequency in MHz.
 
     Returns
     -------
@@ -1357,8 +1369,20 @@ def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG):
     ind = np.where(arg > 0)
     a_foF1[ind] = f_s[ind] * arg[ind]**n[ind]
 
-    a_foF1[np.where(a_P < 0.5)] = np.nan
+    # Create a step function that is equal to 1 at the place where the
+    # probability occurrence of F1 region is roughly > 0.5 and drops to
+    # zero away from it
+    multiplier_F1 = (-10. + 30. * np.cos(np.deg2rad(a_solzen)))
+    multiplier_F1[multiplier_F1 > 10.] = 10.
+    multiplier_F1 = multiplier_F1 / np.max(multiplier_F1)
+    multiplier_F1[multiplier_F1 < 0.] = np.nan
 
+    # Create a step function that is equal to 0 at the place where the
+    # probability occurrence of F1 region is roughly > 0.5 and rises to
+    # one away from it
+    multiplier_E = abs(multiplier_F1 - 1.)
+
+    a_foF1 = multiplier_F1 * a_foF1 + multiplier_E * foE
     return a_P, a_foF1
 
 
@@ -1484,28 +1508,28 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
     Space Weather.
 
     """
-    hmF1 = NmF2 * 0 + np.nan
-    a = NmF2 * 0
-    b = NmF2 * 0
-    c = NmF2 * 0
-    d = NmF2 * 0
-    x = NmF2 * 0 + np.nan
+    hmF1 = np.zeros((NmF2.shape))
 
-    a[:, :, :] = 1.
-    ind_finite = np.isfinite(NmF1)
-    b[ind_finite] = (2. - 4. * NmF2[ind_finite] / NmF1[ind_finite])
-    c[:, :, :] = 1.
+    a = np.zeros((NmF2.shape)) + 1.
+    b = np.zeros((NmF2.shape))
+    c = np.zeros((NmF2.shape)) + 1.
+    d = np.zeros((NmF2.shape))
+    x = np.zeros((NmF2.shape))
 
-    d = (b**2) - (4 * a * c)
+    b = (2. - 4. * NmF2 / NmF1)
+
+    d = (b**2) - (4. * a * c)
     ind_positive = np.where(d >= 0)
 
-    # take second root of the quadratic equation (it is below hmF2)
-    x[ind_positive] = ((-b[ind_positive] - np.sqrt(d[ind_positive]))
-                       / (2 * a[ind_positive]))
+    # Take second root of the quadratic equation (it is below hmF2)
+    x[ind_positive] = ((-b[ind_positive] - np.sqrt(d[ind_positive])) /
+                       (2 * a[ind_positive]))
 
     ind_g0 = np.where(x > 0)
     hmF1[ind_g0] = B_F2_bot[ind_g0] * np.log(x[ind_g0]) + hmF2[ind_g0]
 
+    # Don't let it go below hmE
+    hmF1[hmF1 <= 110.] = np.nan
     return hmF1
 
 
@@ -1539,8 +1563,6 @@ def find_B_F1_bot(hmF1, hmE, P_F1):
 
     """
     B_F1_bot = 0.5 * (hmF1 - hmE)
-    B_F1_bot[np.where(P_F1 < 0.5)] = np.nan
-
     return B_F1_bot
 
 
@@ -2482,6 +2504,7 @@ def EDP_builder(x, aalt):
                  & (a_alt > a_hmE))
     drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF2[a] - a_hmE[a]))**4.
     drop_2[a] = 1. - ((a_hmF2[a] - a_alt[a]) / (a_hmF2[a] - a_hmE[a]))**4.
+
     density_E[a] = epstein_function_array(a_A3[a],
                                           a_hmE[a],
                                           a_B_E_top[a],
