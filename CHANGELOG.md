@@ -3,8 +3,7 @@ All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.0.3 (XX-XX-2024)
-* Added unit tests for the IGRF library functions that do not use IGRF
-  coefficients.
+* Added unit tests for the IGRF library functions.
 * Added pytest and coveralls to main CI tests.
 * Updated the README to include more links and information.
 * Updated the documentation to include more citation information, correct
