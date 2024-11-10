@@ -157,11 +157,13 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
 
     # --------------------------------------------------------------------------
     # Solar driven E region and locations of subsolar points
-    foE, solzen, solzen_eff, slon, slat = gammaE(year, mth, aUT, alon, alat, aIG)
+    foE, solzen, solzen_eff, slon, slat = gammaE(year, mth, aUT, alon,
+                                                 alat, aIG)
 
     # --------------------------------------------------------------------------
     # Probability of F1 layer to appear
-    P_F1, foF1 = Probability_F1(year, mth, aUT, alon, alat, mag_dip_lat, aIG, foE)
+    P_F1, foF1 = Probability_F1(year, mth, aUT, alon, alat, mag_dip_lat,
+                                aIG, foE)
 
     # --------------------------------------------------------------------------
     # Convert critical frequency to the electron density (m-3)
@@ -1272,7 +1274,8 @@ def gammaE(year, mth, utime, alon, alat, aIG):
     for isol in range(0, 2):
         gamma_E[:, :, isol] = foE(mth, solzen_eff, alat, aF107_min_max[isol])
         solzen_out[:, :, isol] = np.full((utime.size, alon.size), solzen)
-        solzen_eff_out[:, :, isol] = np.full((utime.size, alon.size), solzen_eff)
+        solzen_eff_out[:, :, isol] = np.full((utime.size, alon.size),
+                                             solzen_eff)
 
     return gamma_E, solzen_out, solzen_eff_out, slon, slat
 
@@ -1522,11 +1525,13 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
     ind_positive = np.where(d >= 0)
 
     # Take second root of the quadratic equation (it is below hmF2)
-    x[ind_positive] = ((-b[ind_positive] - np.sqrt(d[ind_positive])) /
-                       (2 * a[ind_positive]))
+    x[ind_positive] = ((-b[ind_positive] -
+                        np.sqrt(d[ind_positive])) / 
+                        (2 * a[ind_positive]))
 
     ind_g0 = np.where(x > 0)
-    hmF1[ind_g0] = B_F2_bot[ind_g0] * np.log(x[ind_g0]) + hmF2[ind_g0]
+    hmF1[ind_g0] = (B_F2_bot[ind_g0] * np.log(x[ind_g0])
+                    + hmF2[ind_g0])
 
     # Don't let it go below hmE
     hmF1[hmF1 <= 110.] = np.nan
