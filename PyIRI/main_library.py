@@ -1525,9 +1525,9 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
     ind_positive = np.where(d >= 0)
 
     # Take second root of the quadratic equation (it is below hmF2)
-    x[ind_positive] = ((-b[ind_positive] -
-                        np.sqrt(d[ind_positive])) / 
-                        (2 * a[ind_positive]))
+    num = -b[ind_positive] - np.sqrt(d[ind_positive])
+    den = 2 * a[ind_positive]
+    x[ind_positive] = num / den
 
     ind_g0 = np.where(x > 0)
     hmF1[ind_g0] = (B_F2_bot[ind_g0] * np.log(x[ind_g0])
