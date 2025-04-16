@@ -48,3 +48,27 @@ print(edens_prof.shape)
 
 The resulting electron density profile (`edens_prof`) will have a shape of
 12 x 70 x 2701.  More examples are available in the documentation.
+
+
+PyIRI does not calculate the Total Electron Content (TEC) internally, as
+the altitude array is provided by the user. If the user supplies an
+array with low resolution, the resulting TEC values may be inaccurate.
+The following matrix approach can be implemented to calculate TEC for the
+PyIRI output array of density edens_prof:
+
+```
+# Find dimentions:
+N_time = ahr.size
+N_alt = aalt.size
+N_grid = alon_2d.size
+
+# Array of distances between vertical grid cells in meters
+dist = np.concatenate((np.diff(aalt), aalt[-1] - aalt[-2]), axis=None) * 1000.
+
+# Convert dist to a matrix, to perform the array multipllication
+dist_extended = np.reshape(np.full((N_time, N_grid, N_alt), dist), (N_time, N_alt, N_grid))
+
+# Find TEC in shape [N_time, N_grid], result is in TECU
+tec = np.sum(den * dist_extended, axis=1) / 1e16
+
+```
