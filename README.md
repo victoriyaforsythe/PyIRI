@@ -58,9 +58,9 @@ PyIRI output array of density edens_prof:
 
 ```
 # Find dimentions:
-N_time = ahr.size
-N_alt = aalt.size
-N_grid = alon_2d.size
+N_time = edens_prof.shape[0]
+N_alt = edens_prof.shape[1]
+N_grid = edens_prof.shape[2]
 
 # Array of distances between vertical grid cells in meters
 dist = np.concatenate((np.diff(aalt), aalt[-1] - aalt[-2]), axis=None) * 1000.
