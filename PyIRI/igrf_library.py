@@ -164,8 +164,7 @@ def inclination(coeff_dir, date_decimal, alon, alat):
     This code is a slight modification of the IGRF13 pyIGRF release,
     https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html
     The reading of the IGRF coefficient file was modified to speded up the
-    process, and the main code was simlified to oly focus on the iclination
-    of magnetic field output for the given grid.
+    process, and the main code was simlified.
 
     """
     # Set altitude to 300 km
