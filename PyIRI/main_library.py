@@ -123,13 +123,12 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     # Date and time for the middle of the month (day=15) that will be used to
     # find magnetic inclination
     dtime = dt.datetime(year, mth, 15)
-    date_decimal = decimal_year(dtime)
 
     # -------------------------------------------------------------------------
     # Calculating magnetic inclanation, modified dip angle, and magnetic dip
     # latitude using IGRF at 300 km of altitude
     _, _, _, _, _, inc, _ = igrf.inclination(coeff_dir,
-                                             date_decimal,
+                                             dtime,
                                              alon, alat, 300.0)
     modip = igrf.inc2modip(inc, alat)
     mag_dip_lat = igrf.inc2magnetic_dip_latitude(inc)
@@ -1777,38 +1776,6 @@ def epstein(Nm, hm, B, alt):
     res = Nm * aexp / (1 + aexp)**2
 
     return res
-
-
-def decimal_year(dtime):
-    """Determine the decimal year.
-
-    Parameters
-    ----------
-    dtime : class:`dt.datetime`
-        Given datetime.
-
-    Returns
-    -------
-    date_decimal : float
-        Decimal year.
-
-    Notes
-    -----
-    This function returns decimal year. For example, middle of the year
-    is 2020.5.
-
-    """
-    # day of the year
-    doy = dtime.timetuple().tm_yday
-
-    # decimal, day of year devided by number of days in year
-    days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
-    decimal = (doy - 1) / days_of_year
-
-    # year plus decimal
-    date_decimal = dtime.year + decimal
-
-    return date_decimal
 
 
 def set_geo_grid(dlon, dlat):

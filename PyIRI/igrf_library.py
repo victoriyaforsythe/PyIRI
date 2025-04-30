@@ -123,15 +123,15 @@ def inc2magnetic_dip_latitude(inc):
     return magnetic_dip_latitude
 
 
-def inclination(coeff_dir, date_decimal, alon, alat, alt):
+def inclination(coeff_dir, dtime, alon, alat, alt):
     """Calculate magnetic inclination using IGRF13.
 
     Parameters
     ----------
     coeff_dir : str
         Where IGRF13 coefficients are located.
-    date_decimal : float
-        Decimal year
+    dtime : class:`dt.datetime`
+        Datetime object.
     alon : array-like
         Flattened array of geographic longitudes in degrees.
     alat : array-like
@@ -169,6 +169,9 @@ def inclination(coeff_dir, date_decimal, alon, alat, alt):
     process, and the main code was simlified.
 
     """
+    # Convert datetime to the decimal year
+    date_decimal = decimal_year(dtime)
+
     # Set altitude
     aalt = np.full(shape=alon.shape, fill_value=alt)
 
@@ -599,3 +602,35 @@ def xyz2dhif(x, y, z):
     inc = np.rad2deg(np.arctan2(z, hoz))
 
     return dec, hoz, inc, eff
+
+
+def decimal_year(dtime):
+    """Determine the decimal year.
+
+    Parameters
+    ----------
+    dtime : class:`dt.datetime`
+        Given datetime.
+
+    Returns
+    -------
+    date_decimal : float
+        Decimal year.
+
+    Notes
+    -----
+    This function returns decimal year. For example, middle of the year
+    is 2020.5.
+
+    """
+    # day of the year
+    doy = dtime.timetuple().tm_yday
+
+    # decimal, day of year devided by number of days in year
+    days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
+    decimal = (doy - 1) / days_of_year
+
+    # year plus decimal
+    date_decimal = dtime.year + decimal
+
+    return date_decimal
