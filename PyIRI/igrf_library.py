@@ -139,8 +139,20 @@ def inclination(coeff_dir, date_decimal, alon, alat):
 
     Returns
     -------
+    X : array-like
+        North component of the magnetic field in nT.
+    Y : array-like
+        East component of the magnetic field in nT.
+    Z : array-like
+        Vertical component of the magnetic field in nT.
+    dec : array-like
+        Declination of the magnetic field in degrees.
+    hoz : array-like
+        Horizontal intensity of the magnetic field in nT.
     inc : array-like
         Magnetic inclination in degrees.
+    eff : array-like
+        Total intensity of the magnetic field in nT.
 
     Raises
     ------
@@ -183,7 +195,7 @@ def inclination(coeff_dir, date_decimal, alon, alat):
 
     # Compute geocentric colatitude and radius from geodetic colatitude
     # and height
-    alt, colat, bx_rot, bz_rot = gg_to_geo(aalt, colat)
+    alt, colat, sd, cd = gg_to_geo(aalt, colat)
 
     # Interpolate coefficients from 5 year slots to given decimal year
     igrf_extrap = interpolate.interp1d(igrf_time, igrf_coeffs,
@@ -200,14 +212,14 @@ def inclination(coeff_dir, date_decimal, alon, alat):
 
     # Rotate back to geodetic coords if needed
     t_comp = x_comp
-    x_comp = x_comp * bz_rot + z_comp * bx_rot
-    z_comp = z_comp * bz_rot - t_comp * bx_rot
+    x_comp = x_comp * cd + z_comp * sd
+    z_comp = z_comp * cd - t_comp * sd
 
     # Compute the four non-linear components
     dec, hoz, inc, eff = xyz2dhif(x_comp, y_comp, z_comp)
 
     # Return only inclination because that is what we need for PyIRI
-    return inc
+    return X, Y, Z, dec, hoz, inc, eff
 
 
 def gg_to_geo(h, gdcolat):
