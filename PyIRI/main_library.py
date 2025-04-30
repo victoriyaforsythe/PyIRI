@@ -130,7 +130,7 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     # latitude using IGRF at 300 km of altitude
     _, _, _, _, _, inc, _ = igrf.inclination(coeff_dir,
                                              date_decimal,
-                                             alon, alat)
+                                             alon, alat, 300.0)
     modip = igrf.inc2modip(inc, alat)
     mag_dip_lat = igrf.inc2magnetic_dip_latitude(inc)
 
