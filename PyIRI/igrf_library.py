@@ -123,7 +123,7 @@ def inc2magnetic_dip_latitude(inc):
     return magnetic_dip_latitude
 
 
-def inclination(coeff_dir, date_decimal, alon, alat):
+def inclination(coeff_dir, date_decimal, alon, alat, alt):
     """Calculate magnetic inclination using IGRF13.
 
     Parameters
@@ -136,6 +136,8 @@ def inclination(coeff_dir, date_decimal, alon, alat):
         Flattened array of geographic longitudes in degrees.
     alat : array-like
         Flattened array of geographic latitudes in degrees.
+    alt : flt
+        Altitude in km.
 
     Returns
     -------
@@ -167,8 +169,8 @@ def inclination(coeff_dir, date_decimal, alon, alat):
     process, and the main code was simlified.
 
     """
-    # Set altitude to 300 km
-    aalt = np.full(shape=alon.shape, fill_value=300.0)
+    # Set altitude
+    aalt = np.full(shape=alon.shape, fill_value=alt)
 
     # Open IGRF file and read to array the main table
     igrf_file = os.path.join(coeff_dir, 'IGRF', 'IGRF13.shc')
