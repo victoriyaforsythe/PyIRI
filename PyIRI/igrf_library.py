@@ -211,17 +211,17 @@ def inclination(coeff_dir, dtime, alon, alat, alt):
     br, bt, bp = synth_values(coeffs.T, alt, colat, alon, nmax)
 
     # Rearrange to X, Y, Z components
-    x_comp = -bt
-    y_comp = bp
-    z_comp = -br
+    X = -bt
+    Y = bp
+    Z = -br
 
     # Rotate back to geodetic coords if needed
-    t_comp = x_comp
-    x_comp = x_comp * cd + z_comp * sd
-    z_comp = z_comp * cd - t_comp * sd
+    t = X
+    X = X * cd + Z * sd
+    Z = Z * cd - t * sd
 
     # Compute the four non-linear components
-    dec, hoz, inc, eff = xyz2dhif(x_comp, y_comp, z_comp)
+    dec, hoz, inc, eff = xyz2dhif(X, Y, Z)
 
     return X, Y, Z, dec, hoz, inc, eff
 
