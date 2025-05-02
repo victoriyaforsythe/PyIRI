@@ -237,11 +237,6 @@ class TestIGRFLibUtil(object):
         assert np.isfinite(out).all()
         return
 
-    def teardown_method(self):
-        """Clean up after every test."""
-        del self.date_in, self.lon_in, self.lat_in, self.inc_out, self.test_out
-        del self.coeff_in
-        return
 
     def test_inclination(self):
         """Test the inclination calculation."""
