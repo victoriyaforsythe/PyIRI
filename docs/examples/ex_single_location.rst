@@ -160,10 +160,10 @@ edp array:
    lat_plot = 20
 
    plot.PyIRI_plot_1location_diurnal_par(f2, f1, e_peak, es_peak, alon, alat,
-   lon_plot, lat_plot, ahr, plot_dir, plot_name='PyIRI_diurnal.pdf')
+   lon_plot, lat_plot, ahr, plot_dir, plot_name='PyIRI_diurnal.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_diurnal.pdf
+.. image:: /docs/examples/Figs/PyIRI_diurnal.png
     :width: 600px
     :align: center
     :alt: Diurnal variation of the ionospheric parameters.
@@ -173,10 +173,10 @@ edp array:
 ::
 
    plot.PyIRI_plot_1location_diurnal_density(edp, alon, alat, lon_plot, lat_plot,
-   aalt, ahr, plot_dir, plot_name='PyIRI_EDP_diurnal.pdf')
+   aalt, ahr, plot_dir, plot_name='PyIRI_EDP_diurnal.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_EDP_diurnal.pdf
+.. image:: /docs/examples/Figs/PyIRI_EDP_diurnal.png
     :width: 600px
     :align: center
     :alt: Diurnal variation of the ionospheric parameter.

@@ -12,7 +12,7 @@ import os
 
 
 def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir,
-                           plot_name='PyIRI_mag_dip_lat.pdf'):
+                           plot_name='PyIRI_mag_dip_lat.png'):
     """Plot magnetic dip latitude.
 
     Parameters
@@ -31,7 +31,7 @@ def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir,
         Direction where to save the figure.
     plot_name : str
         Output name, without directory, for the saved figure
-        (default='PyIRI_mag_dip_lat.pdf')
+        (default='PyIRI_mag_dip_lat.png')
 
     """
     figname = os.path.join(plot_dir, plot_name)
@@ -57,7 +57,7 @@ def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir,
 
 
 def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir,
-                   plot_name='PyIRI_inc.pdf'):
+                   plot_name='PyIRI_inc.png'):
     """Plot magnetic inclination.
 
     Parameters
@@ -75,7 +75,7 @@ def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir,
     plot_dir : str
         Direction where to save the figure.
     plot_name : str
-        Name for the output figure, without directory (default='PyIRI_inc.pdf')
+        Name for the output figure, without directory (default='PyIRI_inc.png')
 
     """
     figname = os.path.join(plot_dir, plot_name)
@@ -101,7 +101,7 @@ def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir,
 
 
 def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir,
-                     plot_name='PyIRI_modip.pdf'):
+                     plot_name='PyIRI_modip.png'):
     """Plot modified dip angle.
 
     Parameters
@@ -120,10 +120,10 @@ def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_modip.pdf')
+        (default='PyIRI_modip.png')
 
     """
-    figname = os.path.join(plot_dir, 'PyIRI_modip.pdf')
+    figname = os.path.join(plot_dir, 'PyIRI_modip.png')
     fig, ax = plt.subplots(1, 1)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
@@ -147,7 +147,7 @@ def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir,
 
 def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
                                 UT, plot_dir,
-                                plot_name='PyIRI_B_F1_bot_min_max.pdf'):
+                                plot_name='PyIRI_B_F1_bot_min_max.png'):
     """Plot thickness of F1 bottom side for solar min and max.
 
     Parameters
@@ -172,7 +172,7 @@ def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_B_F1_bot_min_max.pdf')
+        (default='PyIRI_B_F1_bot_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -210,7 +210,7 @@ def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                                 UT, plot_dir,
-                                plot_name='PyIRI_B_F2_bot_min_max.pdf'):
+                                plot_name='PyIRI_B_F2_bot_min_max.png'):
     """Plot thickness of F2 bottom side for solar min and max.
 
     Parameters
@@ -235,7 +235,7 @@ def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_B_F2_bot_min_max.pdf')
+        (default='PyIRI_B_F2_bot_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -273,7 +273,7 @@ def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                                 UT, plot_dir,
-                                plot_name='PyIRI_B_F2_top_min_max.pdf'):
+                                plot_name='PyIRI_B_F2_top_min_max.png'):
     """Plot thickness of F2 topside for solar min and max.
 
     Parameters
@@ -298,7 +298,7 @@ def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_B_F2_top_min_max.pdf')
+        (default='PyIRI_B_F2_top_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -335,7 +335,7 @@ def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                             UT, plot_dir, plot_name='PyIRI_M3000_min_max.pdf'):
+                             UT, plot_dir, plot_name='PyIRI_M3000_min_max.png'):
     """Plot M3000 propagation parameter for solar min and max.
 
     Parameters
@@ -360,7 +360,7 @@ def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_M3000_min_max.pdf')
+        (default='PyIRI_M3000_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -397,7 +397,7 @@ def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir, plot_name='PyIRI_hmF2_min_max.pdf'):
+                            UT, plot_dir, plot_name='PyIRI_hmF2_min_max.png'):
     """Plot hmF2 for solar min and max.
 
     Parameters
@@ -422,7 +422,7 @@ def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_hmF2_min_max.pdf')
+        (default='PyIRI_hmF2_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -459,7 +459,7 @@ def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir, plot_name='PyIRI_hmF1_min_max.pdf'):
+                            UT, plot_dir, plot_name='PyIRI_hmF1_min_max.png'):
     """Plot hmF1 for solar min and max.
 
     Parameters
@@ -484,7 +484,7 @@ def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_hmF1_min_max.pdf')
+        (default='PyIRI_hmF1_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -521,7 +521,7 @@ def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir, plot_name='PyIRI_foEs_min_max.pdf'):
+                            UT, plot_dir, plot_name='PyIRI_foEs_min_max.png'):
     """Plot foEs for solar min and max.
 
     Parameters
@@ -546,7 +546,7 @@ def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foEs_min_max.pdf')
+        (default='PyIRI_foEs_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -583,7 +583,7 @@ def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
-                           UT, plot_dir, plot_name='PyIRI_foE_min_max.pdf'):
+                           UT, plot_dir, plot_name='PyIRI_foE_min_max.png'):
     """Plot foE for solar min and max.
 
     Parameters
@@ -608,7 +608,7 @@ def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foE_min_max.pdf')
+        (default='PyIRI_foE_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -645,7 +645,7 @@ def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir, plot_name='PyIRI_foF2_min_max.pdf'):
+                            UT, plot_dir, plot_name='PyIRI_foF2_min_max.png'):
     """Plot foF2 for solar min and max.
 
     Parameters
@@ -670,7 +670,7 @@ def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foF2_min_max.pdf')
+        (default='PyIRI_foF2_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -707,7 +707,7 @@ def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir, plot_name='PyIRI_NmF2_min_max.pdf'):
+                            UT, plot_dir, plot_name='PyIRI_NmF2_min_max.png'):
     """Plot NmF2 for solar min and max.
 
     Parameters
@@ -732,7 +732,7 @@ def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_NmF2_min_max.pdf')
+        (default='PyIRI_NmF2_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -769,7 +769,7 @@ def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_NmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir, plot_name='PyIRI_NmF1_min_max.pdf'):
+                            UT, plot_dir, plot_name='PyIRI_NmF1_min_max.png'):
     """Plot NmF1 for solar min and max.
 
     Parameters
@@ -794,7 +794,7 @@ def PyIRI_plot_NmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_NmF1_min_max.pdf')
+        (default='PyIRI_NmF1_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -831,7 +831,7 @@ def PyIRI_plot_NmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                            UT, plot_dir, plot_name='PyIRI_foF1_min_max.pdf'):
+                            UT, plot_dir, plot_name='PyIRI_foF1_min_max.png'):
     """Plot foF1 for solar min and max.
 
     Parameters
@@ -856,7 +856,7 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foF1_min_max.pdf')
+        (default='PyIRI_foF1_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -921,7 +921,7 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_EDP_sample(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
-                     UT, plot_dir, plot_name='PyIRI_EDP_sample.pdf'):
+                     UT, plot_dir, plot_name='PyIRI_EDP_sample.png'):
     """Plot EDP for one location for solar min and max.
 
     Parameters
@@ -946,7 +946,7 @@ def PyIRI_EDP_sample(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_EDP_sample.pdf')
+        (default='PyIRI_EDP_sample.png')
 
     """
     figname = os.path.join(plot_dir, plot_name)
@@ -971,7 +971,7 @@ def PyIRI_EDP_sample(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
 
 
 def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
-                          UT, plot_dir, plot_name='PyIRI_EDP_sample_1day.pdf'):
+                          UT, plot_dir, plot_name='PyIRI_EDP_sample_1day.png'):
     """Plot EDP for one location.
 
     Parameters
@@ -996,7 +996,7 @@ def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_EDP_sample_1day.pdf')
+        (default='PyIRI_EDP_sample_1day.png')
 
     """
     figname = os.path.join(plot_dir, plot_name)
@@ -1017,7 +1017,7 @@ def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
 
 
 def PyIRI_plot_B_F1_bot(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                        UT, plot_dir, plot_name='PyIRI_B_F1_bot.pdf'):
+                        UT, plot_dir, plot_name='PyIRI_B_F1_bot.png'):
     """Plot thickness of F1 bottom side.
 
     Parameters
@@ -1042,7 +1042,7 @@ def PyIRI_plot_B_F1_bot(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_B_F1_bot.pdf')
+        (default='PyIRI_B_F1_bot.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1073,7 +1073,7 @@ def PyIRI_plot_B_F1_bot(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 def PyIRI_plot_B_F2_bot(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                         UT, plot_dir,
-                        plot_name='PyIRI_B_F2_bot.pdf'):
+                        plot_name='PyIRI_B_F2_bot.png'):
     """Plot thickness of F2 bottom side.
 
     Parameters
@@ -1098,7 +1098,7 @@ def PyIRI_plot_B_F2_bot(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_B_F2_bot.pdf')
+        (default='PyIRI_B_F2_bot.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1129,7 +1129,7 @@ def PyIRI_plot_B_F2_bot(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 def PyIRI_plot_B_F2_top(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
                         UT, plot_dir,
-                        plot_name='PyIRI_B_F2_top.pdf'):
+                        plot_name='PyIRI_B_F2_top.png'):
     """Plot thickness of F2 topside.
 
     Parameters
@@ -1154,7 +1154,7 @@ def PyIRI_plot_B_F2_top(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_B_F2_top.pdf')
+        (default='PyIRI_B_F2_top.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1184,7 +1184,7 @@ def PyIRI_plot_B_F2_top(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_M3000(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                     UT, plot_dir, plot_name='PyIRI_M3000.pdf'):
+                     UT, plot_dir, plot_name='PyIRI_M3000.png'):
     """Plot M3000 propagation parameter.
 
     Parameters
@@ -1209,7 +1209,7 @@ def PyIRI_plot_M3000(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_M3000.pdf')
+        (default='PyIRI_M3000.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1239,7 +1239,7 @@ def PyIRI_plot_M3000(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_hmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                    UT, plot_dir, plot_name='PyIRI_hmF2.pdf'):
+                    UT, plot_dir, plot_name='PyIRI_hmF2.png'):
     """Plot hmF2.
 
     Parameters
@@ -1264,7 +1264,7 @@ def PyIRI_plot_hmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_hmF2.pdf')
+        (default='PyIRI_hmF2.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1294,7 +1294,7 @@ def PyIRI_plot_hmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_hmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                    UT, plot_dir, plot_name='PyIRI_hmF1.pdf'):
+                    UT, plot_dir, plot_name='PyIRI_hmF1.png'):
     """Plot hmF1 for solar min and max.
 
     Parameters
@@ -1319,7 +1319,7 @@ def PyIRI_plot_hmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_hmF1_min_max.pdf')
+        (default='PyIRI_hmF1_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1349,7 +1349,7 @@ def PyIRI_plot_hmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foEs(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
-                    UT, plot_dir, plot_name='PyIRI_foEs.pdf'):
+                    UT, plot_dir, plot_name='PyIRI_foEs.png'):
     """Plot foEs.
 
     Parameters
@@ -1374,7 +1374,7 @@ def PyIRI_plot_foEs(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foEs_min_max.pdf')
+        (default='PyIRI_foEs_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1404,7 +1404,7 @@ def PyIRI_plot_foEs(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foE(E, aUT, alon, alat, alon_2d, alat_2d, sun,
-                   UT, plot_dir, plot_name='PyIRI_foE.pdf'):
+                   UT, plot_dir, plot_name='PyIRI_foE.png'):
     """Plot foE.
 
     Parameters
@@ -1429,7 +1429,7 @@ def PyIRI_plot_foE(E, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foE_min_max.pdf')
+        (default='PyIRI_foE_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1459,7 +1459,7 @@ def PyIRI_plot_foE(E, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                    UT, plot_dir, plot_name='PyIRI_foF2.pdf'):
+                    UT, plot_dir, plot_name='PyIRI_foF2.png'):
     """Plot foF2.
 
     Parameters
@@ -1484,7 +1484,7 @@ def PyIRI_plot_foF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foF2_min_max.pdf')
+        (default='PyIRI_foF2_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1514,7 +1514,7 @@ def PyIRI_plot_foF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_NmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
-                    UT, plot_dir, plot_name='PyIRI_NmF2.pdf'):
+                    UT, plot_dir, plot_name='PyIRI_NmF2.png'):
     """Plot NmF2.
 
     Parameters
@@ -1539,7 +1539,7 @@ def PyIRI_plot_NmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_NmF2_min_max.pdf')
+        (default='PyIRI_NmF2_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1569,7 +1569,7 @@ def PyIRI_plot_NmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_NmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                    UT, plot_dir, plot_name='PyIRI_NmF1.pdf'):
+                    UT, plot_dir, plot_name='PyIRI_NmF1.png'):
     """Plot NmF1.
 
     Parameters
@@ -1594,7 +1594,7 @@ def PyIRI_plot_NmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_NmF1_min_max.pdf')
+        (default='PyIRI_NmF1_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1624,7 +1624,7 @@ def PyIRI_plot_NmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 
 def PyIRI_plot_foF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
-                    UT, plot_dir, plot_name='PyIRI_foF1.pdf'):
+                    UT, plot_dir, plot_name='PyIRI_foF1.png'):
     """Plot foF1.
 
     Parameters
@@ -1649,7 +1649,7 @@ def PyIRI_plot_foF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foF1_min_max.pdf')
+        (default='PyIRI_foF1_min_max.png')
 
     """
     ind_time = np.where(aUT == UT)
@@ -1699,7 +1699,7 @@ def PyIRI_plot_foF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
 
 def PyIRI_plot_1location_diurnal_par(F2, F1, E, Es, alon, alat,
                                      lon_plot, lat_plot, aUT, plot_dir,
-                                     plot_name='PyIRI_diurnal.pdf'):
+                                     plot_name='PyIRI_diurnal.png'):
     """Plot diurnal parameters for one location.
 
     Parameters
@@ -1726,7 +1726,7 @@ def PyIRI_plot_1location_diurnal_par(F2, F1, E, Es, alon, alat,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foF1_min_max.pdf')
+        (default='PyIRI_foF1_min_max.png')
 
     """
     figname = os.path.join(plot_dir, plot_name)
@@ -1779,7 +1779,7 @@ def PyIRI_plot_1location_diurnal_par(F2, F1, E, Es, alon, alat,
 
 def PyIRI_plot_1location_diurnal_density(EDP, alon, alat, lon_plot, lat_plot,
                                          aalt, aUT, plot_dir,
-                                         plot_name='PyIRI_EDP_diurnal.pdf'):
+                                         plot_name='PyIRI_EDP_diurnal.png'):
     """Plot diurnal parameters for one location.
 
     Parameters
@@ -1803,7 +1803,7 @@ def PyIRI_plot_1location_diurnal_density(EDP, alon, alat, lon_plot, lat_plot,
         Direction where to save the figure.
     plot_name : str
         Name for the output figure, without directory
-        (default='PyIRI_foF1_min_max.pdf')
+        (default='PyIRI_foF1_min_max.png')
 
     """
     figname = os.path.join(plot_dir, plot_name)
