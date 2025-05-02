@@ -633,5 +633,4 @@ def decimal_year(dtime):
 
     # year plus decimal
     date_decimal = dtime.year + decimal
-
     return date_decimal
