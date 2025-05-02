@@ -70,7 +70,6 @@ class TestIGRFLibUtil(object):
     @pytest.mark.parametrize('inc', [45.0, 45, [0.0, 90.0],
                                      np.arange(-90.0, 90.0, 1.0),
                                      np.array([[0.0, 0.0], [90.0, -90.0]])])
-
     def test_good_inc_verification(self, inc):
         """Test `verify_inclination` using good inputs.
 
@@ -89,7 +88,6 @@ class TestIGRFLibUtil(object):
     @pytest.mark.parametrize('inc', [-90.1, 90.1, [-90.1, 90.1],
                                      np.arange(-90.1, 90.1, 0.1),
                                      np.array([[-90.1, 0.0], [90.1, 90.0]])])
-
     def test_close_inc_verification(self, inc):
         """Test `verify_inclination` using correctable inputs.
 
@@ -108,11 +106,9 @@ class TestIGRFLibUtil(object):
     @pytest.mark.parametrize('inc', [-90.11, 90.11, [-90.11, 90.11],
                                      np.arange(-90.11, 90.0, 1.0),
                                      np.array([[-90.11, 0.0], [90.1, 90.0]])])
-
     @pytest.mark.parametrize('function,args', [
         (ilib.verify_inclination, []), (ilib.inc2modip, [10.0]),
         (ilib.inc2magnetic_dip_latitude, [])])
-
     def test_bad_inc_verification(self, inc, function, args):
         """Test functions that verify inclination using bad inputs.
 
@@ -135,7 +131,6 @@ class TestIGRFLibUtil(object):
         return
 
     @pytest.mark.parametrize('index', [1, slice(None)])
-
     def test_inc2modip(self, index):
         """Test `inc2modip` using locally specified outputs.
 
@@ -153,7 +148,6 @@ class TestIGRFLibUtil(object):
         return
 
     @pytest.mark.parametrize('index', [1, slice(None)])
-
     def test_inc2mag_dip_lat(self, index):
         """Test `inc2magnetic_dip_latitude` using locally specified outputs.
 
@@ -187,7 +181,6 @@ class TestIGRFLibUtil(object):
         return
 
     @pytest.mark.parametrize('index', [1, slice(None)])
-
     def test_xyz2dhif_success(self, index):
         """Test `xyz2dhif` using locally specified outputs.
 
@@ -222,7 +215,6 @@ class TestIGRFLibUtil(object):
         return
 
     @pytest.mark.parametrize('nmax', [1, 10, 100])
-
     def test_good_lengendre_poly(self, nmax):
         """Test Legendre polynomial expansion with different expansions.
 
