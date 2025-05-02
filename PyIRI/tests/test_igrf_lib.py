@@ -247,6 +247,7 @@ class TestIGRFLibCoeff(object):
         self.date_in = 1981.1
         self.lon_in = np.arange(0.0, 360.0, 10.0)
         self.lat_in = np.zeros(shape=self.lon_in.shape)
+        self.alt_in = 300.
         self.coeff_in = np.array([
             -2.996582e+04, -1.944780e+03, 5.581120e+03, -2.013500e+03,
             3.030740e+03, -2.143960e+03, 1.668280e+03, -2.233200e+02,
