@@ -24,3 +24,20 @@ between 4 and 45 TECU::
 
 Make sure to use sufficient vertical resolution and the maximum height for
 this calculation.
+
+The following matrix approach can be implemented to calculate TEC for the
+PyIRI output array of density edens_prof:
+
+# Find dimentions:
+N_time = edens_prof.shape[0]
+N_alt = edens_prof.shape[1]
+N_grid = edens_prof.shape[2]
+
+# Array of distances between vertical grid cells in meters
+dist = np.concatenate((np.diff(aalt), aalt[-1] - aalt[-2]), axis=None) * 1000.
+
+# Convert dist to a matrix, to perform the array multipllication
+dist_extended = np.reshape(np.full((N_time, N_grid, N_alt), dist), (N_time, N_alt, N_grid))
+
+# Find TEC in shape [N_time, N_grid], result is in TECU
+tec = np.sum(den * dist_extended, axis=1) / 1e16
