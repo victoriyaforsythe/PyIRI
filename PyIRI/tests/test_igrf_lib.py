@@ -353,7 +353,8 @@ class TestIGRFLibCoeff(object):
     def test_inclination_bad_coeff_dir(self):
         """Test the failure to calculate inclination with a bad IGRF path."""
         with pytest.raises(IOError) as ierr:
-            ilib.inclination(".", self.date_in, self.lon_in, self.lat_in)
+            ilib.inclination(".", self.date_in, self.lon_in, self.lat_in,
+                             self.alt_in)
 
         assert str(ierr.value).find('unable to find IGRF coeff') >= 0, \
             "unexpected error message: {:s}".format(str(ierr.value))
