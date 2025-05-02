@@ -8,6 +8,7 @@ change when the IGRF coefficients are updated.
 
 """
 
+import datetime
 import numpy as np
 import pytest
 
@@ -244,7 +245,7 @@ class TestIGRFLibCoeff(object):
     def setup_method(self):
         """Initialize for every test."""
         # Specify inputs
-        self.date_in = 1981.1
+        self.date_in = datetime.datetime(1981, 2, 6)
         self.lon_in = np.arange(0.0, 360.0, 10.0)
         self.lat_in = np.zeros(shape=self.lon_in.shape)
         self.alt_in = 300.
