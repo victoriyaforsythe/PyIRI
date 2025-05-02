@@ -148,7 +148,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_NmF2_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_NmF2_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_NmF2_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of NmF2 for min and max levels of solar activity.
@@ -159,7 +159,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_foF2_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_foF2_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_foF2_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foF2 for min and max levels of solar activity.
@@ -170,7 +170,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_M3000_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_M3000_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_M3000_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of M3000 for min and max levels of solar activity.
@@ -181,7 +181,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_hmF2_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_hmF2_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_hmF2_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of hmF2 for min and max levels of solar activity.
@@ -194,7 +194,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_NmF1_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_NmF1_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_NmF1_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of NmF1 for min and max levels of solar activity.
@@ -205,7 +205,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_foF1_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_foF1_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_foF1_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foF1 for min and max levels of solar activity.
@@ -216,7 +216,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_hmF1_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_hmF1_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_hmF1_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of hmF1 for min and max levels of solar activity.
@@ -229,7 +229,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_foE_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_foE_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_foE_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foE for min and max levels of solar activity.
@@ -242,7 +242,7 @@ mag dictionary contains:
    UT_plot, plot_dir, plot_name='PyIRI_foEs_min_max.pdf')
 
 
-.. image:: Figs/PyIRI_foEs_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_foEs_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foEs for min and max levels of solar activity.
@@ -276,7 +276,7 @@ Here is an example for regularly spaced array:
 
 
 
-.. image:: Figs/PyIRI_EDP_sample.pdf
+.. image:: /docs/examples/Figs/PyIRI_EDP_sample.pdf
     :width: 600px
     :align: center
     :alt: EDPs for min and max of solar activity.

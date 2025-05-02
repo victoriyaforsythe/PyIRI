@@ -165,7 +165,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_NmF2.pdf')
 
 
-.. image:: Figs/PyIRI_NmF2.pdf
+.. image:: /docs/examples/Figs/PyIRI_NmF2.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of NmF2.
@@ -176,7 +176,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foF2.pdf')
 
 
-.. image:: Figs/PyIRI_foF2.pdf
+.. image:: /docs/examples/Figs/PyIRI_foF2.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foF2.
@@ -187,7 +187,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_M3000.pdf')
 
 
-.. image:: Figs/PyIRI_M3000_min_max.pdf
+.. image:: /docs/examples/Figs/PyIRI_M3000_min_max.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of M3000.
@@ -198,7 +198,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_hmF2.pdf')
 
 
-.. image:: Figs/PyIRI_hmF2.pdf
+.. image:: /docs/examples/Figs/PyIRI_hmF2.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of hmF2.
@@ -211,7 +211,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_NmF1.pdf')
 
 
-.. image:: Figs/PyIRI_NmF1.pdf
+.. image:: /docs/examples/Figs/PyIRI_NmF1.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of NmF1.
@@ -222,7 +222,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foF1.pdf')
 
 
-.. image:: Figs/PyIRI_foF1.pdf
+.. image:: /docs/examples/Figs/PyIRI_foF1.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foF1.
@@ -233,7 +233,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_hmF1.pdf')
 
 
-.. image:: Figs/PyIRI_hmF1.pdf
+.. image:: /docs/examples/Figs/PyIRI_hmF1.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of hmF1.
@@ -246,7 +246,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foE.pdf')
 
 
-.. image:: Figs/PyIRI_foE.pdf
+.. image:: /docs/examples/Figs/PyIRI_foE.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foE.
@@ -259,7 +259,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foEs.pdf')
 
 
-.. image:: Figs/PyIRI_foEs.pdf
+.. image:: /docs/examples/Figs/PyIRI_foEs.pdf
     :width: 600px
     :align: center
     :alt: Global distribution of foEs for min and max levels of solar activity.
@@ -276,7 +276,7 @@ edp array:
 
 
 
-.. image:: Figs/PyIRI_EDP_sample_1day.pdf
+.. image:: /docs/examples/Figs/PyIRI_EDP_sample_1day.pdf
     :width: 600px
     :align: center
     :alt: Electron density profile for 1 location.

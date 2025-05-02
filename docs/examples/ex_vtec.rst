@@ -22,3 +22,5 @@ between 4 and 45 TECU::
 
   (24, 1) 4.336832567501178 44.44731135732205
 
+Make sure to use sufficient vertical resolution and the maximum height for
+this calculation.

@@ -163,7 +163,7 @@ edp array:
    lon_plot, lat_plot, ahr, plot_dir, plot_name='PyIRI_diurnal.pdf')
 
 
-.. image:: Figs/PyIRI_diurnal.pdf
+.. image:: /docs/examples/Figs/PyIRI_diurnal.pdf
     :width: 600px
     :align: center
     :alt: Diurnal variation of the ionospheric parameters.
@@ -176,7 +176,7 @@ edp array:
    aalt, ahr, plot_dir, plot_name='PyIRI_EDP_diurnal.pdf')
 
 
-.. image:: Figs/PyIRI_EDP_diurnal.pdf
+.. image:: /docs/examples/Figs/PyIRI_EDP_diurnal.pdf
     :width: 600px
     :align: center
     :alt: Diurnal variation of the ionospheric parameter.
