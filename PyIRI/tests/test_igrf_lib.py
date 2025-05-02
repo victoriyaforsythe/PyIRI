@@ -23,6 +23,7 @@ class TestIGRFLibUtil(object):
         # Specify inputs
         self.inc_in = np.arange(-90.0, 90.0, 10.0)
         self.lat_in = np.arange(-90.0, 90.0, 10.0)
+        self.alt_in = 300.
 
         # Specify test outputs
         self.modip_out = np.array([-89.99999971, -73.38240434, -64.42022926,
