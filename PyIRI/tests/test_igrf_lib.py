@@ -18,6 +18,7 @@ import PyIRI.igrf_library as ilib
 class TestIGRFLibUtil(object):
     """Test class for igrf_library functions that do not use coefficients."""
 
+
     def setup_method(self):
         """Initialize for every test."""
         # Specify inputs
@@ -61,15 +62,19 @@ class TestIGRFLibUtil(object):
                                  103.92304845, 121.24355653, 138.56406461])
         return
 
+
     def teardown_method(self):
         """Clean up after every test."""
         del self.inc_in, self.lat_in, self.modip_out, self.mlat_out
         del self.dec_out, self.hoz_out, self.inc_out, self.eff_out
         return
 
+
     @pytest.mark.parametrize('inc', [45.0, 45, [0.0, 90.0],
                                      np.arange(-90.0, 90.0, 1.0),
                                      np.array([[0.0, 0.0], [90.0, -90.0]])])
+
+
     def test_good_inc_verification(self, inc):
         """Test `verify_inclination` using good inputs.
 
@@ -84,6 +89,7 @@ class TestIGRFLibUtil(object):
         assert isinstance(out, type(inc))
         np.testing.assert_almost_equal(out, inc, 6)
         return
+
 
     @pytest.mark.parametrize('inc', [-90.1, 90.1, [-90.1, 90.1],
                                      np.arange(-90.1, 90.1, 0.1),
@@ -102,6 +108,7 @@ class TestIGRFLibUtil(object):
         assert isinstance(out, type(inc))
         np.testing.assert_almost_equal(out, inc, 1)
         return
+
 
     @pytest.mark.parametrize('inc', [-90.11, 90.11, [-90.11, 90.11],
                                      np.arange(-90.11, 90.0, 1.0),
@@ -130,6 +137,7 @@ class TestIGRFLibUtil(object):
             "unexpected error message: {:s}".format(str(verr.value))
         return
 
+
     @pytest.mark.parametrize('index', [1, slice(None)])
     def test_inc2modip(self, index):
         """Test `inc2modip` using locally specified outputs.
@@ -147,6 +155,7 @@ class TestIGRFLibUtil(object):
         np.testing.assert_almost_equal(out, self.modip_out[index], 6)
         return
 
+
     @pytest.mark.parametrize('index', [1, slice(None)])
     def test_inc2mag_dip_lat(self, index):
         """Test `inc2magnetic_dip_latitude` using locally specified outputs.
@@ -162,6 +171,7 @@ class TestIGRFLibUtil(object):
         assert isinstance(out, type(self.inc_in[index]))
         np.testing.assert_almost_equal(out, self.mlat_out[index], 6)
         return
+
 
     def test_gg_to_geo_to_gg(self):
         """Test conversion from geocentric to geodetic and back."""
@@ -179,6 +189,7 @@ class TestIGRFLibUtil(object):
         assert sd.shape == h_in.shape
         assert cd.shape == h_in.shape
         return
+
 
     @pytest.mark.parametrize('index', [1, slice(None)])
     def test_xyz2dhif_success(self, index):
@@ -204,6 +215,7 @@ class TestIGRFLibUtil(object):
         np.testing.assert_almost_equal(eff, self.eff_out[index], 6)
         return
 
+
     def test_bad_lengendre_poly_nmax(self):
         """Test Legendre polynomial expansion failure with bad index input."""
 
@@ -213,6 +225,7 @@ class TestIGRFLibUtil(object):
         assert str(ierr.value).find('out of bounds') >= 0, \
             "unexpected error message: {:s}".format(str(ierr.value))
         return
+
 
     @pytest.mark.parametrize('nmax', [1, 10, 100])
     def test_good_lengendre_poly(self, nmax):
@@ -247,6 +260,7 @@ class TestIGRFLibUtil(object):
             "Inclination differs by more than 4 significant figures"
         return
 
+
     def test_inclination_bad_coeff_dir(self):
         """Test the failure to calculate inclination with a bad IGRF path."""
         with pytest.raises(IOError) as ierr:
@@ -256,6 +270,7 @@ class TestIGRFLibUtil(object):
         assert str(ierr.value).find('unable to find IGRF coeff') >= 0, \
             "unexpected error message: {:s}".format(str(ierr.value))
         return
+
 
     def test_synth_values_defaults(self):
         """Test the calculated radial, co-lat, and azimuthal field values."""
@@ -277,6 +292,7 @@ class TestIGRFLibUtil(object):
             "Phi outputs have an unexpected value"
         return
 
+
     def test_synth_values_grid(self):
         """Test the gridded radial, co-lat, and azimuthal field values."""
         self.test_out = ilib.synth_values(self.coeff_in, 300.0, 0.0,
@@ -297,6 +313,7 @@ class TestIGRFLibUtil(object):
             "Phi outputs have an unexpected value"
         return
 
+
     def test_synth_values_bad_colat(self):
         """Test the calculated field values with bad co-latitude."""
         with pytest.raises(ValueError) as verr:
@@ -305,6 +322,7 @@ class TestIGRFLibUtil(object):
         assert str(verr.value).find('Colatitude outside bounds') >= 0, \
             "unexpected error message: {:s}".format(str(verr.value))
         return
+
 
     def test_synth_values_bad_expansion_min(self):
         """Test the calculated field values with bad nmin."""
@@ -315,6 +333,7 @@ class TestIGRFLibUtil(object):
             "unexpected error message: {:s}".format(str(verr.value))
         return
 
+
     def test_synth_values_bad_expansion_max(self):
         """Test the calculated field values with bad nmax."""
         with pytest.raises(ValueError) as verr:
@@ -323,6 +342,7 @@ class TestIGRFLibUtil(object):
         assert str(verr.value).find('Only positive, non-zero nmax') >= 0, \
             "unexpected error message: {:s}".format(str(verr.value))
         return
+
 
     def test_synth_values_bad_expansion_range(self):
         """Test the calculated field values with bad nmin-nmax combination."""
@@ -333,6 +353,7 @@ class TestIGRFLibUtil(object):
         assert str(verr.value).find('Nothing to compute') >= 0, \
             "unexpected error message: {:s}".format(str(verr.value))
         return
+
 
     def test_synth_values_bad_input_shape(self):
         """Test the calculated field values with bad input shapes."""
