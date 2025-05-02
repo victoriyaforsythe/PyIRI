@@ -8,7 +8,6 @@ change when the IGRF coefficients are updated.
 
 """
 
-import datetime
 import numpy as np
 import pytest
 
