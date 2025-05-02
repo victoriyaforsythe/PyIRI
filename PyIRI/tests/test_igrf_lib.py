@@ -346,7 +346,7 @@ class TestIGRFLibCoeff(object):
     def test_inclination(self):
         """Test the inclination calculation."""
         self.test_out = ilib.inclination(coeff_dir, self.date_in, self.lon_in,
-                                         self.lat_in)
+                                         self.lat_in, self.alt_in)
 
         assert np.all(abs(self.test_out - self.inc_out) < 1.0e-4), \
             "Inclination differs by more than 4 significant figures"
