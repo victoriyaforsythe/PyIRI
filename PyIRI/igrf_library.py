@@ -275,10 +275,15 @@ def gg_to_geo(h, gdcolat):
     c2 = ctgd * ctgd
     s2 = 1. - c2
     rho = np.sqrt(a2 * s2 + b2 * c2)
-    rad = np.sqrt(h * (h + 2 * rho) + (a4 * s2 + b4 * c2) / rho**2)
+    rad = np.sqrt(h * (h + 2. * rho) + (a4 * s2 + b4 * c2) / rho**2)
     cd = (h + rho) / rad
     sd = (a2 - b2) * ctgd * stgd / (rho * rad)
     cthc = ctgd * cd - stgd * sd
+
+    # Clip cthc to [-1, 1] not to cause problems in arccos
+    cthc = np.clip(cthc, -1.0, 1.0)
+
+    # Arccos returns values in [0, pi] so we need to convert to degrees
     thc = np.rad2deg(np.arccos(cthc))  # arccos returns values in [0, pi]
 
     return rad, thc, sd, cd
