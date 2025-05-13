@@ -2453,6 +2453,8 @@ def EDP_builder(x, aalt):
     # when F1 is present-----------------------------------------
     # F2 bottom down to F1
     a = np.where((np.isfinite(a_NmF1))
+                 & (np.isfinite(B_F1_bot))
+                 & (np.isfinite(a_hmF1))
                  & (a_alt < a_hmF2)
                  & (a_alt >= a_hmF1))
     density_F2[a] = epstein_function_array(a_A1[a], a_hmF2[a],
@@ -2473,7 +2475,8 @@ def EDP_builder(x, aalt):
                                            a_alt[a]) * drop_2[a]
 
     # when F1 is not present(hard boundaries)--------------------
-    a = np.where((np.isnan(a_NmF1))
+    finite = np.isnan(a_NmF1) | np.isnan(a_hmF1) | np.isnan(B_F1_bot)
+    a = np.where(finite
                  & (a_alt < a_hmF2)
                  & (a_alt > a_hmE))
     drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF2[a] - a_hmE[a]))**4.
