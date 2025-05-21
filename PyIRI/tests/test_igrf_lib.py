@@ -8,6 +8,7 @@ change when the IGRF coefficients are updated.
 
 """
 
+import datetime
 import numpy as np
 import pytest
 
@@ -24,7 +25,7 @@ class TestIGRFLibUtil(object):
         self.inc_in = np.arange(-90.0, 90.0, 10.0)
         self.lat_in = np.arange(-90.0, 90.0, 10.0)
         self.alt_in = 300.
-
+        self.time_in = datetime.datetime(2020, 10, 1)
         # Specify test outputs
         self.modip_out = np.array([-89.99999971, -73.38240434, -64.42022926,
                                    -55.97131300, -47.42547845, -38.57748519,
@@ -63,7 +64,8 @@ class TestIGRFLibUtil(object):
 
     def teardown_method(self):
         """Clean up after every test."""
-        del self.inc_in, self.lat_in, self.modip_out, self.mlat_out
+        del self.inc_in, self.lat_in, self.alt_in, self.time_in
+        del self.modip_out, self.mlat_out
         del self.dec_out, self.hoz_out, self.inc_out, self.eff_out
         return
 
