@@ -2342,6 +2342,7 @@ def EDP_builder(x, aalt):
     # empty arrays
     density_out = np.zeros((nalt, ngrid))
     density_F2 = np.zeros((nalt, ngrid))
+    full_F1  = np.zeros((nalt, ngrid))
     density_F1 = np.zeros((nalt, ngrid))
     density_E = np.zeros((nalt, ngrid))
     drop_1 = np.zeros((nalt, ngrid))
@@ -2371,7 +2372,6 @@ def EDP_builder(x, aalt):
 
     # Set to some parameters if zero or lower (just in case)
     B_F2_top[np.where(B_F2_top <= 0)] = 10.
-    B_F2_bot[np.where(B_F2_bot <= 0)] = 5.
 
     # Array of hmFs, importantly, with same dimensions as result, to
     # later search for regions using argwhere
@@ -2394,7 +2394,8 @@ def EDP_builder(x, aalt):
     a_B_E_bot = np.full(shape2, B_E_bot)
 
     # Drop functions to reduce contributions of the layers when adding them up
-    multiplier_down = drop_down(a_alt, a_hmF2, a_hmE)
+    multiplier_down_F2 = drop_down(a_alt, a_hmF2, a_hmE)
+    multiplier_down_F1 = drop_down(a_alt, a_hmF1, a_hmE)
     multiplier_up = drop_up(a_alt, a_hmE, a_hmF2)
 
     # In the where statements all 3 dimensions are needed.
@@ -2404,7 +2405,7 @@ def EDP_builder(x, aalt):
     a = np.where(a_alt >= a_hmF2)
     density_F2[a] = epstein_function_top_array(4. * a_NmF2[a], a_hmF2[a], a_B_F2_top[a], a_alt[a])
     a = np.where((a_alt < a_hmF2) & (a_alt >= a_hmE))
-    density_F2[a] = epstein_function_array(4. * a_NmF2[a], a_hmF2[a], a_B_F2_bot[a], a_alt[a]) * multiplier_down[a]
+    density_F2[a] = epstein_function_array(4. * a_NmF2[a], a_hmF2[a], a_B_F2_bot[a], a_alt[a]) * multiplier_down_F2[a]
 
     # ------E region-------
     a = np.where((a_alt >= a_hmE) & (a_alt < a_hmF2))
@@ -2417,7 +2418,7 @@ def EDP_builder(x, aalt):
 
     # ------F1 region------
     a = np.where((a_alt > a_hmE) & (a_alt < a_hmF1))
-    full_F1[a] = epstein_function_array(4. * a_NmF1[a], a_hmF1[a], a_B_F1_bot[a], a_alt[a])
+    full_F1[a] = epstein_function_array(4. * a_NmF1[a], a_hmF1[a], a_B_F1_bot[a], a_alt[a]) * multiplier_down_F1[a]
     # Find the difference between the EDP and the F1 layer and add to the EDP the positive part
     density_F1 = full_F1 - density
     density_F1[density_F1 < 0] = 0.
@@ -2427,7 +2428,11 @@ def EDP_builder(x, aalt):
     # Make 1 everything that is <= 0 (just in case)
     density[np.where(density <= 1.0)] = 1.0
 
-    return density
+    # Reshape to the [N_T, N_V, N_G]
+    density_out = np.reshape(density, (nalt, nUT, nhor), order='F')
+    density_out = np.swapaxes(density_out, 0, 1)
+
+    return density_out
 
 
 def day_of_the_month_corr(year, month, day):

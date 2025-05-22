@@ -40,16 +40,12 @@ def PyIRI_plot_mag_dip_lat(mag, alon, alat, alon_2d, alat_2d, plot_dir,
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(mag['mag_dip_lat'], alon_2d.shape)
-    levels = np.linspace(-90, 90, 40)
-    levels_cb = np.linspace(-90, 90, 5)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 45))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
-    cbar = fig.colorbar(contour, ax=ax, ticks=levels_cb)
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     cbar.set_label('Mag Dip Lat (°)')
     plt.title('Alt = 300 km')
     plt.savefig(figname)
@@ -84,16 +80,12 @@ def PyIRI_plot_inc(mag, alon, alat, alon_2d, alat_2d, plot_dir,
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(mag['inc'], alon_2d.shape)
-    levels = np.linspace(-90, 90, 40)
-    levels_cb = np.linspace(-90, 90, 5)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 45))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
-    cbar = fig.colorbar(contour, ax=ax, ticks=levels_cb)
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     cbar.set_label('Inclination (°)')
     plt.title('Alt = 300 km')
     plt.savefig(figname)
@@ -135,10 +127,8 @@ def PyIRI_plot_modip(mag, alon, alat, alon_2d, alat_2d, plot_dir,
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 45))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
-    cbar = fig.colorbar(contour, ax=ax, ticks=levels_cb)
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     cbar.set_label(r'Modip ($^\circ$)')
     plt.title('Alt = 300 km')
     plt.savefig(figname)
@@ -186,8 +176,6 @@ def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(10, 100, 40)
-    levels_cb = np.linspace(10, 100, 10)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -195,14 +183,12 @@ def PyIRI_plot_B_F1_bot_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F1['B_bot'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F1}_{bot}$ (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -249,8 +235,6 @@ def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(10, 60, 40)
-    levels_cb = np.linspace(10, 60, 6)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -258,14 +242,12 @@ def PyIRI_plot_B_F2_bot_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F2['B_bot'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{bot}$ (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -312,8 +294,6 @@ def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(20, 55, 40)
-    levels_cb = np.linspace(20, 55, 8)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -321,14 +301,12 @@ def PyIRI_plot_B_F2_top_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F2['B_top'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{top}$ (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -374,8 +352,6 @@ def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(2.2, 3.8, 40)
-    levels_cb = np.linspace(2.2, 3.8, 9)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -383,14 +359,12 @@ def PyIRI_plot_M3000_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F2['M3000'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('MUF(3000)F2/$fo$F2')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -436,8 +410,6 @@ def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(200, 500, 40)
-    levels_cb = np.linspace(200, 500, 7)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -445,14 +417,12 @@ def PyIRI_plot_hmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F2['hm'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F2 (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -498,8 +468,6 @@ def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(100, 350, 40)
-    levels_cb = np.linspace(100, 350, 6)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -507,14 +475,12 @@ def PyIRI_plot_hmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F1['hm'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F1 (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -560,8 +526,6 @@ def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(0, 12, 40)
-    levels_cb = np.linspace(0, 12, 13)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -569,14 +533,12 @@ def PyIRI_plot_foEs_min_max(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(Es['fo'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$Es (MHz)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -622,8 +584,6 @@ def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(0, 4, 40)
-    levels_cb = np.linspace(0, 4, 5)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -631,14 +591,12 @@ def PyIRI_plot_foE_min_max(E, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(E['fo'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$E (MHz)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -684,8 +642,6 @@ def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(0, 16, 40)
-    levels_cb = np.linspace(0, 16, 5)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -693,14 +649,12 @@ def PyIRI_plot_foF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F2['fo'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                          s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$F2 (MHz)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -746,8 +700,6 @@ def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(0, 4e12, 40)
-    levels_cb = np.linspace(0, 4e12, 5)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -755,14 +707,12 @@ def PyIRI_plot_NmF2_min_max(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F2['Nm'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time],
                          c='red', s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$Nm$F2 (m$^{-3}$)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -808,8 +758,6 @@ def PyIRI_plot_NmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     atitle = ['Solar Min', 'Solar Max']
-    levels = np.linspace(0, 0.5e12, 40)
-    levels_cb = np.linspace(0, 0.5e12, 5)
     for isol in range(0, 2):
         ax[isol].set_facecolor('grey')
         ax[isol].set_xlabel('Geo Lon (°)')
@@ -817,14 +765,12 @@ def PyIRI_plot_NmF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
         if isol == 1:
             ax[1].set_ylabel(' ')
         z = np.reshape(F1['Nm'][ind_time, ind_grid, isol], alon_2d.shape)
-        contour = ax[isol].contourf(alon_2d, alat_2d, z, levels=levels)
-        for c in contour.collections:
-            c.set_edgecolor("face")
+        mesh = ax[isol].pcolormesh(alon_2d, alat_2d, z)
+        cbar = fig.colorbar(mesh, ax=ax[isol])
         ax[isol].text(140, 70, abc[isol], c='white')
         ax[isol].title.set_text(atitle[isol])
         ax[isol].scatter(sun['lon'][ind_time], sun['lat'][ind_time],
                          c='red', s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$Nm$F1 (m$^{-3}$)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -880,27 +826,21 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     foF1_max = F1['fo'][ind_time, ind_grid, 1]
     # --------------------------------
     z = np.reshape(P, alon_2d.shape)
-    contour0 = ax[0].contourf(alon_2d, alat_2d, z, levels=levels0)
-    for c in contour0.collections:
-        c.set_edgecolor("face")
+    mesh = ax[0].pcolormesh(alon_2d, alat_2d, z)
+    cbar0 = fig.colorbar(mesh, ax=ax[0])
     ax[0].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red', s=20,
                   edgecolors="black", linewidths=0.5, zorder=2)
-    cbar0 = plt.colorbar(contour0, ticks=levels_cb0)
     cbar0.set_label('Probability')
     ax[1].set_facecolor('grey')
     ax[1].set_xlabel('Geo Lon (°)')
     ax[1].set_ylabel(' ')
     ax[1].text(130, 70, abc[1], c='white')
-    levels1 = np.linspace(3, 6, 40)
-    levels_cb1 = np.linspace(3, 6, 4)
     ax[1].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red', s=20,
                   edgecolors="black", linewidths=0.5, zorder=2)
     # --------------------------------
     z = np.reshape(foF1_min, alon_2d.shape)
-    contour1 = ax[1].contourf(alon_2d, alat_2d, z, levels=levels1)
-    for c in contour1.collections:
-        c.set_edgecolor("face")
-    cbar1 = plt.colorbar(contour1, ticks=levels_cb1)
+    mesh = ax[1].pcolormesh(alon_2d, alat_2d, z)
+    cbar1 = fig.colorbar(mesh, ax=ax[1])
     cbar1.set_label('$fo$F1 (MHz)')
     ax[2].set_facecolor('grey')
     ax[2].set_xlabel('Geo Lon (°)')
@@ -910,9 +850,8 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
                   edgecolors="black", linewidths=0.5, zorder=2)
     # --------------------------------
     z2 = np.reshape(foF1_max, alon_2d.shape)
-    contour2 = ax[2].contourf(alon_2d, alat_2d, z2, levels=levels1)
-    for c in contour2.collections:
-        c.set_edgecolor("face")
+    mesh = ax[2].pcolormesh(alon_2d, alat_2d, z2)
+    cbar = fig.colorbar(mesh, ax=ax[2])
     ax[0].title.set_text('Probability')
     ax[1].title.set_text('Solar Min')
     ax[2].title.set_text('Solar Max')
@@ -950,7 +889,7 @@ def PyIRI_EDP_sample(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
 
     """
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(3, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 5),
                            constrained_layout=True)
     ax.set_xlabel('Electron Density (m$^{-3}$)')
     ax.set_ylabel('Altitude (km)')
@@ -960,10 +899,10 @@ def PyIRI_EDP_sample(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
     ind_vert = np.where(aalt >= 0)
     ind_min = 0, ind_time, ind_vert, ind_grid
     x = np.reshape(EDP[ind_min], aalt.shape)
-    ax.plot(x, aalt, c='black', label='Sol min')
+    ax.plot(x, aalt, c='black', label='Sol min', linewidth=1)
     ind_max = 1, ind_time, ind_vert, ind_grid
     x = np.reshape(EDP[ind_max], aalt.shape)
-    ax.plot(x, aalt, c='white', label='Sol max')
+    ax.plot(x, aalt, c='white', label='Sol max', linewidth=1)
     ax.legend(loc='upper right', prop={'size': 8})
     plt.title(str(lon_plot) + ' Lon, ' + str(lat_plot) + ' Lat')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
@@ -1000,7 +939,7 @@ def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
 
     """
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(3, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
                            constrained_layout=True)
     ax.set_xlabel('Electron Density (m$^{-3}$)')
     ax.set_ylabel('Altitude (km)')
@@ -1010,7 +949,7 @@ def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
     ind_vert = np.where(aalt >= 0)
     ind = ind_time, ind_vert, ind_grid
     x = np.reshape(EDP[ind], aalt.shape)
-    ax.plot(x, aalt, c='black')
+    ax.plot(x, aalt, c='black', linewidth=1)
     plt.title(str(lon_plot) + ' Lon, ' + str(lat_plot) + ' Lat')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1048,24 +987,20 @@ def PyIRI_plot_B_F1_bot(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(10, 100, 40)
-    levels_cb = np.linspace(10, 100, 10)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F1['B_bot'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F1}_{bot}$ (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1104,24 +1039,20 @@ def PyIRI_plot_B_F2_bot(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(10, 60, 40)
-    levels_cb = np.linspace(10, 60, 6)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F2['B_bot'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{bot}$ (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1160,24 +1091,20 @@ def PyIRI_plot_B_F2_top(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 5),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(20, 55, 40)
-    levels_cb = np.linspace(20, 55, 8)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F2['B_top'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$B^{F2}_{top}$ (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1215,24 +1142,20 @@ def PyIRI_plot_M3000(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(2.2, 3.8, 40)
-    levels_cb = np.linspace(2.2, 3.8, 9)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F2['M3000'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('MUF(3000)F2/$fo$F2')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1270,24 +1193,20 @@ def PyIRI_plot_hmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(200, 500, 40)
-    levels_cb = np.linspace(200, 500, 7)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F2['hm'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F2 (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1325,24 +1244,20 @@ def PyIRI_plot_hmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(100, 350, 40)
-    levels_cb = np.linspace(100, 350, 6)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F1['hm'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$hm$F1 (km)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1380,24 +1295,20 @@ def PyIRI_plot_foEs(Es, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(0, 12, 40)
-    levels_cb = np.linspace(0, 12, 13)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(Es['fo'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$Es (MHz)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1435,24 +1346,20 @@ def PyIRI_plot_foE(E, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(0, 4, 40)
-    levels_cb = np.linspace(0, 4, 5)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(E['fo'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$E (MHz)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1490,24 +1397,20 @@ def PyIRI_plot_foF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(0, 16, 40)
-    levels_cb = np.linspace(0, 16, 5)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F2['fo'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red',
                s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$fo$F2 (MHz)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1545,24 +1448,20 @@ def PyIRI_plot_NmF2(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(0, 4e12, 40)
-    levels_cb = np.linspace(0, 4e12, 5)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F2['Nm'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
                c='red', s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$Nm$F2 (m$^{-3}$)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1600,24 +1499,20 @@ def PyIRI_plot_NmF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
     plt.xticks(np.arange(-180, 180 + 45, 90))
     plt.yticks(np.arange(-90, 90 + 45, 45))
-    levels = np.linspace(0, 0.5e12, 40)
-    levels_cb = np.linspace(0, 0.5e12, 5)
     ax.set_facecolor('grey')
     ax.set_xlabel('Geo Lon (°)')
     ax.set_ylabel('Geo Lat (°)')
     z = np.reshape(F1['Nm'][ind_time, ind_grid], alon_2d.shape)
-    contour = ax.contourf(alon_2d, alat_2d, z, levels=levels)
-    for c in contour.collections:
-        c.set_edgecolor("face")
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
                c='red', s=20, edgecolors="black", linewidths=0.5)
-    cbar = fig.colorbar(contour, ticks=levels_cb)
     cbar.set_label('$Nm$F1 (m$^{-3}$)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
@@ -1666,18 +1561,14 @@ def PyIRI_plot_foF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     plt.yticks(np.arange(-90, 90 + 45, 45))
     abc = ['(a)', '(b)']
     ax[0].text(130, 70, abc[0], c='white')
-    levels0 = np.linspace(0, 1, 40)
-    levels_cb0 = np.linspace(0, 1, 5)
     P = F1['P'][ind_time, ind_grid]
     foF1 = F1['fo'][ind_time, ind_grid]
     # --------------------------------
     z = np.reshape(P, alon_2d.shape)
-    contour0 = ax[0].contourf(alon_2d, alat_2d, z, levels=levels0)
-    for c in contour0.collections:
-        c.set_edgecolor("face")
+    mesh = ax[0].pcolormesh(alon_2d, alat_2d, z)
+    cbar0 = fig.colorbar(mesh, ax=ax[0])
     ax[0].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red', s=20,
                   edgecolors="black", linewidths=0.5, zorder=2)
-    cbar0 = plt.colorbar(contour0, ticks=levels_cb0)
     cbar0.set_label('Probability')
     ax[1].set_facecolor('grey')
     ax[1].set_xlabel('Geo Lon (°)')
@@ -1688,9 +1579,8 @@ def PyIRI_plot_foF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
                   edgecolors="black", linewidths=0.5, zorder=2)
     # --------------------------------
     z2 = np.reshape(foF1, alon_2d.shape)
-    contour2 = ax[1].contourf(alon_2d, alat_2d, z2, levels=levels1)
-    for c in contour2.collections:
-        c.set_edgecolor("face")
+    mesh = ax[1].pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax[1])
     ax[0].title.set_text('Probability')
     ax[1].title.set_text('foF1')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
@@ -1817,10 +1707,9 @@ def PyIRI_plot_1location_diurnal_density(EDP, alon, alat, lon_plot, lat_plot,
     ind_grid = np.where((alon == lon_plot) & (alat == lat_plot))[0]
 
     z = np.transpose(np.reshape(EDP[:, :, ind_grid], (aUT.size, aalt.size)))
-    contour = ax.contourf(aUT, aalt, z)
-    for c in contour.collections:
-        c.set_edgecolor("face")
-    cbar = fig.colorbar(contour)
+    
+    mesh = ax.pcolormesh(aUT, aalt, z)
+    cbar = fig.colorbar(mesh, ax=ax)
     cbar.set_label('Electron Density (m$^{-3}$)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
