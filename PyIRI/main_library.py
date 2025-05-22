@@ -2342,11 +2342,9 @@ def EDP_builder(x, aalt):
     # empty arrays
     density_out = np.zeros((nalt, ngrid))
     density_F2 = np.zeros((nalt, ngrid))
-    full_F1  = np.zeros((nalt, ngrid))
+    full_F1 = np.zeros((nalt, ngrid))
     density_F1 = np.zeros((nalt, ngrid))
     density_E = np.zeros((nalt, ngrid))
-    drop_1 = np.zeros((nalt, ngrid))
-    drop_2 = np.zeros((nalt, ngrid))
 
     # shapes:
     # for filling with altitudes because the last dimentions should match
@@ -2403,23 +2401,37 @@ def EDP_builder(x, aalt):
 
     # ------F2 region------
     a = np.where(a_alt >= a_hmF2)
-    density_F2[a] = epstein_function_top_array(4. * a_NmF2[a], a_hmF2[a], a_B_F2_top[a], a_alt[a])
+    density_F2[a] = epstein_function_top_array(4. * a_NmF2[a], a_hmF2[a],
+                                               a_B_F2_top[a], a_alt[a])
     a = np.where((a_alt < a_hmF2) & (a_alt >= a_hmE))
-    density_F2[a] = epstein_function_array(4. * a_NmF2[a], a_hmF2[a], a_B_F2_bot[a], a_alt[a]) * multiplier_down_F2[a]
+    density_F2[a] = epstein_function_array(4. * a_NmF2[a],
+                                           a_hmF2[a],
+                                           a_B_F2_bot[a],
+                                           a_alt[a]) * multiplier_down_F2[a]
 
     # ------E region-------
     a = np.where((a_alt >= a_hmE) & (a_alt < a_hmF2))
-    density_E[a] = epstein_function_array(4. * a_NmE[a], a_hmE[a], a_B_E_top[a], a_alt[a]) * multiplier_up[a]
+    density_E[a] = epstein_function_array(4. * a_NmE[a],
+                                          a_hmE[a],
+                                          a_B_E_top[a],
+                                          a_alt[a]) * multiplier_up[a]
     a = np.where(a_alt < a_hmE)
-    density_E[a] = epstein_function_array(4. * a_NmE[a], a_hmE[a], a_B_E_bot[a], a_alt[a])
+    density_E[a] = epstein_function_array(4. * a_NmE[a],
+                                          a_hmE[a],
+                                          a_B_E_bot[a],
+                                          a_alt[a])
 
     # Add F2 and E layers
     density = density_F2 + density_E
 
     # ------F1 region------
     a = np.where((a_alt > a_hmE) & (a_alt < a_hmF1))
-    full_F1[a] = epstein_function_array(4. * a_NmF1[a], a_hmF1[a], a_B_F1_bot[a], a_alt[a]) * multiplier_down_F1[a]
-    # Find the difference between the EDP and the F1 layer and add to the EDP the positive part
+    full_F1[a] = epstein_function_array(4. * a_NmF1[a],
+                                        a_hmF1[a],
+                                        a_B_F1_bot[a],
+                                        a_alt[a]) * multiplier_down_F1[a]
+    # Find the difference between the EDP and the F1 layer and add to the EDP
+    # the positive part
     density_F1 = full_F1 - density
     density_F1[density_F1 < 0] = 0.
 
