@@ -10,3 +10,4 @@ also available in the `GitHub Repository <https://github.com/victoriyaforsythe/P
    examples/ex_single_location.rst
    examples/ex_vtec.rst
    examples/ex_terminal_friendly.rst
+   examples/ex_year_run.rst
