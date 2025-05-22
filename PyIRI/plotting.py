@@ -1700,11 +1700,8 @@ def PyIRI_plot_1location_diurnal_density(EDP, alon, alat, lon_plot, lat_plot,
     ax.set_facecolor('grey')
     ax.set_xlabel('UT (hours)')
     ax.set_ylabel('Altitude (km)')
-
     ind_grid = np.where((alon == lon_plot) & (alat == lat_plot))[0]
-
     z = np.transpose(np.reshape(EDP[:, :, ind_grid], (aUT.size, aalt.size)))
-    
     mesh = ax.pcolormesh(aUT, aalt, z)
     cbar = fig.colorbar(mesh, ax=ax)
     cbar.set_label('Electron Density (m$^{-3}$)')
