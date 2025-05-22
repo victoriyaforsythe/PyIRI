@@ -1322,8 +1322,7 @@ def Probability_F1(year, mth, utime, alon, alat):
     gamma = 2.36
 
     # solar zenith angle for day 15 in the month of interest
-    solzen, _, _ = solzen_timearray_grid(year, mth, 15, utime, alon,
-                                                 alat)
+    solzen, _, _ = solzen_timearray_grid(year, mth, 15, utime, alon, alat)
 
     # min and max of solar activity
     for isol in range(0, 2):
@@ -1795,7 +1794,7 @@ def freq2den(freq):
     return dens
 
 
-def den2freq(den):
+def den2freq(dens):
     """Convert ionospheric plasma density to frequency.
 
     Parameters
@@ -2057,8 +2056,10 @@ def epstein_function_array(A1, hm, B, x):
     density = np.zeros((A1.shape))
     alpha = np.zeros((A1.shape))
 
+    # Only Chuck Norris can divide by zero
     alpha[B != 0] = (x[B != 0] - hm[B != 0]) / B[B != 0]
-    alpha[B == 0] = 30. # just a number that is > 25
+    # Just a number that is > 25
+    alpha[B == 0] = 30.
     exp = fexp(alpha)
 
     a = np.where(alpha <= 25)
