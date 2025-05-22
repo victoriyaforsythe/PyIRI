@@ -1363,7 +1363,7 @@ def fexp(x):
         a = np.where(x > 80.)
         b = np.where(x < -80.)
         c = np.where((x >= -80.) & (x <= 80.))
-        
+
         y[a] = 5.5406E34
         y[b] = 1.8049E-35
         y[c] = np.exp(x[c])
