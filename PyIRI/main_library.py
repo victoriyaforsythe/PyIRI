@@ -169,6 +169,16 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     # Convert critical frequency to the electron density (m-3)
     NmF2, NmE, NmEs = freq_to_Nm(foF2, foE, foEs)
 
+    # Limit NmF2 to 1e8
+    # Apparently, sometimes PyIRI gives nan at night
+    # E.g. 20240722 04:15 with F107 = 191
+    # Here check that no NaNs go further, because we hate NaNs
+    # Do the same for the E region, also just in case
+    NmF2 = np.nan_to_num(NmF2)
+    NmF2[NmF2 < 1e8] = 1e8
+    NmE = np.nan_to_num(NmE)
+    NmE[NmE < 1e8] = 1e8
+
     # --------------------------------------------------------------------------
     # Find heights of the F2 and E ionospheric layers
     hmF2, hmE, hmEs = hm_IRI(M3000, foE, foF2, modip, aIG)
@@ -198,11 +208,13 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
           'hm': hmF2,
           'B_top': B_F2_top,
           'B_bot': B_F2_bot}
+
     F1 = {'Nm': NmF1,
           'fo': foF1,
           'P': P_F1,
           'hm': hmF1,
           'B_bot': B_F1_bot}
+
     E = {'Nm': NmE,
          'fo': foE,
          'hm': hmE,
@@ -210,13 +222,16 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
          'B_top': B_E_top,
          'solzen': solzen,
          'solzen_eff': solzen_eff}
+
     Es = {'Nm': NmEs,
           'fo': foEs,
           'hm': hmEs,
           'B_bot': B_Es_bot,
           'B_top': B_Es_top}
+
     sun = {'lon': slon,
            'lat': slat}
+
     mag = {'inc': inc,
            'modip': modip,
            'mag_dip_lat': mag_dip_lat}
@@ -344,6 +359,20 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F1 = solar_interpolation_of_dictionary(F1, F107)
     E = solar_interpolation_of_dictionary(E, F107)
     Es = solar_interpolation_of_dictionary(Es, F107)
+
+    # derive_dependent_F1_parameters one more time after the interpolation
+    # so that the F1 location does not carry the little errors caused by the
+    # interpolation
+    NmF1, foF1, hmF1, B_F1_bot = derive_dependent_F1_parameters(F1['P'],
+                                                                F2['Nm'],
+                                                                F2['hm'],
+                                                                F2['B_bot'],
+                                                                E['hm'])
+    # Update the F1 dictionary with the re-derived parameters
+    F1['Nm'] = NmF1
+    F1['hm'] = hmF1
+    F1['fo'] = foF1
+    F1['B_bot'] = B_F1_bot
 
     # construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
@@ -2340,95 +2369,65 @@ def EDP_builder(x, aalt):
     B_E_bot = np.reshape(x[9, :, :], ngrid, order=order)
     B_E_top = np.reshape(x[10, :, :], ngrid, order=order)
 
-    # set to some parameters if zero or lower:
-    B_F1_bot[np.where(B_F1_bot <= 0)] = 10
-    B_F2_top[np.where(B_F2_top <= 0)] = 30
+    # Set to some parameters if zero or lower (just in case)
+    B_F2_top[np.where(B_F2_top <= 0)] = 10.
+    B_F2_bot[np.where(B_F2_bot <= 0)] = 5.
 
-    # array of hmFs with same dimensions as result, to later search
-    # using argwhere
+    # Array of hmFs, importantly, with same dimensions as result, to
+    # later search for regions using argwhere
     a_alt = np.full(shape1, aalt, order='F')
     a_alt = np.swapaxes(a_alt, 0, 1)
 
+    # Fill arrays with parameters to add height dimension and populate it
+    # with same values, this is important to keep all operations in matrix
+    # form
     a_NmF2 = np.full(shape2, NmF2)
     a_NmF1 = np.full(shape2, NmF1)
     a_NmE = np.full(shape2, NmE)
-
     a_hmF2 = np.full(shape2, hmF2)
     a_hmF1 = np.full(shape2, hmF1)
     a_hmE = np.full(shape2, hmE)
-    a_B_F2_top = np.full(shape2, B_F2_top)
     a_B_F2_bot = np.full(shape2, B_F2_bot)
+    a_B_F2_top = np.full(shape2, B_F2_top)
     a_B_F1_bot = np.full(shape2, B_F1_bot)
     a_B_E_top = np.full(shape2, B_E_top)
     a_B_E_bot = np.full(shape2, B_E_bot)
 
-    a_A1 = 4. * a_NmF2
-    a_A2 = 4. * a_NmF1
-    a_A3 = 4. * a_NmE
+    # Drop functions to reduce contributions of the layers when adding them up
+    multiplier_down = drop_down(a_alt, a_hmF2, a_hmE)
+    multiplier_up = drop_up(a_alt, a_hmE, a_hmF2)
 
-    # !!! do not use a[0], because all 3 dimensions are needed. this is
-    # the same as density[a]= density[a[0], a[1], a[2]]
+    # In the where statements all 3 dimensions are needed.
+    # This is the same as density[a]= density[a[0], a[1], a[2]].
 
-    # F2 top (same for yes F1 and no F1)
+    # ------F2 region------
     a = np.where(a_alt >= a_hmF2)
-    density_F2[a] = epstein_function_top_array(a_A1[a], a_hmF2[a],
-                                               a_B_F2_top[a], a_alt[a])
+    density_F2[a] = epstein_function_top_array(4. * a_NmF2[a], a_hmF2[a], a_B_F2_top[a], a_alt[a])
+    a = np.where((a_alt < a_hmF2) & (a_alt >= a_hmE))
+    density_F2[a] = epstein_function_array(4. * a_NmF2[a], a_hmF2[a], a_B_F2_bot[a], a_alt[a]) * multiplier_down[a]
 
-    # E bottom (same for yes F1 and no F1)
-    a = np.where(a_alt <= a_hmE)
-    density_E[a] = epstein_function_array(a_A3[a], a_hmE[a], a_B_E_bot[a],
-                                          a_alt[a])
+    # ------E region-------
+    a = np.where((a_alt >= a_hmE) & (a_alt < a_hmF2))
+    density_E[a] = epstein_function_array(4. * a_NmE[a], a_hmE[a], a_B_E_top[a], a_alt[a]) * multiplier_up[a]
+    a = np.where(a_alt < a_hmE)
+    density_E[a] = epstein_function_array(4. * a_NmE[a], a_hmE[a], a_B_E_bot[a], a_alt[a])
 
-    # when F1 is present-----------------------------------------
-    # F2 bottom down to F1
-    a = np.where((np.isfinite(a_NmF1))
-                 & (np.isfinite(B_F1_bot))
-                 & (np.isfinite(a_hmF1))
-                 & (a_alt < a_hmF2)
-                 & (a_alt >= a_hmF1))
-    density_F2[a] = epstein_function_array(a_A1[a], a_hmF2[a],
-                                           a_B_F2_bot[a], a_alt[a])
+    # Add F2 and E layers
+    density = density_F2 + density_E
 
-    # E top plus F1 bottom (hard boundaries)
+    # ------F1 region------
     a = np.where((a_alt > a_hmE) & (a_alt < a_hmF1))
-    drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF1[a] - a_hmE[a]))**4.
-    drop_2[a] = 1. - ((a_hmF1[a] - a_alt[a]) / (a_hmF1[a] - a_hmE[a]))**4.
+    full_F1[a] = epstein_function_array(4. * a_NmF1[a], a_hmF1[a], a_B_F1_bot[a], a_alt[a])
+    # Find the difference between the EDP and the F1 layer and add to the EDP the positive part
+    density_F1 = full_F1 - density
+    density_F1[density_F1 < 0] = 0.
 
-    density_E[a] = epstein_function_array(a_A3[a],
-                                          a_hmE[a],
-                                          a_B_E_top[a],
-                                          a_alt[a]) * drop_1[a]
-    density_F1[a] = epstein_function_array(a_A2[a],
-                                           a_hmF1[a],
-                                           a_B_F1_bot[a],
-                                           a_alt[a]) * drop_2[a]
+    density = density + density_F1
 
-    # when F1 is not present(hard boundaries)--------------------
-    finite = np.isnan(a_NmF1) | np.isnan(a_hmF1) | np.isnan(B_F1_bot)
-    a = np.where(finite
-                 & (a_alt < a_hmF2)
-                 & (a_alt > a_hmE))
-    drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF2[a] - a_hmE[a]))**4.
-    drop_2[a] = 1. - ((a_hmF2[a] - a_alt[a]) / (a_hmF2[a] - a_hmE[a]))**4.
+    # Make 1 everything that is <= 0 (just in case)
+    density[np.where(density <= 1.0)] = 1.0
 
-    density_E[a] = epstein_function_array(a_A3[a],
-                                          a_hmE[a],
-                                          a_B_E_top[a],
-                                          a_alt[a]) * drop_1[a]
-    density_F2[a] = epstein_function_array(a_A1[a],
-                                           a_hmF2[a],
-                                           a_B_F2_bot[a],
-                                           a_alt[a]) * drop_2[a]
-
-    density = density_F2 + density_F1 + density_E
-
-    density_out = np.reshape(density, (nalt, nUT, nhor), order='F')
-    density_out = np.swapaxes(density_out, 0, 1)
-
-    # make 1 everything that is <= 0
-    density_out[np.where(density_out <= 1)] = 1.
-
-    return density_out
+    return density
 
 
 def day_of_the_month_corr(year, month, day):
