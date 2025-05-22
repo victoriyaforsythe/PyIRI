@@ -852,6 +852,7 @@ def PyIRI_plot_foF1_min_max(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     z2 = np.reshape(foF1_max, alon_2d.shape)
     mesh = ax[2].pcolormesh(alon_2d, alat_2d, z2)
     cbar = fig.colorbar(mesh, ax=ax[2])
+    cbar.set_label('$fo$F1 (MHz)')
     ax[0].title.set_text('Probability')
     ax[1].title.set_text('Solar Min')
     ax[2].title.set_text('Solar Max')
@@ -1574,13 +1575,13 @@ def PyIRI_plot_foF1(F1, aUT, alon, alat, alon_2d, alat_2d, sun,
     ax[1].set_xlabel('Geo Lon (°)')
     ax[1].set_ylabel(' ')
     ax[1].text(130, 70, abc[1], c='white')
-    levels1 = np.linspace(3, 6, 40)
     ax[1].scatter(sun['lon'][ind_time], sun['lat'][ind_time], c='red', s=20,
                   edgecolors="black", linewidths=0.5, zorder=2)
     # --------------------------------
     z2 = np.reshape(foF1, alon_2d.shape)
-    mesh = ax[1].pcolormesh(alon_2d, alat_2d, z)
+    mesh = ax[1].pcolormesh(alon_2d, alat_2d, z2)
     cbar = fig.colorbar(mesh, ax=ax[1])
+    cbar0.set_label('$fo$F1 (MHz)')
     ax[0].title.set_text('Probability')
     ax[1].title.set_text('foF1')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
