@@ -1817,7 +1817,6 @@ def den2freq(dens):
     return freq
 
 
-
 def R12_2_F107(R12):
     """Convert R12 to F10.7 coefficients.
 
@@ -3124,8 +3123,7 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B_F2_bot, hmE):
 
 
 def logistic_curve(h, h0, B):
-    """
-    Logistic function centered at h0 with width parameter B.
+    """Logistic function centered at h0 with width parameter B.
 
     Parameters
     ----------
@@ -3147,9 +3145,7 @@ def logistic_curve(h, h0, B):
 
 
 def drop_up(h, hmE, hmF2, drop_fraction=0.2):
-    """
-    Smooth function of altitude: 1 at hmE, 0 at hmF2,
-    with a sharp drop controlled by drop_fraction.
+    """Smooth function of altitude with a sharp drop.
 
     Parameters
     ----------
@@ -3181,9 +3177,7 @@ def drop_up(h, hmE, hmF2, drop_fraction=0.2):
 
 
 def drop_down(h, hmF2, hmE, drop_fraction=0.1):
-    """
-    Smooth function of altitude: 0 at hmE, 1 at hmF2,
-    with a sharp rise controlled by drop_fraction.
+    """Smooth function of altitude with a sharp rise.
 
     Parameters
     ----------
@@ -3194,7 +3188,8 @@ def drop_down(h, hmF2, hmE, drop_fraction=0.1):
     hmE : float
         Altitude where function = 0.
     drop_fraction : float, optional
-        Fraction of the total distance (hmF2 - hmE) over which the transition occurs.
+        Fraction of the total distance (hmF2 - hmE) over which the transition
+        occurs.
 
     Returns
     -------
