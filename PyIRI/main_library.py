@@ -184,11 +184,11 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
 
     # --------------------------------------------------------------------------
     # Find height of the F1 layer based on the P and F2
-    hmF1 = hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot)
-
-    # --------------------------------------------------------------------------
-    # Find thickness of the F1 layer
-    B_F1_bot = find_B_F1_bot(hmF1, hmE, P_F1)
+    NmF1, foF1, hmF1, B_F1_bot = derive_dependent_F1_parameters(P_F1,
+                                                                NmF2,
+                                                                hmF2,
+                                                                B_F2_bot,
+                                                                hmE)
 
     # --------------------------------------------------------------------------
     # Add all parameters to dictionaries:
@@ -1474,39 +1474,6 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
     return hmF1
 
 
-def find_B_F1_bot(hmF1, hmE, P_F1):
-    """Determine the thickness of F1 layer.
-
-    Parameters
-    ----------
-    hmF1 : array-like
-        Height of F1 layer in km.
-    hmE : array-like
-        Height of E layer in km.
-    P_F1 : array-like
-        Probability of observing F1 layer.
-
-    Returns
-    -------
-    B_F1_bot : array-like
-        Thickness of F1 layer in km.
-
-    Notes
-    -----
-    This function returns thickness of F1 layer in km. This is done using hmF1
-    and hmE, as described in NeQuick Eq 87
-
-    References
-    ----------
-    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-
-    """
-    B_F1_bot = 0.5 * (hmF1 - hmE)
-    return B_F1_bot
-
-
 def hm_IRI(M3000, foE, foF2, modip, aIG):
     """Return height of the ionospheric layers.
 
@@ -1828,6 +1795,30 @@ def freq2den(freq):
     return dens
 
 
+def den2freq(den):
+    """Convert ionospheric plasma density to frequency.
+
+    Parameters
+    ----------
+    dens : array-like
+        Plasma density in m-3.
+
+    Returns
+    -------
+    freq : array-like
+        Ionospheric frequency in MHz.
+
+    Notes
+    -----
+    This function converts plasma density to ionospheric frequency.
+
+    """
+    freq = np.sqrt(dens / 1.24e10)
+
+    return freq
+
+
+
 def R12_2_F107(R12):
     """Convert R12 to F10.7 coefficients.
 
@@ -2064,7 +2055,10 @@ def epstein_function_array(A1, hm, B, x):
 
     """
     density = np.zeros((A1.shape))
-    alpha = (x - hm) / B
+    alpha = np.zeros((A1.shape))
+
+    alpha[B != 0] = (x[B != 0] - hm[B != 0]) / B[B != 0]
+    alpha[B == 0] = 30. # just a number that is > 25
     exp = fexp(alpha)
 
     a = np.where(alpha <= 25)
@@ -3061,35 +3055,35 @@ def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
 
     # Convert to TECU and reshape to have unflattened time-space dims
     vtec = vtec.reshape((num_t, num_g)) * 1.0e-16
-
     return vtec
-def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
+
+
+def derive_dependent_F1_parameters(P, NmF2, hmF2, B_F2_bot, hmE):
     """Combine DA with background F1 region.
 
     Parameters
     ----------
     P : array-like
-    
         Probability of F1 to occurre from PyIRI.
     NmF2 : array-like
-        NmF2 parameter peak density of F2 layer.
+        NmF2 parameter - peak density of F2 layer.
     hmF2 : array-like
-        hmF2 parameter height of the peak of F2.
-    B0 : array-like
-        B0 parameter thickness of F2.
-    B1 : array-like
-        B1 parameter shape of F2.
+        hmF2 parameter - height of the peak of F2.
+    B_F2_bot : array-like
+        B_F2_bot parameter - thickness of F2.
     hmE : array-like
-        hmE parameter height of E layer.
+        hmE parameter - height of E layer.
 
     Returns
     -------
     NmF1 : array_like
-        NmF1 parameter peak of F1 layer.
+        NmF1 parameter - peak of F1 layer.
+    foF1 : array_like
+        foF1 parameter - critical freqeuncy of F1 layer.
     hmF1 : array_like
-        hmF1 parameter peak height of F1 layer.
+        hmF1 parameter - peak height of F1 layer.
     B_F1_bot : array_like
-        B_F1_bot thickness of F1 layer.
+        B_F1_bot - thickness of F1 layer.
 
     Notes
     -----
@@ -3097,10 +3091,12 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
 
     """
 
-    # Estimate the F1 layer peak height (hmF1) as halfway between the F2 peak height (hmF2) and the E layer peak height (hmE)
+    # Estimate the F1 layer peak height (hmF1) as halfway between the F2 peak
+    # height (hmF2) and the E layer peak height (hmE)
     hmF1_base = hmF2 - (hmF2 - hmE) * 0.5
 
-    # Compute a weighted height (hmF1_new) based on the probability P of F1 layer occurrence:
+    # Compute a weighted height (hmF1_new) based on the probability P of F1
+    # layer occurrence:
     # - If P = 1 (F1 definitely present), use hmF1
     # - If P = 0 (F1 absent), use hmF2 instead
     # - For 0 < P < 1, interpolate between hmF1 and hmF2 proportionally to P
@@ -3110,13 +3106,20 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
     # Step 2: Normalize to [0, 1]
     # Step 3: Shift to [0.5, 1.5], then clip to [0.5, 1]
     # Step 4: Final normalization to [0, 1]
-    temp = np.clip((np.clip(P, 0.5, 1) - 0.5) / np.max(np.clip(P, 0.5, 1) - 0.5) + 0.5, 0.5, 1)
+    temp = np.clip((np.clip(P, 0.5, 1) - 0.5)
+                   / np.max(np.clip(P, 0.5, 1) - 0.5) + 0.5, 0.5, 1)
     norm_P = (temp - 0.5) / 0.5  # Rescale from [0.5, 1] to [0, 1]
     B_F1_bot = (hmF1 - hmE) * 0.5 * norm_P
 
-    # Find the exact NmF1 at the hmF1 using F2 bottom function with the drop down function
-    NmF1 = Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, hmF1) * drop_down(hmF1, hmF2, hmE)
-    return NmF1, hmF1, B_F1_bot
+    # Find the exact NmF1 at the hmF1 using F2 bottom function with the drop
+    # down function
+    NmF1 = (epstein_function_array(4. * NmF2, hmF2, B_F2_bot, hmF1)
+            * drop_down(hmF1, hmF2, hmE))
+
+    # Convert plasma density to freqeuncy
+    foF1 = den2freq(NmF1)
+
+    return NmF1, foF1, hmF1, B_F1_bot
 
 
 def logistic_curve(h, h0, B):
@@ -3138,6 +3141,7 @@ def logistic_curve(h, h0, B):
         Logistic function value(s) in the range (0, 1).
     """
     h = np.asarray(h)
+
     return 1. / (1. + np.exp(-(h - h0) / B))
 
 
@@ -3171,6 +3175,7 @@ def drop_up(h, hmE, hmF2, drop_fraction=0.2):
     sigma_h = logistic_curve(h, ht, B)
     sigma_E = logistic_curve(hmE, ht, B)
     sigma_F2 = logistic_curve(hmF2, ht, B)
+
     return (sigma_F2 - sigma_h) / (sigma_F2 - sigma_E)
 
 
@@ -3204,4 +3209,5 @@ def drop_down(h, hmF2, hmE, drop_fraction=0.1):
     sigma_h = logistic_curve(h, ht, B)
     sigma_E = logistic_curve(hmE, ht, B)
     sigma_F2 = logistic_curve(hmF2, ht, B)
+
     return (sigma_h - sigma_E) / (sigma_F2 - sigma_E)
