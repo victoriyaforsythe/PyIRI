@@ -162,22 +162,13 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
                                                  alat, aIG)
 
     # --------------------------------------------------------------------------
-    # Probability of F1 layer to appear based on SZA
-    P_F1 = Probability_F1(year, mth, aUT, alon, alat)
+    # Probability of F1 layer to appear
+    P_F1, foF1 = Probability_F1(year, mth, aUT, alon, alat, mag_dip_lat,
+                                aIG, foE)
 
     # --------------------------------------------------------------------------
     # Convert critical frequency to the electron density (m-3)
-    NmF2, NmE, NmEs = freq_to_Nm(foF2, foE, foEs)
-
-    # Limit NmF2 to 1e8
-    # Apparently, sometimes PyIRI gives nan at night
-    # E.g. 20240722 04:15 with F107 = 191
-    # Here check that no NaNs go further, because we hate NaNs
-    # Do the same for the E region, also just in case
-    NmF2 = np.nan_to_num(NmF2)
-    NmF2[NmF2 < 1e8] = 1e8
-    NmE = np.nan_to_num(NmE)
-    NmE[NmE < 1e8] = 1e8
+    NmF2, NmF1, NmE, NmEs = freq_to_Nm(foF2, foF1, foE, foEs)
 
     # --------------------------------------------------------------------------
     # Find heights of the F2 and E ionospheric layers
@@ -193,12 +184,13 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
                                                                          aIG)
 
     # --------------------------------------------------------------------------
-    # Find height of the F1 layer based on the P and F2
-    NmF1, foF1, hmF1, B_F1_bot = derive_dependent_F1_parameters(P_F1,
-                                                                NmF2,
-                                                                hmF2,
-                                                                B_F2_bot,
-                                                                hmE)
+    # Find height of the F1 layer based on the location and thickness of the
+    # F2 layer
+    hmF1 = hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot)
+
+    # --------------------------------------------------------------------------
+    # Find thickness of the F1 layer
+    B_F1_bot = find_B_F1_bot(hmF1, hmE, P_F1)
 
     # --------------------------------------------------------------------------
     # Add all parameters to dictionaries:
@@ -208,13 +200,11 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
           'hm': hmF2,
           'B_top': B_F2_top,
           'B_bot': B_F2_bot}
-
     F1 = {'Nm': NmF1,
           'fo': foF1,
           'P': P_F1,
           'hm': hmF1,
           'B_bot': B_F1_bot}
-
     E = {'Nm': NmE,
          'fo': foE,
          'hm': hmE,
@@ -222,16 +212,13 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
          'B_top': B_E_top,
          'solzen': solzen,
          'solzen_eff': solzen_eff}
-
     Es = {'Nm': NmEs,
           'fo': foEs,
           'hm': hmEs,
           'B_bot': B_Es_bot,
           'B_top': B_Es_top}
-
     sun = {'lon': slon,
            'lat': slat}
-
     mag = {'inc': inc,
            'modip': modip,
            'mag_dip_lat': mag_dip_lat}
@@ -359,20 +346,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F1 = solar_interpolation_of_dictionary(F1, F107)
     E = solar_interpolation_of_dictionary(E, F107)
     Es = solar_interpolation_of_dictionary(Es, F107)
-
-    # derive_dependent_F1_parameters one more time after the interpolation
-    # so that the F1 location does not carry the little errors caused by the
-    # interpolation
-    NmF1, foF1, hmF1, B_F1_bot = derive_dependent_F1_parameters(F1['P'],
-                                                                F2['Nm'],
-                                                                F2['hm'],
-                                                                F2['B_bot'],
-                                                                E['hm'])
-    # Update the F1 dictionary with the re-derived parameters
-    F1['Nm'] = NmF1
-    F1['hm'] = hmF1
-    F1['fo'] = foF1
-    F1['B_bot'] = B_F1_bot
 
     # construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
@@ -1308,7 +1281,7 @@ def gammaE(year, mth, utime, alon, alat, aIG):
     return gamma_E, solzen_out, solzen_eff_out, slon, slat
 
 
-def Probability_F1(year, mth, utime, alon, alat):
+def Probability_F1(year, mth, utime, alon, alat, mag_dip_lat, aIG, foE):
     """Calculate probability occurrence of F1 layer.
 
     Parameters
@@ -1317,17 +1290,25 @@ def Probability_F1(year, mth, utime, alon, alat):
         Year.
     mth : int
         Month.
-    utime : array-like
+    time : array-like
         Array of UTs in hours.
     alon : array-like
         Flattened array of longitudes in degrees.
     alat : array-like
         Flattened array of latitudes in degrees.
+    mag_dip_lat : array-like
+        Flattened array of magnetic dip latitudes in degrees.
+    aIG : array-like
+        Min and Max of IG12.
+    foE : array-like
+        E-region critical frequency in MHz.
 
     Returns
     -------
     a_P : array-like
         Probability occurrence of F1 layer.
+    a_foF1 : array-like
+        Critical frequency of F1 layer in MHz.
 
     Notes
     -----
@@ -1346,18 +1327,67 @@ def Probability_F1(year, mth, utime, alon, alat):
     """
     # make arrays to hold numerical maps for 2 levels of solar activity
     a_P = np.zeros((utime.size, alon.size, 2))
+    a_foF1 = np.zeros((utime.size, alon.size, 2))
+    a_R12 = np.zeros((utime.size, alon.size, 2))
+    a_mag_dip_lat_abs = np.zeros((utime.size, alon.size, 2))
+    a_solzen = np.zeros((utime.size, alon.size, 2))
+
+    # add 2 levels of solar activity for mag_dip_lat, by using same elements
+    # empty array, swap axises before filling with same elements of modip,
+    # swap back to match M3000 array shape
+    a_mag_dip_lat_abs = np.swapaxes(a_mag_dip_lat_abs, 1, 2)
+    a_mag_dip_lat_abs = np.full(a_mag_dip_lat_abs.shape, np.abs(mag_dip_lat))
+    a_mag_dip_lat_abs = np.swapaxes(a_mag_dip_lat_abs, 1, 2)
 
     # simplified constant value from Bilitza review 2022
     gamma = 2.36
 
     # solar zenith angle for day 15 in the month of interest
-    solzen, _, _ = solzen_timearray_grid(year, mth, 15, utime, alon, alat)
+    solzen, aslon, aslat = solzen_timearray_grid(year, mth, 15, utime, alon,
+                                                 alat)
 
     # min and max of solar activity
-    for isol in range(0, 2):
-        a_P[:, :, isol] = (0.5 + 0.5 * np.cos(np.deg2rad(solzen)))**gamma
+    R12_min_max = np.array([IG12_2_R12(aIG[0]), IG12_2_R12(aIG[1])])
 
-    return a_P
+    for isol in range(0, 2):
+        a_R12[:, :, isol] = np.full((utime.size, alon.size), R12_min_max[isol])
+        a_P[:, :, isol] = (0.5 + 0.5 * np.cos(np.deg2rad(solzen)))**gamma
+        a_solzen[:, :, isol] = solzen
+
+    n = (0.093
+         + 0.0046 * a_mag_dip_lat_abs
+         - 0.000054 * a_mag_dip_lat_abs**2
+         + 0.0003 * a_R12)
+
+    f_100 = (5.348
+             + 0.011 * a_mag_dip_lat_abs
+             - 0.00023 * a_mag_dip_lat_abs**2)
+
+    f_0 = (4.35
+           + 0.0058 * a_mag_dip_lat_abs
+           - 0.00012 * a_mag_dip_lat_abs**2)
+
+    f_s = f_0 + (f_100 - f_0) * a_R12 / 100.
+
+    arg = (np.cos(np.deg2rad(a_solzen)))
+    ind = np.where(arg > 0)
+    a_foF1[ind] = f_s[ind] * arg[ind]**n[ind]
+
+    # Create a step function that is equal to 1 at the place where the
+    # probability occurrence of F1 region is roughly > 0.5 and drops to
+    # zero away from it
+    multiplier_F1 = (-10. + 30. * np.cos(np.deg2rad(a_solzen)))
+    multiplier_F1[multiplier_F1 > 10.] = 10.
+    multiplier_F1 = multiplier_F1 / np.max(multiplier_F1)
+    multiplier_F1[multiplier_F1 < 0.] = np.nan
+
+    # Create a step function that is equal to 0 at the place where the
+    # probability occurrence of F1 region is roughly > 0.5 and rises to
+    # one away from it
+    multiplier_E = abs(multiplier_F1 - 1.)
+
+    a_foF1 = multiplier_F1 * a_foF1 + multiplier_E * foE
+    return a_P, a_foF1
 
 
 def fexp(x):
@@ -1392,7 +1422,6 @@ def fexp(x):
         a = np.where(x > 80.)
         b = np.where(x < -80.)
         c = np.where((x >= -80.) & (x <= 80.))
-
         y[a] = 5.5406E34
         y[b] = 1.8049E-35
         y[c] = np.exp(x[c])
@@ -1400,13 +1429,15 @@ def fexp(x):
     return y
 
 
-def freq_to_Nm(foF2, foE, foEs):
+def freq_to_Nm(foF2, foF1, foE, foEs):
     """Convert critical frequency to plasma density.
 
     Parameters
     ----------
     foF2 : array-like
         Critical frequency of F2 layer in MHz.
+    foF1 : array-like
+        Critical frequency of F1 layer in MHz.
     foE : array-like
         Critical frequency of E layer in MHz.
     foEs : array-like
@@ -1416,6 +1447,8 @@ def freq_to_Nm(foF2, foE, foEs):
     -------
     NmF2 : array-like
        Peak density of F2 layer in m-3.
+    NmF1 : array-like
+        Peak density of F1 layer in m-3.
     NmE : array-like
         Peak density of E layer in m-3.
     NmEs : array-like
@@ -1430,6 +1463,9 @@ def freq_to_Nm(foF2, foE, foEs):
     # F2 peak
     NmF2 = freq2den(foF2) * 1e11
 
+    # F1 peak
+    NmF1 = freq2den(foF1) * 1e11
+
     # E
     NmE = freq2den(foE) * 1e11
 
@@ -1438,10 +1474,11 @@ def freq_to_Nm(foF2, foE, foEs):
 
     # exclude negative values, in case there are any
     NmF2[np.where(NmF2 <= 0)] = 1.
+    NmF1[np.where(NmF1 <= 0)] = 1.
     NmE[np.where(NmE <= 0)] = 1.
     NmEs[np.where(NmEs <= 0)] = 1.
 
-    return NmF2, NmE, NmEs
+    return NmF2, NmF1, NmE, NmEs
 
 
 def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
@@ -1500,6 +1537,39 @@ def hmF1_from_F2(NmF2, NmF1, hmF2, B_F2_bot):
     # Don't let it go below hmE
     hmF1[hmF1 <= 110.] = np.nan
     return hmF1
+
+
+def find_B_F1_bot(hmF1, hmE, P_F1):
+    """Determine the thickness of F1 layer.
+
+    Parameters
+    ----------
+    hmF1 : array-like
+        Height of F1 layer in km.
+    hmE : array-like
+        Height of E layer in km.
+    P_F1 : array-like
+        Probability of observing F1 layer.
+
+    Returns
+    -------
+    B_F1_bot : array-like
+        Thickness of F1 layer in km.
+
+    Notes
+    -----
+    This function returns thickness of F1 layer in km. This is done using hmF1
+    and hmE, as described in NeQuick Eq 87
+
+    References
+    ----------
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    International Reference Ionosphere Modeling Implemented in Python,
+    Space Weather.
+
+    """
+    B_F1_bot = 0.5 * (hmF1 - hmE)
+    return B_F1_bot
 
 
 def hm_IRI(M3000, foE, foF2, modip, aIG):
@@ -1823,29 +1893,6 @@ def freq2den(freq):
     return dens
 
 
-def den2freq(dens):
-    """Convert ionospheric plasma density to frequency.
-
-    Parameters
-    ----------
-    dens : array-like
-        Plasma density in m-3.
-
-    Returns
-    -------
-    freq : array-like
-        Ionospheric frequency in MHz.
-
-    Notes
-    -----
-    This function converts plasma density to ionospheric frequency.
-
-    """
-    freq = np.sqrt(dens / 1.24e10)
-
-    return freq
-
-
 def R12_2_F107(R12):
     """Convert R12 to F10.7 coefficients.
 
@@ -2086,7 +2133,7 @@ def epstein_function_array(A1, hm, B, x):
 
     # Only Chuck Norris can divide by zero
     alpha[B != 0] = (x[B != 0] - hm[B != 0]) / B[B != 0]
-    # Just a number that is > 25
+    # If denominator is zero make alpha some number above 25
     alpha[B == 0] = 30.
     exp = fexp(alpha)
 
@@ -2342,9 +2389,10 @@ def EDP_builder(x, aalt):
     # empty arrays
     density_out = np.zeros((nalt, ngrid))
     density_F2 = np.zeros((nalt, ngrid))
-    full_F1 = np.zeros((nalt, ngrid))
     density_F1 = np.zeros((nalt, ngrid))
     density_E = np.zeros((nalt, ngrid))
+    drop_1 = np.zeros((nalt, ngrid))
+    drop_2 = np.zeros((nalt, ngrid))
 
     # shapes:
     # for filling with altitudes because the last dimentions should match
@@ -2368,81 +2416,93 @@ def EDP_builder(x, aalt):
     B_E_bot = np.reshape(x[9, :, :], ngrid, order=order)
     B_E_top = np.reshape(x[10, :, :], ngrid, order=order)
 
-    # Set to some parameters if zero or lower (just in case)
-    B_F2_top[np.where(B_F2_top <= 0)] = 10.
+    # set to some parameters if zero or lower:
+    B_F1_bot[np.where(B_F1_bot <= 0)] = 10
+    B_F2_top[np.where(B_F2_top <= 0)] = 30
 
-    # Array of hmFs, importantly, with same dimensions as result, to
-    # later search for regions using argwhere
+    # array of hmFs with same dimensions as result, to later search
+    # using argwhere
     a_alt = np.full(shape1, aalt, order='F')
     a_alt = np.swapaxes(a_alt, 0, 1)
 
-    # Fill arrays with parameters to add height dimension and populate it
-    # with same values, this is important to keep all operations in matrix
-    # form
     a_NmF2 = np.full(shape2, NmF2)
     a_NmF1 = np.full(shape2, NmF1)
     a_NmE = np.full(shape2, NmE)
+
     a_hmF2 = np.full(shape2, hmF2)
     a_hmF1 = np.full(shape2, hmF1)
     a_hmE = np.full(shape2, hmE)
-    a_B_F2_bot = np.full(shape2, B_F2_bot)
     a_B_F2_top = np.full(shape2, B_F2_top)
+    a_B_F2_bot = np.full(shape2, B_F2_bot)
     a_B_F1_bot = np.full(shape2, B_F1_bot)
     a_B_E_top = np.full(shape2, B_E_top)
     a_B_E_bot = np.full(shape2, B_E_bot)
 
-    # Drop functions to reduce contributions of the layers when adding them up
-    multiplier_down_F2 = drop_down(a_alt, a_hmF2, a_hmE)
-    multiplier_down_F1 = drop_down(a_alt, a_hmF1, a_hmE)
-    multiplier_up = drop_up(a_alt, a_hmE, a_hmF2)
+    a_A1 = 4. * a_NmF2
+    a_A2 = 4. * a_NmF1
+    a_A3 = 4. * a_NmE
 
-    # In the where statements all 3 dimensions are needed.
-    # This is the same as density[a]= density[a[0], a[1], a[2]].
+    # !!! do not use a[0], because all 3 dimensions are needed. this is
+    # the same as density[a]= density[a[0], a[1], a[2]]
 
-    # ------F2 region------
+    # F2 top (same for yes F1 and no F1)
     a = np.where(a_alt >= a_hmF2)
-    density_F2[a] = epstein_function_top_array(4. * a_NmF2[a], a_hmF2[a],
+    density_F2[a] = epstein_function_top_array(a_A1[a], a_hmF2[a],
                                                a_B_F2_top[a], a_alt[a])
-    a = np.where((a_alt < a_hmF2) & (a_alt >= a_hmE))
-    density_F2[a] = epstein_function_array(4. * a_NmF2[a],
-                                           a_hmF2[a],
-                                           a_B_F2_bot[a],
-                                           a_alt[a]) * multiplier_down_F2[a]
 
-    # ------E region-------
-    a = np.where((a_alt >= a_hmE) & (a_alt < a_hmF2))
-    density_E[a] = epstein_function_array(4. * a_NmE[a],
-                                          a_hmE[a],
-                                          a_B_E_top[a],
-                                          a_alt[a]) * multiplier_up[a]
-    a = np.where(a_alt < a_hmE)
-    density_E[a] = epstein_function_array(4. * a_NmE[a],
-                                          a_hmE[a],
-                                          a_B_E_bot[a],
+    # E bottom (same for yes F1 and no F1)
+    a = np.where(a_alt <= a_hmE)
+    density_E[a] = epstein_function_array(a_A3[a], a_hmE[a], a_B_E_bot[a],
                                           a_alt[a])
 
-    # Add F2 and E layers
-    density = density_F2 + density_E
+    # when F1 is present-----------------------------------------
+    # F2 bottom down to F1
+    a = np.where((np.isfinite(a_NmF1))
+                 & (np.isfinite(B_F1_bot))
+                 & (np.isfinite(a_hmF1))
+                 & (a_alt < a_hmF2)
+                 & (a_alt >= a_hmF1))
+    density_F2[a] = epstein_function_array(a_A1[a], a_hmF2[a],
+                                           a_B_F2_bot[a], a_alt[a])
 
-    # ------F1 region------
+    # E top plus F1 bottom (hard boundaries)
     a = np.where((a_alt > a_hmE) & (a_alt < a_hmF1))
-    full_F1[a] = epstein_function_array(4. * a_NmF1[a],
-                                        a_hmF1[a],
-                                        a_B_F1_bot[a],
-                                        a_alt[a]) * multiplier_down_F1[a]
-    # Find the difference between the EDP and the F1 layer and add to the EDP
-    # the positive part
-    density_F1 = full_F1 - density
-    density_F1[density_F1 < 0] = 0.
+    drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF1[a] - a_hmE[a]))**4.
+    drop_2[a] = 1. - ((a_hmF1[a] - a_alt[a]) / (a_hmF1[a] - a_hmE[a]))**4.
 
-    density = density + density_F1
+    density_E[a] = epstein_function_array(a_A3[a],
+                                          a_hmE[a],
+                                          a_B_E_top[a],
+                                          a_alt[a]) * drop_1[a]
+    density_F1[a] = epstein_function_array(a_A2[a],
+                                           a_hmF1[a],
+                                           a_B_F1_bot[a],
+                                           a_alt[a]) * drop_2[a]
 
-    # Make 1 everything that is <= 0 (just in case)
-    density[np.where(density <= 1.0)] = 1.0
+    # when F1 is not present(hard boundaries)--------------------
+    finite = np.isnan(a_NmF1) | np.isnan(a_hmF1) | np.isnan(B_F1_bot)
+    a = np.where(finite
+                 & (a_alt < a_hmF2)
+                 & (a_alt > a_hmE))
+    drop_1[a] = 1. - ((a_alt[a] - a_hmE[a]) / (a_hmF2[a] - a_hmE[a]))**4.
+    drop_2[a] = 1. - ((a_hmF2[a] - a_alt[a]) / (a_hmF2[a] - a_hmE[a]))**4.
 
-    # Reshape to the [N_T, N_V, N_G]
+    density_E[a] = epstein_function_array(a_A3[a],
+                                          a_hmE[a],
+                                          a_B_E_top[a],
+                                          a_alt[a]) * drop_1[a]
+    density_F2[a] = epstein_function_array(a_A1[a],
+                                           a_hmF2[a],
+                                           a_B_F2_bot[a],
+                                           a_alt[a]) * drop_2[a]
+
+    density = density_F2 + density_F1 + density_E
+
     density_out = np.reshape(density, (nalt, nUT, nhor), order='F')
     density_out = np.swapaxes(density_out, 0, 1)
+
+    # make 1 everything that is <= 0
+    density_out[np.where(density_out <= 1)] = 1.
 
     return density_out
 
@@ -3071,155 +3131,28 @@ def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
 
     # Convert to TECU and reshape to have unflattened time-space dims
     vtec = vtec.reshape((num_t, num_g)) * 1.0e-16
+
     return vtec
 
 
-def derive_dependent_F1_parameters(P, NmF2, hmF2, B_F2_bot, hmE):
-    """Combine DA with background F1 region.
+def den2freq(dens):
+    """Convert ionospheric plasma density to frequency.
 
     Parameters
     ----------
-    P : array-like
-        Probability of F1 to occurre from PyIRI.
-    NmF2 : array-like
-        NmF2 parameter - peak density of F2 layer.
-    hmF2 : array-like
-        hmF2 parameter - height of the peak of F2.
-    B_F2_bot : array-like
-        B_F2_bot parameter - thickness of F2.
-    hmE : array-like
-        hmE parameter - height of E layer.
+    dens : array-like
+        Plasma density in m-3.
 
     Returns
     -------
-    NmF1 : array_like
-        NmF1 parameter - peak of F1 layer.
-    foF1 : array_like
-        foF1 parameter - critical freqeuncy of F1 layer.
-    hmF1 : array_like
-        hmF1 parameter - peak height of F1 layer.
-    B_F1_bot : array_like
-        B_F1_bot - thickness of F1 layer.
+    freq : array-like
+        Ionospheric frequency in MHz.
 
     Notes
     -----
-    This function derives F1 from F2 fields.
+    This function converts plasma density to ionospheric frequency.
 
     """
+    freq = np.sqrt(dens / 1.24e10)
 
-    # Estimate the F1 layer peak height (hmF1) as halfway between the F2 peak
-    # height (hmF2) and the E layer peak height (hmE)
-    hmF1_base = hmF2 - (hmF2 - hmE) * 0.5
-
-    # Compute a weighted height (hmF1_new) based on the probability P of F1
-    # layer occurrence:
-    # - If P = 1 (F1 definitely present), use hmF1
-    # - If P = 0 (F1 absent), use hmF2 instead
-    # - For 0 < P < 1, interpolate between hmF1 and hmF2 proportionally to P
-    hmF1 = hmF1_base * P + hmF2 * (1. - P)
-
-    # Step 1: Clip P to [0.5, 1] and shift to [0, 0.5]
-    # Step 2: Normalize to [0, 1]
-    # Step 3: Shift to [0.5, 1.5], then clip to [0.5, 1]
-    # Step 4: Final normalization to [0, 1]
-    temp = np.clip((np.clip(P, 0.5, 1) - 0.5)
-                   / np.max(np.clip(P, 0.5, 1) - 0.5) + 0.5, 0.5, 1)
-    norm_P = (temp - 0.5) / 0.5  # Rescale from [0.5, 1] to [0, 1]
-    B_F1_bot = (hmF1 - hmE) * 0.5 * norm_P
-
-    # Find the exact NmF1 at the hmF1 using F2 bottom function with the drop
-    # down function
-    NmF1 = (epstein_function_array(4. * NmF2, hmF2, B_F2_bot, hmF1)
-            * drop_down(hmF1, hmF2, hmE))
-
-    # Convert plasma density to freqeuncy
-    foF1 = den2freq(NmF1)
-
-    return NmF1, foF1, hmF1, B_F1_bot
-
-
-def logistic_curve(h, h0, B):
-    """Logistic function centered at h0 with width parameter B.
-
-    Parameters
-    ----------
-    h : float or array-like
-        Input value(s), e.g., altitude in km.
-    h0 : float
-        Center point of the logistic curve (where it equals 0.5).
-    B : float
-        Width parameter controlling the steepness of the transition.
-
-    Returns
-    -------
-    f : float or array
-        Logistic function value(s) in the range (0, 1).
-    """
-    h = np.asarray(h)
-
-    return 1. / (1. + np.exp(-(h - h0) / B))
-
-
-def drop_up(h, hmE, hmF2, drop_fraction=0.2):
-    """Smooth function of altitude with a sharp drop.
-
-    Parameters
-    ----------
-    h : float or array-like
-        Altitude in km.
-    hmE : float
-        Altitude where function = 1.
-    hmF2 : float
-        Altitude where function = 0.
-    drop_fraction : float, optional
-        Fraction of the distance (hmF2 - hmE) over which the drop occurs.
-
-    Returns
-    -------
-    f : float or array
-        Function value at altitude h.
-    """
-    h = np.asarray(h)
-    D = hmF2 - hmE
-    # if D <= 0:
-    #     raise ValueError("hmF2 must be greater than hmE.")
-    B = drop_fraction * D
-    ht = hmF2 - B  # center of the drop, near hmF2
-    sigma_h = logistic_curve(h, ht, B)
-    sigma_E = logistic_curve(hmE, ht, B)
-    sigma_F2 = logistic_curve(hmF2, ht, B)
-
-    return (sigma_F2 - sigma_h) / (sigma_F2 - sigma_E)
-
-
-def drop_down(h, hmF2, hmE, drop_fraction=0.1):
-    """Smooth function of altitude with a sharp rise.
-
-    Parameters
-    ----------
-    h : float or array-like
-        Altitude in km.
-    hmF2 : float
-        Altitude where function = 1.
-    hmE : float
-        Altitude where function = 0.
-    drop_fraction : float, optional
-        Fraction of the total distance (hmF2 - hmE) over which the transition
-        occurs.
-
-    Returns
-    -------
-    f : float or array
-        Function value at altitude h.
-    """
-    h = np.asarray(h)
-    D = hmF2 - hmE
-    # if D <= 0:
-    #     raise ValueError("hmF2 must be greater than hmE.")
-    B = drop_fraction * D
-    ht = hmE + B  # center of logistic curve
-    sigma_h = logistic_curve(h, ht, B)
-    sigma_E = logistic_curve(hmE, ht, B)
-    sigma_F2 = logistic_curve(hmF2, ht, B)
-
-    return (sigma_h - sigma_E) / (sigma_F2 - sigma_E)
+    return freq

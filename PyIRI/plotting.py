@@ -936,7 +936,7 @@ def PyIRI_EDP_sample_1day(EDP, aUT, alon, alat, lon_plot, lat_plot, aalt,
 
     """
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(4, 3),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 5),
                            constrained_layout=True)
     ax.set_xlabel('Electron Density (m$^{-3}$)')
     ax.set_ylabel('Altitude (km)')
@@ -1088,7 +1088,7 @@ def PyIRI_plot_B_F2_top(F2, aUT, alon, alat, alon_2d, alat_2d, sun,
     ind_time = np.where(aUT == UT)
     ind_grid = np.where(np.isfinite(alon))
     figname = os.path.join(plot_dir, plot_name)
-    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 5),
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
                            constrained_layout=True)
     plt.xlim([-180, 180])
     plt.ylim([-90, 90])
@@ -1628,8 +1628,8 @@ def PyIRI_plot_1location_diurnal_par(F2, F1, E, Es, alon, alat,
     ax[0].set_facecolor('grey')
     ax[0].set_xlabel('UT (hours)')
     ax[0].set_ylabel('Peak Density (m$^{-3}$)')
-    ax[0].plot(aUT, F2['Nm'][:, ind_grid], label='NmF2', c='red')
-    ax[0].plot(aUT, F1['Nm'][:, ind_grid], label='NmF1', c='green')
+    ax[0].plot(aUT, F2['Nm'][:, ind_grid], label='NmF2', c='red', zorder=2)
+    ax[0].plot(aUT, F1['Nm'][:, ind_grid], label='NmF1', c='green', zorder=1)
     ax[0].plot(aUT, E['Nm'][:, ind_grid], label='NmE', c='yellow')
     ax[0].plot(aUT, Es['Nm'][:, ind_grid], label='NmEs', c='blue')
     ax[0].legend(loc='upper left', prop={'size': 6})
@@ -1637,8 +1637,8 @@ def PyIRI_plot_1location_diurnal_par(F2, F1, E, Es, alon, alat,
     ax[1].set_facecolor('grey')
     ax[1].set_xlabel('UT (hours)')
     ax[1].set_ylabel('Peak Height (km)')
-    ax[1].plot(aUT, F2['hm'][:, ind_grid], label='hmF2', c='red')
-    ax[1].plot(aUT, F1['hm'][:, ind_grid], label='hmF1', c='green')
+    ax[1].plot(aUT, F2['hm'][:, ind_grid], label='hmF2', c='red', zorder=2)
+    ax[1].plot(aUT, F1['hm'][:, ind_grid], label='hmF1', c='green', zorder=1)
     ax[1].plot(aUT, E['hm'][:, ind_grid], label='hmE', c='yellow')
     ax[1].plot(aUT, Es['hm'][:, ind_grid], label='hmEs', c='blue')
     ax[1].legend(loc='upper left', prop={'size': 6})
@@ -1646,16 +1646,20 @@ def PyIRI_plot_1location_diurnal_par(F2, F1, E, Es, alon, alat,
     ax[2].set_facecolor('grey')
     ax[2].set_xlabel('UT (hours)')
     ax[2].set_ylabel('Top Thickness (km)')
-    ax[2].plot(aUT, F2['B_top'][:, ind_grid], label='B_top F2', c='red')
-    ax[2].plot(aUT, E['B_top'][:, ind_grid], label='B_top E', c='yellow')
+    ax[2].plot(aUT, F2['B_top'][:, ind_grid], label='B_top F2', c='red',
+               zorder=2)
+    ax[2].plot(aUT, E['B_top'][:, ind_grid], label='B_top E', c='yellow'
+               , zorder=1)
     ax[2].plot(aUT, Es['B_top'][:, ind_grid], label='B_top Es', c='blue')
     ax[2].legend(loc='upper left', prop={'size': 6})
     # --------------------------------
     ax[3].set_facecolor('grey')
     ax[3].set_xlabel('UT (hours)')
     ax[3].set_ylabel('Bottom Thickness (km)')
-    ax[3].plot(aUT, F2['B_bot'][:, ind_grid], label='B_bot F2', c='red')
-    ax[3].plot(aUT, F1['B_bot'][:, ind_grid], label='B_bot F1', c='green')
+    ax[3].plot(aUT, F2['B_bot'][:, ind_grid], label='B_bot F2', c='red',
+               zorder=2)
+    ax[3].plot(aUT, F1['B_bot'][:, ind_grid], label='B_bot F1', c='green',
+               zorder=1)
     ax[3].plot(aUT, E['B_bot'][:, ind_grid], label='B_bot E', c='yellow')
     ax[3].plot(aUT, Es['B_top'][:, ind_grid], label='B_bot Es', c='blue')
     ax[3].legend(loc='upper left', prop={'size': 6})
