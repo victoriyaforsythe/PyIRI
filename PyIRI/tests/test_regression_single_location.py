@@ -1,11 +1,17 @@
-import numpy as np
+"""
+Regression test for IRI_density_1day for single-location input and ref output.
+"""
+
 import json
+import numpy as np
 import pytest
+
 import PyIRI
 from PyIRI import edp_update as ml
 
+
 def test_IRI_density_1day_regression():
-    # Inputs from original case
+    """Compare IRI_density_1day output to known reference, single location."""
     year = 2020
     month = 4
     day = 1
@@ -17,18 +23,16 @@ def test_IRI_density_1day_regression():
     coeff_dir = PyIRI.coeff_dir
     ccir_or_ursi = 0
 
-    # Run the function
     f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
         year, month, day, ahr, alon, alat, aalt, f107, coeff_dir, ccir_or_ursi)
 
-    # Load reference data
     with open("Test_Output.json", "r") as f:
         ref = json.load(f)
 
     def assert_close(actual, expected, key, atol=1e-2):
-        assert np.allclose(actual, np.array(expected), atol=atol), f"Mismatch in {key}"
+        assert np.allclose(actual, np.array(expected), atol=atol), (
+            f"Mismatch in {key}")
 
-    # Compare outputs
     assert_close(f2["Nm"], ref["NmF2"], "NmF2")
     assert_close(f2["hm"], ref["hmF2"], "hmF2")
     assert_close(f2["B_top"], ref["B_F2_top"], "B_F2_top")

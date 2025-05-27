@@ -1,10 +1,17 @@
-import numpy as np
+"""
+Regression test for IRI_monthly_mean_par and reconstructed EDPs.
+"""
+
 import json
+import numpy as np
 import pytest
+
 import PyIRI
 from PyIRI import edp_update as ml
 
+
 def test_IRI_monthly_mean_par_coarse_regression():
+    """Compare monthly mean outputs and profiles to reference data."""
     year = 2020
     month = 4
     f107 = 100
@@ -14,7 +21,8 @@ def test_IRI_monthly_mean_par_coarse_regression():
     hr_res = 24
     ahr = np.arange(0, 24, hr_res)
 
-    alon_2d, alat_2d = np.mgrid[-180:180 + lon_res:lon_res, -90:90 + lat_res:lat_res]
+    alon_2d, alat_2d = np.mgrid[
+        -180:180 + lon_res:lon_res, -90:90 + lat_res:lat_res]
     alon = np.reshape(alon_2d, alon_2d.size)
     alat = np.reshape(alat_2d, alat_2d.size)
 
@@ -29,7 +37,8 @@ def test_IRI_monthly_mean_par_coarse_regression():
         ref = json.load(f)
 
     def assert_close(actual, expected, key, atol=1e-2):
-        assert np.allclose(actual, np.array(expected), atol=atol), f"Mismatch in {key}"
+        assert np.allclose(actual, np.array(expected), atol=atol), (
+            f"Mismatch in {key}")
 
     assert_close(f2["Nm"], ref["NmF2"], "NmF2")
     assert_close(f2["hm"], ref["hmF2"], "hmF2")
