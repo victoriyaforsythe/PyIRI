@@ -1,4 +1,4 @@
-cff-version: 0.0.1
+cff-version: 0.0.3
 message: "If you use this software, please cite it as below."
 authors:
   - family-names: Forsythe
@@ -9,6 +9,6 @@ authors:
     given-names: Angeline G.
     orcid: https://orcid.org/0000-0001-8875-9326
     affiliation: U.S. Naval Research Laboratory
-title: victoriyaforsythe/PyIRI: v0.0.1
-version: v0.0.1
-date-released: 2023-08-10
+title: victoriyaforsythe/PyIRI: v0.0.3
+version: v0.0.3
+date-released: 2025-05-27
