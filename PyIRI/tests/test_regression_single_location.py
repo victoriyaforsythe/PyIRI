@@ -4,7 +4,6 @@ Regression test for IRI_density_1day for single-location input and ref output.
 
 import json
 import numpy as np
-import pytest
 
 import PyIRI
 from PyIRI import edp_update as ml

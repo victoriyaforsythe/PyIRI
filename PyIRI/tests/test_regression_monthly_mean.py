@@ -4,7 +4,6 @@ Regression test for IRI_monthly_mean_par and reconstructed EDPs.
 
 import json
 import numpy as np
-import pytest
 
 import PyIRI
 from PyIRI import edp_update as ml
@@ -14,7 +13,6 @@ def test_IRI_monthly_mean_par_coarse_regression():
     """Compare monthly mean outputs and profiles to reference data."""
     year = 2020
     month = 4
-    f107 = 100
     ccir_or_ursi = 0
     lon_res = 180
     lat_res = 90
