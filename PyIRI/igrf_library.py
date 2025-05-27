@@ -498,7 +498,7 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
 
 
 def legendre_poly(nmax, theta):
-    """Calculate associated Legendre polynomials `P(n,m)`.
+    """Calculate associated Legendre polynomials P(n,m).
 
     Parameters
     ----------

@@ -1648,8 +1648,8 @@ def PyIRI_plot_1location_diurnal_par(F2, F1, E, Es, alon, alat,
     ax[2].set_ylabel('Top Thickness (km)')
     ax[2].plot(aUT, F2['B_top'][:, ind_grid], label='B_top F2', c='red',
                zorder=2)
-    ax[2].plot(aUT, E['B_top'][:, ind_grid], label='B_top E', c='yellow'
-               , zorder=1)
+    ax[2].plot(aUT, E['B_top'][:, ind_grid], label='B_top E', c='yellow',
+               zorder=1)
     ax[2].plot(aUT, Es['B_top'][:, ind_grid], label='B_top Es', c='blue')
     ax[2].legend(loc='upper left', prop={'size': 6})
     # --------------------------------

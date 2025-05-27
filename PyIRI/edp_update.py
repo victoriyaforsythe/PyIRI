@@ -27,15 +27,11 @@ in ionospheric mapping by numerical methods.
 """
 
 import datetime as dt
-from fortranformat import FortranRecordReader
-import math
 import numpy as np
-import os
 
 import PyIRI
 import PyIRI.igrf_library as igrf
 import PyIRI.main_library as main
-from PyIRI import logger
 
 
 def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
@@ -616,9 +612,9 @@ def EDP_builder(x, aalt):
                                                     a_B_F2_top[a], a_alt[a])
     a = np.where((a_alt < a_hmF2) & (a_alt >= a_hmE))
     density_F2[a] = (main.epstein_function_array(4. * a_NmF2[a],
-                                                a_hmF2[a],
-                                                a_B_F2_bot[a],
-                                                a_alt[a])
+                                                 a_hmF2[a],
+                                                 a_B_F2_bot[a],
+                                                 a_alt[a])
                      * multiplier_down_F2[a])
 
     # ------E region-------
