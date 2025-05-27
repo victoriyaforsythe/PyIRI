@@ -141,19 +141,19 @@ def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
 
     Returns
     -------
-    X : array-like
-        North component of the magnetic field in nT.
-    Y : array-like
-        East component of the magnetic field in nT.
-    Z : array-like
-        Vertical component of the magnetic field in nT.
-    dec : array-like
-        Declination of the magnetic field in degrees.
-    hoz : array-like
-        Horizontal intensity of the magnetic field in nT.
     inc : array-like
         Magnetic inclination in degrees.
-    eff : array-like
+    X : array-like (optional)
+        North component of the magnetic field in nT.
+    Y : array-like (optional)
+        East component of the magnetic field in nT.
+    Z : array-like (optional)
+        Vertical component of the magnetic field in nT.
+    dec : array-like (optional)
+        Declination of the magnetic field in degrees.
+    hoz : array-like (optional)
+        Horizontal intensity of the magnetic field in nT.
+    eff : array-like (optional)
         Total intensity of the magnetic field in nT.
 
     Raises
