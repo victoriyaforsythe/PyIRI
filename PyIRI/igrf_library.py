@@ -606,33 +606,3 @@ def xyz2dhif(x, y, z):
 
     return dec, hoz, inc, eff
 
-
-def decimal_year(dtime):
-    """Determine the decimal year.
-
-    Parameters
-    ----------
-    dtime : class:`dt.datetime`
-        Given datetime.
-
-    Returns
-    -------
-    date_decimal : float
-        Decimal year.
-
-    Notes
-    -----
-    This function returns decimal year. For example, middle of the year
-    is 2020.5.
-
-    """
-    # day of the year
-    doy = dtime.timetuple().tm_yday
-
-    # decimal, day of year devided by number of days in year
-    days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
-    decimal = (doy - 1) / days_of_year
-
-    # year plus decimal
-    date_decimal = dtime.year + decimal
-    return date_decimal
