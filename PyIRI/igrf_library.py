@@ -520,9 +520,9 @@ def legendre_poly(nmax, theta):
     Notes
     -----
     by IGRF-13 Alken et al., 2021
-    Returns associated Legendre polynomials `P(n,m)` (Schmidt
-    quasi-normalized), and the derivative :math:`dP(n,m)/d\\theta` evaluated
-    at :math:`\\theta`.
+    Returns associated Legendre polynomials P(n,m) (Schmidt
+    quasi-normalized), and the derivative :d P(n,m) / d theta evaluated
+    at theta.
 
     References
     ----------

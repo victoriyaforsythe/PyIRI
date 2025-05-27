@@ -2,6 +2,8 @@ import numpy as np
 import pytest
 import PyIRI
 from PyIRI import edp_update
+from PyIRI import edp_update as ml
+
 
 def test_IRI_density_1day_runs():
     year = 2024
@@ -20,110 +22,6 @@ def test_IRI_density_1day_runs():
         assert EDP.shape[1] == len(aalt)
     except Exception as e:
         pytest.fail(f"Function raised an exception: {e}")
-
-
-def test_IRI_monthly_mean_par_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.IRI_monthly_mean_par  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function IRI_monthly_mean_par raised an exception: {e}")
-
-
-def test_reconstruct_density_from_parameters_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.reconstruct_density_from_parameters  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function reconstruct_density_from_parameters raised an exception: {e}")
-
-
-def test_reconstruct_density_from_parameters_1level_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.reconstruct_density_from_parameters_1level  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function reconstruct_density_from_parameters_1level raised an exception: {e}")
-
-
-def test_EDP_builder_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.EDP_builder  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function EDP_builder raised an exception: {e}")
-
-
-def test_run_iri_reg_grid_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.run_iri_reg_grid  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function run_iri_reg_grid raised an exception: {e}")
-
-
-def test_run_seas_iri_reg_grid_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.run_seas_iri_reg_grid  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function run_seas_iri_reg_grid raised an exception: {e}")
-
-
-def test_derive_dependent_F1_parameters_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.derive_dependent_F1_parameters  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function derive_dependent_F1_parameters raised an exception: {e}")
-
-
-def test_logistic_curve_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.logistic_curve  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function logistic_curve raised an exception: {e}")
-
-
-def test_drop_up_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.drop_up  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function drop_up raised an exception: {e}")
-
-
-def test_drop_down_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.drop_down  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function drop_down raised an exception: {e}")
-
-
-def test_Probability_F1_runs():
-    # TODO: provide realistic inputs and check outputs
-    try:
-        result = edp_update.Probability_F1  # Add input args if required
-        assert callable(result) or result is not None
-    except Exception as e:
-        pytest.fail(f"Function Probability_F1 raised an exception: {e}")
-
-import numpy as np
-import pytest
-import PyIRI
-from PyIRI import edp_update as ml
 
 
 def test_Probability_F1_output():
