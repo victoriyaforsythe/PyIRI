@@ -123,7 +123,7 @@ def inc2magnetic_dip_latitude(inc):
     return magnetic_dip_latitude
 
 
-def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
+def inclination(coeff_dir, date_decimal, alon, alat, alt=300., only_inc=True):
     """Calculate magnetic inclination using IGRF13.
 
     Parameters
