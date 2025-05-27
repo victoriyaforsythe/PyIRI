@@ -27,34 +27,73 @@ python -m build .
 pip install .
 ```
 
-For more details about the dependencies, see the documentation.
+For more details about the dependencies, see the [examples] and Jupyter
+Notebooks [tutorials].
 
 # Example
 
-PyIRI currently provides the ionospheric electron density and associated profile
-parameters on a user-specified grid for all times on a requested day.  For
-example,
+PyIRI can calculate monthly mean ionospheric parameters
+for the user provided grid. The estimation of the parameters
+occurs simultaneously at all grid points and for all
+desired diurnal time frames,
 
 ```
+import numpy as np
+import PyIRI
 import PyIRI.edp_update as ml
+import PyIRI.plotting as plot
 
-# This example uses 15 April 2020, with an F10.7 of 150.0 sfu
-(alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak, es_peak, sun, mag,
- edens_prof) = ml.run_iri_reg_grid(2020, 4, 15, 150, hr_res=1, lat_res=1,
-                                   lon_res=1, alt_res=10, alt_min=0,
-                                   alt_max=700, ccir_or_ursi=0)
-print(edens_prof.shape)
+year = 2020
+month = 4
+ccir_or_ursi = 0
+
+
+# Create any horizontal grid (regular or irregular, global or regional).
+# The grid arrays (alon and alat) should be flattened to be 1-D arrays. 
+# This is an example of a regular global grid:
+dlon = 5
+dlat = 5
+alon_2d, alat_2d = np.mgrid[-180:180 + dlon:dlon, -90:90 + dlat:dlat]
+alon = np.reshape(alon_2d, alon_2d.size)
+alat = np.reshape(alat_2d, alat_2d.size)
+
+# Create any temporal array expressed in decimal hours (regular or irregular).
+# For this example we use regularly spaced time array:
+hr_res = 1
+ahr = np.arange(0, 24, hr_res)
+
+# Find ionospheric parameters for F2, F1, E, and Es regions by
+# calling IRI_monthly_mean_par function:
+
+f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(year, month, ahr, alon, alat, PyIRI.coeff_dir, ccir_or_ursi)
+
 ```
 
-The resulting electron density profile (`edens_prof`) will have a shape of
-12 x 70 x 2701.  More examples are available in the documentation and Jupyter
-Notebooks tutorials.
+![foF2_min_max](docs/examples/Figs/PyIRI_foF2_min_max.png)
+![hmF2_min_max](docs/examples/Figs/PyIRI_hmF2_min_max.png)
+![foE_min_max](docs/examples/Figs/PyIRI_foE_min_max.png)
+![EDP_min_max](docs/examples/Figs/PyIRI_EDP_sample.png)
 
+PyIRI can calculate daily ionospheric parameters for the user provided grid.
+The estimation of the parameters occurs simultaneously at all grid points
+and for all desired diurnal time frames. The parameters are obtained by
+linearly interpolating between min and max levels of solar activity, and
+by interpolation between median monthly values to the day of interest.
+The user should provide the F10.7 value for the day of interest.
+
+```
+f107 = 100
+f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(year, month, day, ahr, alon, alat, aalt, f107, PyIRI.coeff_dir, ccir_or_ursi)
+```
+
+![foF2](docs/examples/Figs/PyIRI_foF2.png)
+![hmF2](docs/examples/Figs/PyIRI_hmF2.png)
+![foE](docs/examples/Figs/PyIRI_foE.png)
+![EDP](docs/examples/Figs/PyIRI_EDP_sample_1day.png)
 
 PyIRI does not calculate the Total Electron Content (TEC) automatically, as
 the altitude array is provided by the user. If the user supplies an
 array with low resolution, the resulting TEC values may be inaccurate.
-
 The edp_to_vtec function can be used to calculate the vTEC from the edp output.
 
 ```
@@ -62,3 +101,17 @@ The edp_to_vtec function can be used to calculate the vTEC from the edp output.
 TEC = main.edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0)
 
 ```
+![vTEC](docs/examples/Figs/PyIRI_vTEC.png)
+
+In case you are interested in a single location (as opposed to the grid)
+PyIRI can evaluate parameters at this location if it is passed as a 1-element
+NumPy array.
+
+```
+alon = np.array([10.])
+alat = np.array([20.])
+
+f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(year, month, day, ahr, alon, alat, aalt, f107, PyIRI.coeff_dir, ccir_or_ursi)
+```
+
+![EDP_diurnal](docs/examples/Figs/PyIRI_EDP_diurnal.png)

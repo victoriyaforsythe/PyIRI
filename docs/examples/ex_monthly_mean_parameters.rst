@@ -13,7 +13,7 @@ desired diurnal time frames.
 
    import numpy as np
    import PyIRI
-   import PyIRI.main_library as ml
+   import PyIRI.edp_update as ml
    import PyIRI.plotting as plot
 
 2. Specify a year and a month:
@@ -24,14 +24,8 @@ desired diurnal time frames.
    year = 2020
    month = 4
 
-3. Specify solar flux index F10.7 in SFU:
 
-::
-
-
-   f107 = 100
-
-4. Specify what coefficients to use for the peak of F2 layer:
+3. Specify what coefficients to use for the peak of F2 layer:
 
    0 = CCIR, 1 = URSI
 
@@ -40,7 +34,7 @@ desired diurnal time frames.
 
    ccir_or_ursi = 0
 
-5. Create any horizontal grid (regular or irregular, global or regional).
+4. Create any horizontal grid (regular or irregular, global or regional).
    The grid arrays (alon and alat) should be flattened to be 1-D arrays. 
    This is an example of a regular global grid:
 
@@ -52,7 +46,7 @@ desired diurnal time frames.
    alon = np.reshape(alon_2d, alon_2d.size)
    alat = np.reshape(alat_2d, alat_2d.size)
 
-6. Create any temporal array expressed in decimal hours (regular or irregular).
+5. Create any temporal array expressed in decimal hours (regular or irregular).
    For this example we use regularly spaced time array:
 
 ::
@@ -60,7 +54,7 @@ desired diurnal time frames.
    hr_res = 1
    ahr = np.arange(0, 24, hr_res)
 
-7. Find ionospheric parameters for F2, F1, E, and Es regions by
+6. Find ionospheric parameters for F2, F1, E, and Es regions by
    calling IRI_monthly_mean_par function:
 
 ::
@@ -137,7 +131,7 @@ mag dictionary contains:
 -  magnetic dip latitude in degrees 'mag_dip_lat'
 
 
-8. Plot results for F2 region at time stamp UT = 10:
+7. Plot results for F2 region at time stamp UT = 10:
 
 ::
 
@@ -186,7 +180,7 @@ mag dictionary contains:
     :align: center
     :alt: Global distribution of hmF2 for min and max levels of solar activity.
 
-9. Plot results for F1 region:
+8. Plot results for F1 region:
 
 ::
 
@@ -273,7 +267,6 @@ Here is an example for regularly spaced array:
    lat_plot = 0
    plot.PyIRI_EDP_sample(edens_prof, ahr, alon, alat, lon_plot, lat_plot, aalt,
    UT_plot, plot_dir, plot_name='PyIRI_EDP_sample.png')
-
 
 
 .. image:: /docs/examples/Figs/PyIRI_EDP_sample.png

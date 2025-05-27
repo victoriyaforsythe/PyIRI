@@ -9,35 +9,16 @@ TEC Units (TECU), which are equal to 1.0e16 electrons per square meter.  PyIRI
 provides a function to calculate VTEC from an electron density profile:
 :py:func:`PyIRI.main_library.edp_to_vtec`.
 
-This example is a follow-on from :ref:`exthree`. Using the electron density
+This example is a follow-on using the electron density
 profile and altitude grid from the previous example:
 
 ::
-   vtec = ml.edp_to_vtec(edp, aalt)
+   TEC = main.edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0)
+   plot.PyIRI_plot_vTEC(TEC, ahr, alon, alat, alon_2d, alat_2d, sun, UT_plot, plot_dir, plot_name='PyIRI_vTEC.png')
 
-   print(vtec.shape, vtec.min(), vtec.max())
+This will yeild an array with VTEC in shape [N_time, N_grid].
 
-This will yeild an array with VTEC at 24 times and one location, with values
-between 4 and 45 TECU::
-
-  (24, 1) 4.336832567501178 44.44731135732205
-
-Make sure to use sufficient vertical resolution and the maximum height for
-this calculation.
-
-The following matrix approach can be implemented to calculate TEC for the
-PyIRI output array of density edens_prof:
-
-# Find dimentions:
-N_time = edens_prof.shape[0]
-N_alt = edens_prof.shape[1]
-N_grid = edens_prof.shape[2]
-
-# Array of distances between vertical grid cells in meters
-dist = np.concatenate((np.diff(aalt), aalt[-1] - aalt[-2]), axis=None) * 1000.
-
-# Convert dist to a matrix, to perform the array multipllication
-dist_extended = np.reshape(np.full((N_time, N_grid, N_alt), dist), (N_time, N_alt, N_grid))
-
-# Find TEC in shape [N_time, N_grid], result is in TECU
-tec = np.sum(den * dist_extended, axis=1) / 1e16
+.. image:: Figs/PyIRI_vTEC.png
+    :width: 600px
+    :align: center
+    :alt: vTEC map.

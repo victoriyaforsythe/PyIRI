@@ -5,7 +5,7 @@ Example 3: Daily Ionospheric Parameters For a Single Location
 
 In case you are interested in a single location (as opposed to the grid)
 PyIRI can evaluate parameters at this location if it is passed as a 1-element
-NumPy array. 
+NumPy array.
 
 1. Import libraries:
 
@@ -14,10 +14,10 @@ NumPy array.
 
    import numpy as np
    import PyIRI
-   import PyIRI.main_library as ml
+   import PyIRI.edp_update as ml
    import PyIRI.plotting as plot
 
-2. Specify a year, a month, and a day:
+1. Specify a year, a month, and a day:
 
 ::
 
@@ -63,7 +63,7 @@ NumPy array.
 
 ::
 
-   alt_res = 10
+   alt_res = 1
    alt_min = 90
    alt_max = 700
    aalt = np.arange(alt_min, alt_max, alt_res)
