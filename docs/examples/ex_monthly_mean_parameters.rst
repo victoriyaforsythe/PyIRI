@@ -13,7 +13,7 @@ desired diurnal time frames.
 
    import numpy as np
    import PyIRI
-   import PyIRI.main_library as ml
+   import PyIRI.edp_update as ml
    import PyIRI.plotting as plot
 
 2. Specify a year and a month:
@@ -24,14 +24,8 @@ desired diurnal time frames.
    year = 2020
    month = 4
 
-3. Specify solar flux index F10.7 in SFU:
 
-::
-
-
-   f107 = 100
-
-4. Specify what coefficients to use for the peak of F2 layer:
+3. Specify what coefficients to use for the peak of F2 layer:
 
    0 = CCIR, 1 = URSI
 
@@ -40,7 +34,7 @@ desired diurnal time frames.
 
    ccir_or_ursi = 0
 
-5. Create any horizontal grid (regular or irregular, global or regional).
+4. Create any horizontal grid (regular or irregular, global or regional).
    The grid arrays (alon and alat) should be flattened to be 1-D arrays. 
    This is an example of a regular global grid:
 
@@ -52,7 +46,7 @@ desired diurnal time frames.
    alon = np.reshape(alon_2d, alon_2d.size)
    alat = np.reshape(alat_2d, alat_2d.size)
 
-6. Create any temporal array expressed in decimal hours (regular or irregular).
+5. Create any temporal array expressed in decimal hours (regular or irregular).
    For this example we use regularly spaced time array:
 
 ::
@@ -60,7 +54,7 @@ desired diurnal time frames.
    hr_res = 1
    ahr = np.arange(0, 24, hr_res)
 
-7. Find ionospheric parameters for F2, F1, E, and Es regions by
+6. Find ionospheric parameters for F2, F1, E, and Es regions by
    calling IRI_monthly_mean_par function:
 
 ::
@@ -137,7 +131,7 @@ mag dictionary contains:
 -  magnetic dip latitude in degrees 'mag_dip_lat'
 
 
-8. Plot results for F2 region at time stamp UT = 10:
+7. Plot results for F2 region at time stamp UT = 10:
 
 ::
 
@@ -145,10 +139,10 @@ mag dictionary contains:
    plot_dir = '/Users/Documents/MY_FOLDER/'
    
    plot.PyIRI_plot_NmF2_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_NmF2_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_NmF2_min_max.png')
 
 
-.. image:: Figs/PyIRI_NmF2_min_max.pdf
+.. image:: Figs/PyIRI_NmF2_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of NmF2 for min and max levels of solar activity.
@@ -156,10 +150,10 @@ mag dictionary contains:
 ::
 
    plot.PyIRI_plot_foF2_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foF2_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foF2_min_max.png')
 
 
-.. image:: Figs/PyIRI_foF2_min_max.pdf
+.. image:: Figs/PyIRI_foF2_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of foF2 for min and max levels of solar activity.
@@ -167,10 +161,10 @@ mag dictionary contains:
 ::
 
    plot.PyIRI_plot_M3000_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_M3000_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_M3000_min_max.png')
 
 
-.. image:: Figs/PyIRI_M3000_min_max.pdf
+.. image:: Figs/PyIRI_M3000_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of M3000 for min and max levels of solar activity.
@@ -178,23 +172,23 @@ mag dictionary contains:
 ::
 
    plot.PyIRI_plot_hmF2_min_max(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_hmF2_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_hmF2_min_max.png')
 
 
-.. image:: Figs/PyIRI_hmF2_min_max.pdf
+.. image:: Figs/PyIRI_hmF2_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of hmF2 for min and max levels of solar activity.
 
-9. Plot results for F1 region:
+1. Plot results for F1 region:
 
 ::
 
    plot.PyIRI_plot_NmF1_min_max(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_NmF1_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_NmF1_min_max.png')
 
 
-.. image:: Figs/PyIRI_NmF1_min_max.pdf
+.. image:: Figs/PyIRI_NmF1_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of NmF1 for min and max levels of solar activity.
@@ -202,10 +196,10 @@ mag dictionary contains:
 ::
 
    plot.PyIRI_plot_foF1_min_max(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foF1_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foF1_min_max.png')
 
 
-.. image:: Figs/PyIRI_foF1_min_max.pdf
+.. image:: Figs/PyIRI_foF1_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of foF1 for min and max levels of solar activity.
@@ -213,41 +207,41 @@ mag dictionary contains:
 ::
 
    plot.PyIRI_plot_hmF1_min_max(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_hmF1_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_hmF1_min_max.png')
 
 
-.. image:: Figs/PyIRI_hmF1_min_max.pdf
+.. image:: Figs/PyIRI_hmF1_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of hmF1 for min and max levels of solar activity.
 
-10. Plot results for E region:
+1.  Plot results for E region:
 
 ::
 
    plot.PyIRI_plot_foE_min_max(e_peak, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foE_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foE_min_max.png')
 
 
-.. image:: Figs/PyIRI_foE_min_max.pdf
+.. image:: Figs/PyIRI_foE_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of foE for min and max levels of solar activity.
 
-11. Plot results for Es region:
+1.  Plot results for Es region:
 
 ::
 
    plot.PyIRI_plot_foEs_min_max(es_peak, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foEs_min_max.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foEs_min_max.png')
 
 
-.. image:: Figs/PyIRI_foEs_min_max.pdf
+.. image:: Figs/PyIRI_foEs_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of foEs for min and max levels of solar activity.
 
-12. Create height array. It can be regular or irregular.
+1.  Create height array. It can be regular or irregular.
 Here is an example for regularly spaced array:
 
 ::
@@ -272,11 +266,10 @@ Here is an example for regularly spaced array:
    lon_plot = 0
    lat_plot = 0
    plot.PyIRI_EDP_sample(edens_prof, ahr, alon, alat, lon_plot, lat_plot, aalt,
-   UT_plot, plot_dir, plot_name='PyIRI_EDP_sample.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_EDP_sample.png')
 
 
-
-.. image:: Figs/PyIRI_EDP_sample.pdf
+.. image:: Figs/PyIRI_EDP_sample.png
     :width: 600px
     :align: center
     :alt: EDPs for min and max of solar activity.

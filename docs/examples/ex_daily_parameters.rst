@@ -5,7 +5,7 @@ PyIRI can calculate daily ionospheric parameters for the user provided grid.
 The estimation of the parameters occurs simultaneously at all grid points
 and for all desired diurnal time frames. The parameters are obtained by
 linearly interpolating between min and max levels of solar activity, and
-by interpolation between median monthly values to the day of interest. 
+by interpolation between median monthly values to the day of interest.
 
 1. Import libraries:
 
@@ -14,7 +14,7 @@ by interpolation between median monthly values to the day of interest.
 
    import numpy as np
    import PyIRI
-   import PyIRI.main_library as ml
+   import PyIRI.edp_update as ml
    import PyIRI.plotting as plot
 
 2. Specify a year, a month, and a day:
@@ -162,10 +162,10 @@ edp array:
    plot_dir = '/Users/Documents/MY_FOLDER/'
    
    plot.PyIRI_plot_NmF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_NmF2.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_NmF2.png')
 
 
-.. image:: Figs/PyIRI_NmF2.pdf
+.. image:: Figs/PyIRI_NmF2.png
     :width: 600px
     :align: center
     :alt: Global distribution of NmF2.
@@ -173,10 +173,10 @@ edp array:
 ::
 
    plot.PyIRI_plot_foF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foF2.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foF2.png')
 
 
-.. image:: Figs/PyIRI_foF2.pdf
+.. image:: Figs/PyIRI_foF2.png
     :width: 600px
     :align: center
     :alt: Global distribution of foF2.
@@ -184,10 +184,10 @@ edp array:
 ::
 
    plot.PyIRI_plot_M3000(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_M3000.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_M3000.png')
 
 
-.. image:: Figs/PyIRI_M3000_min_max.pdf
+.. image:: Figs/PyIRI_M3000_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of M3000.
@@ -195,23 +195,23 @@ edp array:
 ::
 
    plot.PyIRI_plot_hmF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_hmF2.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_hmF2.png')
 
 
-.. image:: Figs/PyIRI_hmF2.pdf
+.. image:: Figs/PyIRI_hmF2.png
     :width: 600px
     :align: center
     :alt: Global distribution of hmF2.
 
-11. Plot results for F1 region:
+1.  Plot results for F1 region:
 
 ::
 
    plot.PyIRI_plot_NmF1(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_NmF1.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_NmF1.png')
 
 
-.. image:: Figs/PyIRI_NmF1.pdf
+.. image:: Figs/PyIRI_NmF1.png
     :width: 600px
     :align: center
     :alt: Global distribution of NmF1.
@@ -219,10 +219,10 @@ edp array:
 ::
 
    plot.PyIRI_plot_foF1(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foF1.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foF1.png')
 
 
-.. image:: Figs/PyIRI_foF1.pdf
+.. image:: Figs/PyIRI_foF1.png
     :width: 600px
     :align: center
     :alt: Global distribution of foF1.
@@ -230,41 +230,41 @@ edp array:
 ::
 
    plot.PyIRI_plot_hmF1(f1, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_hmF1.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_hmF1.png')
 
 
-.. image:: Figs/PyIRI_hmF1.pdf
+.. image:: Figs/PyIRI_hmF1.png
     :width: 600px
     :align: center
     :alt: Global distribution of hmF1.
 
-12. Plot results for E region:
+1.  Plot results for E region:
 
 ::
 
    plot.PyIRI_plot_foE(e_peak, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foE.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foE.png')
 
 
-.. image:: Figs/PyIRI_foE.pdf
+.. image:: Figs/PyIRI_foE.png
     :width: 600px
     :align: center
     :alt: Global distribution of foE.
 
-13. Plot results for Es region:
+1.  Plot results for Es region:
 
 ::
 
    plot.PyIRI_plot_foEs(es_peak, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_foEs.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_foEs.png')
 
 
-.. image:: Figs/PyIRI_foEs.pdf
+.. image:: Figs/PyIRI_foEs.png
     :width: 600px
     :align: center
     :alt: Global distribution of foEs for min and max levels of solar activity.
 
-14. Plot electron density vertical profiles from one location.
+1.  Plot electron density vertical profiles from one location.
     Make sure this location belongs to alon and alat arrays.
 
 ::
@@ -272,11 +272,11 @@ edp array:
    lon_plot = 0
    lat_plot = 0
    plot.PyIRI_EDP_sample_1day(edp, ahr, alon, alat, lon_plot, lat_plot, aalt,
-   UT_plot, plot_dir, plot_name='PyIRI_EDP_sample_1day.pdf')
+   UT_plot, plot_dir, plot_name='PyIRI_EDP_sample_1day.png')
 
 
 
-.. image:: Figs/PyIRI_EDP_sample_1day.pdf
+.. image:: Figs/PyIRI_EDP_sample_1day.png
     :width: 600px
     :align: center
     :alt: Electron density profile for 1 location.

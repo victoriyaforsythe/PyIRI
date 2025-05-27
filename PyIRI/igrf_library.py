@@ -19,6 +19,54 @@ import os
 from scipy import interpolate
 
 
+def verify_inclination(inc):
+    """Test the validity of an inclination input.
+
+    Parameters
+    ----------
+    inc : int, float, or array-like
+        Magnetic inclination in degrees.
+
+    Returns
+    -------
+    inc : int, float, or array-like
+        Magnetic inclination in degrees
+
+    Raises
+    ------
+    ValueError
+        If inclination is not between -90 and 90 degrees
+
+    """
+    # Ensure the inclination to be tested is a numpy array
+    test_inc = np.asarray(inc)
+    if test_inc.shape == ():
+        test_inc = np.asarray([inc])
+
+    # Get a mask that specifies if each inclination is realistic
+    good_inc = (test_inc <= 90.0) & (test_inc >= -90.0)
+
+    # Return original input if all are good, correct or raise error otherwise
+    if good_inc.all():
+        return inc
+    else:
+        # Adjust values within a small tolerance
+        test_inc[(test_inc > 90.0) & (test_inc <= 90.1)] = 90.0
+        test_inc[(test_inc < -90.0) & (test_inc >= -90.1)] = -90.0
+        good_inc = (test_inc <= 90.0) & (test_inc >= -90.0)
+
+        if good_inc.all():
+            # Return the adjusted input using the original type
+            if isinstance(inc, (float, int, np.floating, np.integer)):
+                return test_inc[0].astype(type(inc))
+            elif isinstance(inc, list):
+                return list(test_inc)
+            else:
+                return test_inc
+        else:
+            raise ValueError('unrealistic magnetic inclination value(s)')
+
+
 def inc2modip(inc, alat):
     """Calculate modified dip angle from magnetic inclination.
 
@@ -40,6 +88,8 @@ def inc2modip(inc, alat):
     geographic latitude.
 
     """
+    inc = verify_inclination(inc)
+
     alat_rad = np.deg2rad(alat)
     rad_arg = np.deg2rad((inc / np.sqrt(np.cos(alat_rad))))
     modip_rad = np.arctan(rad_arg)
@@ -66,13 +116,14 @@ def inc2magnetic_dip_latitude(inc):
     This function calculates magnetic dip latitude.
 
     """
+    inc = verify_inclination(inc)
     arg = 0.5 * (np.tan(np.deg2rad(inc)))
     magnetic_dip_latitude = np.rad2deg(np.arctan(arg))
 
     return magnetic_dip_latitude
 
 
-def inclination(coeff_dir, date_decimal, alon, alat):
+def inclination(coeff_dir, date_decimal, alon, alat, alt=300., only_inc=True):
     """Calculate magnetic inclination using IGRF13.
 
     Parameters
@@ -85,57 +136,83 @@ def inclination(coeff_dir, date_decimal, alon, alat):
         Flattened array of geographic longitudes in degrees.
     alat : array-like
         Flattened array of geographic latitudes in degrees.
+    alt : flt
+        Altitude in km, default is 300 km.
+    only_inc : bool
+        Only output the inclination, otherwise output the magnetic field
+        information as well (default=True)
 
     Returns
     -------
     inc : array-like
         Magnetic inclination in degrees.
+    X : array-like (optional)
+        North component of the magnetic field in nT.
+    Y : array-like (optional)
+        East component of the magnetic field in nT.
+    Z : array-like (optional)
+        Vertical component of the magnetic field in nT.
+    dec : array-like (optional)
+        Declination of the magnetic field in degrees.
+    hoz : array-like (optional)
+        Horizontal intensity of the magnetic field in nT.
+    eff : array-like (optional)
+        Total intensity of the magnetic field in nT.
+
+    Raises
+    ------
+    IOError
+        If unable to find IGRF coefficient file
 
     Notes
     -----
     This code is a slight modification of the IGRF13 pyIGRF release,
     https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html
     The reading of the IGRF coefficient file was modified to speded up the
-    process, and the main code was simlified to oly focus on the iclination
-    of magnetic field output for the given grid.
+    process, and the main code was simlified.
 
     """
-    # Set altitude to 300 km
-    aalt = np.zeros((alon.shape)) + 300.
+    # Set altitude
+    aalt = np.full(shape=alon.shape, fill_value=alt)
 
-    # open IGRF file and read to array the main table
-    IGRF_FILE = os.path.join(coeff_dir, 'IGRF', 'IGRF13.shc')
-    with open(IGRF_FILE, mode='r') as fopen:
+    # Open IGRF file and read to array the main table
+    igrf_file = os.path.join(coeff_dir, 'IGRF', 'IGRF13.shc')
+    if not os.path.isfile(igrf_file):
+        raise IOError('unable to find IGRF coefficient file: {:}'.format(
+            igrf_file))
+
+    with open(igrf_file, mode='r') as fopen:
         file_array = np.genfromtxt(fopen, delimiter='', skip_header=5)
 
-    # create the time array of years that match the years in the file
+    # Create the time array of years that match the years in the file
     # (check if file is change to the newer version)
     igrf_time = np.arange(1900, 2025 + 5, 5)
 
-    # exclude first 2 columns, these are the m & n indecies
+    # Exclude first 2 columns, these are the m and n indecies
     igrf_coeffs = file_array[:, 2:]
 
-    # maximum degree of polynomials
+    # Maximum degree of polynomials
     nmax = 13
 
-    # colatitude (from 0 to 180)
-    colat = 90. - alat
+    # Colatitude (from 0 to 180)
+    colat = 90.0 - alat
 
     # Compute geocentric colatitude and radius from geodetic colatitude
     # and height
     alt, colat, sd, cd = gg_to_geo(aalt, colat)
 
-    # interpolate coefficients from 5 year slots to given decimal year
-    f = interpolate.interp1d(igrf_time, igrf_coeffs, fill_value='extrapolate')
-    coeffs = f(date_decimal)
+    # Interpolate coefficients from 5 year slots to given decimal year
+    igrf_extrap = interpolate.interp1d(igrf_time, igrf_coeffs,
+                                       fill_value='extrapolate')
+    coeffs = igrf_extrap(date_decimal)
 
     # Compute the main field B_r, B_theta and B_phi value for the location(s)
-    Br, Bt, Bp = synth_values(coeffs.T, alt, colat, alon, nmax)
+    br, bt, bp = synth_values(coeffs.T, alt, colat, alon, nmax)
 
     # Rearrange to X, Y, Z components
-    X = -Bt
-    Y = Bp
-    Z = -Br
+    X = -bt
+    Y = bp
+    Z = -br
 
     # Rotate back to geodetic coords if needed
     t = X
@@ -145,8 +222,12 @@ def inclination(coeff_dir, date_decimal, alon, alat):
     # Compute the four non-linear components
     dec, hoz, inc, eff = xyz2dhif(X, Y, Z)
 
-    # return only inclanation because that is what we need for PyIRI
-    return inc
+    if only_inc:
+        out = inc
+    else:
+        out = (inc, X, Y, Z, dec, hoz, eff)
+
+    return out
 
 
 def gg_to_geo(h, gdcolat):
@@ -198,10 +279,15 @@ def gg_to_geo(h, gdcolat):
     c2 = ctgd * ctgd
     s2 = 1. - c2
     rho = np.sqrt(a2 * s2 + b2 * c2)
-    rad = np.sqrt(h * (h + 2 * rho) + (a4 * s2 + b4 * c2) / rho**2)
+    rad = np.sqrt(h * (h + 2. * rho) + (a4 * s2 + b4 * c2) / rho**2)
     cd = (h + rho) / rad
     sd = (a2 - b2) * ctgd * stgd / (rho * rad)
     cthc = ctgd * cd - stgd * sd
+
+    # Clip cthc to [-1, 1] not to cause problems in arccos
+    cthc = np.clip(cthc, -1.0, 1.0)
+
+    # Arccos returns values in [0, pi] so we need to convert to degrees
     thc = np.rad2deg(np.arccos(cthc))  # arccos returns values in [0, pi]
 
     return rad, thc, sd, cd
@@ -340,44 +426,46 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
     if nmin < 1:
         raise ValueError('Only positive nmin allowed.')
 
-    # handle optional argument: nmax
+    # Handle optional argument: nmax
     nmax_coeffs = int(np.sqrt(coeffs.shape[-1] + 1) - 1)  # degrees
     if nmax is None:
         nmax = nmax_coeffs
-    else:
-        assert nmax > 0, 'Only positive nmax allowed.'
+    elif nmax <= 0:
+        raise ValueError('Only positive, non-zero nmax allowed.')
+
     if nmax > nmax_coeffs:
         nmax = nmax_coeffs
+
     if nmax < nmin:
         raise ValueError(f'Nothing to compute: nmax < nmin ({nmax} < {nmin}.)')
 
-    # manually broadcast input grid on surface
+    # Manually broadcast input grid on surface
     if grid:
-        theta = theta[..., None]  # first dimension is theta
-        phi = phi[None, ...]  # second dimension is phi
+        theta = theta[..., None]  # First dimension is theta
+        phi = phi[None, ...]  # Second dimension is phi
 
-    # get shape of broadcasted result
+    # Get shape of broadcasted result
     try:
-        b = np.broadcast(radius, theta, phi,
-                         np.broadcast_to(0, coeffs.shape[:-1]))
+        broad = np.broadcast(radius, theta, phi,
+                             np.broadcast_to(0, coeffs.shape[:-1]))
     except ValueError:
         raise ValueError(''.join(['Cannot broadcast grid shapes (excl. last ',
                                   'dimension of coeffs):\nradius: ',
                                   repr(radius.shape), '\ntheta: ',
                                   repr(theta.shape), '\nphi: ', repr(phi.shape),
                                   '\ncoeffs: ', repr(coeffs.shape)]))
-    grid_shape = b.shape
+    grid_shape = broad.shape
 
-    # initialize radial dependence given the source
+    # Initialize radial dependence given the source
     r_n = radius**(-(nmin + 2))
 
-    # compute associated Legendre polynomials as (n, m, theta-points)-array
+    # Compute associated Legendre polynomials as (n, m, theta-points)-array
     Pnm = legendre_poly(nmax, theta)
 
-    # save sinth for fast access
+    # Save sinth for fast access
     sinth = Pnm[1, 1]
 
-    # calculate cos(m*phi) and sin(m*phi) as (m, phi-points)-array
+    # Calculate cos(m*phi) and sin(m*phi) as (m, phi-points)-array
     phi = np.radians(phi)
     cos_mp = np.cos(np.multiply.outer(np.arange(nmax + 1), phi))
     sin_mp = np.sin(np.multiply.outer(np.arange(nmax + 1), phi))
@@ -399,7 +487,7 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
                         * (coeffs[..., num] * cos_mp[m]
                            + coeffs[..., num + 1] * sin_mp[m]))
             with np.errstate(divide='ignore', invalid='ignore'):
-                # handle poles using L'Hopital's rule
+                # Handle poles using L'Hopital's rule
                 div_Pnm = np.where(theta == 0., Pnm[m, n + 1],
                                    Pnm[n, m] / sinth)
                 div_Pnm = np.where(theta == np.degrees(np.pi),
@@ -408,18 +496,18 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
                       * (coeffs[..., num] * sin_mp[m]
                          - coeffs[..., num + 1] * cos_mp[m]))
             num += 2
-        r_n = r_n / radius  # equivalent to r_n = radius**(-(n+2))
+        r_n = r_n / radius  # Equivalent to r_n = radius**(-(n+2))
 
     return B_radius, B_theta, B_phi
 
 
 def legendre_poly(nmax, theta):
-    r"""Calculate associated Legendre polynomials `P(n,m)`.
+    """Calculate associated Legendre polynomials P(n,m).
 
     Parameters
     ----------
     nmax : int
-        Maximum degree up to which expansion.
+        Maximum degree up to which expansion, with a minimum value of one.
     theta : array-like
         Array containing the colatitude in degrees.
 
@@ -428,15 +516,22 @@ def legendre_poly(nmax, theta):
     Pnm : array-like
         Evaluated values and derivatives.
 
+    Raises
+    ------
+    IndexError
+        If nmax is less than 1
+
     Notes
     -----
     by IGRF-13 Alken et al., 2021
-    Returns associated Legendre polynomials `P(n,m)` (Schmidt
-    quasi-normalized), and the derivative :math:`dP(n,m)/d\\theta` evaluated
-    at :math:`\\theta`.
+    Returns associated Legendre polynomials P(n,m) (Schmidt
+    quasi-normalized), and the derivative :d P(n,m) / d theta evaluated
+    at theta.
 
     References
     ----------
+    Langel, R. A. "Chapter four: Main field." Geomagnetism, edited by JA Jacobs
+    1 (1987).
     Zhu, J., "Conversion of Earth-centered Earth-fixed coordinates to
     geodetic coordinates", IEEE Transactions on Aerospace and Electronic
     Systems}, 1994, vol. 30, num. 3, pp. 957-961.

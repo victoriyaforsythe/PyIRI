@@ -50,11 +50,24 @@ jobs:
     - name: Test import success
       run: python -c "import PyIRI; print(PyIRI.__version__)"
 
-# TODO(#5): Enable after unit tests are available
-#    - name: Test with pytest
-#      run: pytest
-#
-#    - name: Publish results to coveralls
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      run: coveralls --rcfile=pyproject.toml --service=github
+    - name: Test with pytest
+      run: pytest --cov=PyIRI
+
+    - name: Publish results to coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COVERALLS_PARALLEL: true
+      run: coveralls --rcfile=pyproject.toml --service=github
+
+  finish:
+    name: Finish Coverage Analysis
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        pip install --upgrade coveralls
+        coveralls --service=github --finish
+

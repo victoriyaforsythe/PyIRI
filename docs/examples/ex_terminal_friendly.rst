@@ -1,4 +1,4 @@
-Example 4: Terminal Friendly PyIRI Runs
+Example 5: Terminal Friendly PyIRI Runs
 =======================================
 
 In case you want to use a regularly spaced global grid and to run
@@ -8,8 +8,7 @@ Here is an example for year = 2020, month = 4, day =15, F10.7 = 150.
 ::
 
 
-   import PyIRI
-   import PyIRI.main_library as ml
+   import PyIRI.edp_update as ml
 
 
    alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak, es_peak, \ 

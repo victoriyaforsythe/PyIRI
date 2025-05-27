@@ -6,15 +6,8 @@ also available in the `GitHub Repository <https://github.com/victoriyaforsythe/P
 
 .. toctree::
    examples/ex_monthly_mean_parameters.rst
-
-.. toctree::
    examples/ex_daily_parameters.rst
-
-.. toctree::
    examples/ex_single_location.rst
-
-.. toctree::
+   examples/ex_vtec.rst
    examples/ex_terminal_friendly.rst
-
-.. toctree::
    examples/ex_year_run.rst
