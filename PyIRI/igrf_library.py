@@ -219,7 +219,12 @@ def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
     # Compute the four non-linear components
     dec, hoz, inc, eff = xyz2dhif(X, Y, Z)
 
-    return X, Y, Z, dec, hoz, inc, eff
+    if only_inc:
+        out = inc
+    else:
+        out = (inc, X, Y, Z, dec, hoz, eff)
+
+    return out
 
 
 def gg_to_geo(h, gdcolat):
