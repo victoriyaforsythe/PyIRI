@@ -21,14 +21,16 @@ def test_IRI_density_1day_regression():
     aalt = np.arange(90, 700, 10)
     f107 = 100
     coeff_dir = PyIRI.coeff_dir
+    testdata_dir = PyIRI.testdata_dir
     ccir_or_ursi = 0
 
     f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
         year, month, day, ahr, alon, alat, aalt, f107, coeff_dir, ccir_or_ursi)
 
-    json_path = os.path.join(os.path.dirname(__file__),
-                             "../testdata/Test_Output.json")
-    with open(json_path, "r") as f:
+    test_file = os.path.join(testdata_dir,
+                             'Test_Output.json')
+
+    with open(test_file, "r") as f:
         ref = json.load(f)
 
     def assert_close(actual, expected, key, atol=1e-2):

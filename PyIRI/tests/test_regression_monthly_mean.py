@@ -25,13 +25,18 @@ def test_IRI_monthly_mean_par_coarse_regression():
     alat = np.reshape(alat_2d, alat_2d.size)
 
     coeff_dir = PyIRI.coeff_dir
+    testdata_dir = PyIRI.testdata_dir
+
     f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
         year, month, ahr, alon, alat, coeff_dir, ccir_or_ursi)
 
     aalt = np.arange(200, 300, 10)
     edens_prof = ml.reconstruct_density_from_parameters(f2, f1, e_peak, aalt)
 
-    with open("Test_Output_Mean_Monthly_Parameters.json", "r") as f:
+    test_file = os.path.join(testdata_dir,
+                             'Test_Output_Mean_Monthly_Parameters.json')
+
+    with open(test_file, "r") as f:
         ref = json.load(f)
 
     def assert_close(actual, expected, key, atol=1e-2):
