@@ -13,6 +13,7 @@ from PyIRI import edp_update as ml
 test_dir = os.path.join(
     str(pathlib.Path(PyIRI.tests.__file__).resolve().parent), "testdata")
 
+
 def test_IRI_density_1day_regression():
     """Compare IRI_density_1day output to known reference, single location."""
     year = 2020
