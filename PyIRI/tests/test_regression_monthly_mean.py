@@ -4,6 +4,7 @@ Regression test for IRI_monthly_mean_par and reconstructed EDPs.
 
 import json
 import numpy as np
+import os
 
 import PyIRI
 from PyIRI import edp_update as ml
