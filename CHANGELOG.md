@@ -16,6 +16,12 @@ adheres to [Semantic Versioning](https://semver.org/).
   the raytracing application.
 * The construction of the EDP in edp_update was modified to improve the
   reliability of the code.
+* Coverage status is added.
+* Tests are added for edp_update.
+* Regression tests are added for monthly_mean function.
+* Regression tests are added for single_location function.
+* Test data files are added.
+* Plots are refreshed in the Docs.
 
 ## 0.0.2 (11-15-2023)
 * The order of interpolation was changed. Previously the EDPs were
