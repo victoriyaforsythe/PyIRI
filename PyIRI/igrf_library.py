@@ -138,6 +138,8 @@ def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
         Flattened array of geographic latitudes in degrees.
     alt : flt
         Altitude in km, default is 300 km.
+    only_inc : bool
+        Only output the inclination, otherwise output the magnetic field information as well (default=True)
 
     Returns
     -------
