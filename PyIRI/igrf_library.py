@@ -124,21 +124,21 @@ def inc2magnetic_dip_latitude(inc):
     return magnetic_dip_latitude
 
 
-def inclination(coeff_dir, dtime, alon, alat, alt):
+def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
     """Calculate magnetic inclination using IGRF13.
 
     Parameters
     ----------
     coeff_dir : str
         Where IGRF13 coefficients are located.
-    dtime : class:`dt.datetime`
-        Datetime object.
+    date_decimal : float
+        Decimal year
     alon : array-like
         Flattened array of geographic longitudes in degrees.
     alat : array-like
         Flattened array of geographic latitudes in degrees.
     alt : flt
-        Altitude in km.
+        Altitude in km, default is 300 km.
 
     Returns
     -------
@@ -170,9 +170,6 @@ def inclination(coeff_dir, dtime, alon, alat, alt):
     process, and the main code was simlified.
 
     """
-    # Convert datetime to the decimal year
-    date_decimal = decimal_year(dtime)
-
     # Set altitude
     aalt = np.full(shape=alon.shape, fill_value=alt)
 

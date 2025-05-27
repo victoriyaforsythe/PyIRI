@@ -123,12 +123,14 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     # Date and time for the middle of the month (day=15) that will be used to
     # find magnetic inclination
     dtime = dt.datetime(year, mth, 15)
+    # Convert datetime to the decimal year
+    date_decimal = decimal_year(dtime)
 
     # -------------------------------------------------------------------------
     # Calculating magnetic inclanation, modified dip angle, and magnetic dip
     # latitude using IGRF at 300 km of altitude
     _, _, _, _, _, inc, _ = igrf.inclination(coeff_dir,
-                                             dtime,
+                                             date_decimal,
                                              alon, alat, 300.0)
     modip = igrf.inc2modip(inc, alat)
     mag_dip_lat = igrf.inc2magnetic_dip_latitude(inc)
