@@ -139,7 +139,8 @@ def inclination(coeff_dir, date_decimal, alon, alat, alt=300., only_inc=True):
     alt : flt
         Altitude in km, default is 300 km.
     only_inc : bool
-        Only output the inclination, otherwise output the magnetic field information as well (default=True)
+        Only output the inclination, otherwise output the magnetic field
+        information as well (default=True)
 
     Returns
     -------
