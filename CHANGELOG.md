@@ -5,7 +5,6 @@ adheres to [Semantic Versioning](https://semver.org/).
 ## 0.0.3 (05-27-2025)
 * Added magnetic filed strength and orientation as an output for IGRF library.
 * Added altitude as an optional input to the IGRF function.
-* Added pytest and coveralls to main CI tests.
 * Updated the README to include more links and information.
 * Updated the documentation to include more citation information, correct
   the installation instructions, and improve the examples.
