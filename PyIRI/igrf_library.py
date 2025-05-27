@@ -14,7 +14,6 @@ doi:10.1186/s40623-020-01288-x.
 
 """
 
-import datetime as dt
 import numpy as np
 import os
 from scipy import interpolate
@@ -124,21 +123,21 @@ def inc2magnetic_dip_latitude(inc):
     return magnetic_dip_latitude
 
 
-def inclination(coeff_dir, dtime, alon, alat, alt):
+def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
     """Calculate magnetic inclination using IGRF13.
 
     Parameters
     ----------
     coeff_dir : str
         Where IGRF13 coefficients are located.
-    dtime : class:`dt.datetime`
-        Datetime object.
+    date_decimal : float
+        Decimal year
     alon : array-like
         Flattened array of geographic longitudes in degrees.
     alat : array-like
         Flattened array of geographic latitudes in degrees.
     alt : flt
-        Altitude in km.
+        Altitude in km, default is 300 km.
 
     Returns
     -------
@@ -170,9 +169,6 @@ def inclination(coeff_dir, dtime, alon, alat, alt):
     process, and the main code was simlified.
 
     """
-    # Convert datetime to the decimal year
-    date_decimal = decimal_year(dtime)
-
     # Set altitude
     aalt = np.full(shape=alon.shape, fill_value=alt)
 
@@ -498,7 +494,7 @@ def synth_values(coeffs, radius, theta, phi, nmax=None, nmin=1, grid=False):
 
 
 def legendre_poly(nmax, theta):
-    r"""Calculate associated Legendre polynomials `P(n,m)`.
+    """Calculate associated Legendre polynomials P(n,m).
 
     Parameters
     ----------
@@ -520,9 +516,9 @@ def legendre_poly(nmax, theta):
     Notes
     -----
     by IGRF-13 Alken et al., 2021
-    Returns associated Legendre polynomials `P(n,m)` (Schmidt
-    quasi-normalized), and the derivative :math:`dP(n,m)/d\\theta` evaluated
-    at :math:`\\theta`.
+    Returns associated Legendre polynomials P(n,m) (Schmidt
+    quasi-normalized), and the derivative :d P(n,m) / d theta evaluated
+    at theta.
 
     References
     ----------
@@ -608,34 +604,3 @@ def xyz2dhif(x, y, z):
     inc = np.rad2deg(np.arctan2(z, hoz))
 
     return dec, hoz, inc, eff
-
-
-def decimal_year(dtime):
-    """Determine the decimal year.
-
-    Parameters
-    ----------
-    dtime : class:`dt.datetime`
-        Given datetime.
-
-    Returns
-    -------
-    date_decimal : float
-        Decimal year.
-
-    Notes
-    -----
-    This function returns decimal year. For example, middle of the year
-    is 2020.5.
-
-    """
-    # day of the year
-    doy = dtime.timetuple().tm_yday
-
-    # decimal, day of year devided by number of days in year
-    days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
-    decimal = (doy - 1) / days_of_year
-
-    # year plus decimal
-    date_decimal = dtime.year + decimal
-    return date_decimal

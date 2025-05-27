@@ -123,12 +123,14 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     # Date and time for the middle of the month (day=15) that will be used to
     # find magnetic inclination
     dtime = dt.datetime(year, mth, 15)
+    # Convert datetime to the decimal year
+    date_decimal = decimal_year(dtime)
 
     # -------------------------------------------------------------------------
     # Calculating magnetic inclanation, modified dip angle, and magnetic dip
     # latitude using IGRF at 300 km of altitude
     _, _, _, _, _, inc, _ = igrf.inclination(coeff_dir,
-                                             dtime,
+                                             date_decimal,
                                              alon, alat, 300.0)
     modip = igrf.inc2modip(inc, alat)
     mag_dip_lat = igrf.inc2magnetic_dip_latitude(inc)
@@ -2129,7 +2131,12 @@ def epstein_function_array(A1, hm, B, x):
 
     """
     density = np.zeros((A1.shape))
-    alpha = (x - hm) / B
+    alpha = np.zeros((A1.shape))
+
+    # Only Chuck Norris can divide by zero
+    alpha[B != 0] = (x[B != 0] - hm[B != 0]) / B[B != 0]
+    # If denominator is zero make alpha some number above 25
+    alpha[B == 0] = 30.
     exp = fexp(alpha)
 
     a = np.where(alpha <= 25)
@@ -3128,3 +3135,57 @@ def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
     vtec = vtec.reshape((num_t, num_g)) * 1.0e-16
 
     return vtec
+
+
+def den2freq(dens):
+    """Convert ionospheric plasma density to frequency.
+
+    Parameters
+    ----------
+    dens : array-like
+        Plasma density in m-3.
+
+    Returns
+    -------
+    freq : array-like
+        Ionospheric frequency in MHz.
+
+    Notes
+    -----
+    This function converts plasma density to ionospheric frequency.
+
+    """
+    freq = np.sqrt(dens / 1.24e10)
+
+    return freq
+
+
+def decimal_year(dtime):
+    """Determine the decimal year.
+
+    Parameters
+    ----------
+    dtime : class:`dt.datetime`
+        Given datetime.
+
+    Returns
+    -------
+    date_decimal : float
+        Decimal year.
+
+    Notes
+    -----
+    This function returns decimal year. For example, middle of the year
+    is 2020.5.
+
+    """
+    # day of the year
+    doy = dtime.timetuple().tm_yday
+
+    # decimal, day of year devided by number of days in year
+    days_of_year = int(dt.datetime(dtime.year, 12, 31).strftime('%j'))
+    decimal = (doy - 1) / days_of_year
+
+    # year plus decimal
+    date_decimal = dtime.year + decimal
+    return date_decimal

@@ -8,7 +8,7 @@ Here is an example for year = 2020, month = 4, day =15, F10.7 = 150.
 ::
 
 
-   import PyIRI.main_library as ml
+   import PyIRI.edp_update as ml
 
 
    alon, alat, alon_2d, alat_2d, aalt, ahr, f2, f1, epeak, es_peak, \ 

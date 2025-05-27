@@ -5,7 +5,7 @@ PyIRI can calculate daily ionospheric parameters for the user provided grid.
 The estimation of the parameters occurs simultaneously at all grid points
 and for all desired diurnal time frames. The parameters are obtained by
 linearly interpolating between min and max levels of solar activity, and
-by interpolation between median monthly values to the day of interest. 
+by interpolation between median monthly values to the day of interest.
 
 1. Import libraries:
 
@@ -14,7 +14,7 @@ by interpolation between median monthly values to the day of interest.
 
    import numpy as np
    import PyIRI
-   import PyIRI.main_library as ml
+   import PyIRI.edp_update as ml
    import PyIRI.plotting as plot
 
 2. Specify a year, a month, and a day:
