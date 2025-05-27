@@ -29,11 +29,4 @@ if osflag:
 else:
     coeff_dir = str(resources.files(__package__).joinpath('coefficients'))
 
-# Determine the coefficient root directory
-if osflag:
-    testdata_dir = os.path.join(os.path.realpath(os.path.dirname(__file__)),
-                                'testdata')
-else:
-    testdata_dir = str(resources.files(__package__).joinpath('testdata'))
-
 del osflag

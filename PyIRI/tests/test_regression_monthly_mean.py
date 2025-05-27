@@ -5,10 +5,13 @@ Regression test for IRI_monthly_mean_par and reconstructed EDPs.
 import json
 import numpy as np
 import os
+import pathlib
 
 import PyIRI
 from PyIRI import edp_update as ml
 
+test_dir = os.path.join(str(pathlib.Path(
+PyIRI.tests.__file__).resolve().parent), "testdata")
 
 def test_IRI_monthly_mean_par_coarse_regression():
     """Compare monthly mean outputs and profiles to reference data."""
@@ -26,7 +29,6 @@ def test_IRI_monthly_mean_par_coarse_regression():
     alat = np.reshape(alat_2d, alat_2d.size)
 
     coeff_dir = PyIRI.coeff_dir
-    testdata_dir = PyIRI.testdata_dir
 
     f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
         year, month, ahr, alon, alat, coeff_dir, ccir_or_ursi)
@@ -34,7 +36,7 @@ def test_IRI_monthly_mean_par_coarse_regression():
     aalt = np.arange(200, 300, 10)
     edens_prof = ml.reconstruct_density_from_parameters(f2, f1, e_peak, aalt)
 
-    test_file = os.path.join(testdata_dir,
+    test_file = os.path.join(test_dir,
                              'Test_Output_Mean_Monthly_Parameters.json')
 
     with open(test_file, "r") as f:
