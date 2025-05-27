@@ -4,6 +4,7 @@ Regression test for IRI_density_1day for single-location input and ref output.
 
 import json
 import numpy as np
+import os
 
 import PyIRI
 from PyIRI import edp_update as ml
@@ -25,7 +26,9 @@ def test_IRI_density_1day_regression():
     f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
         year, month, day, ahr, alon, alat, aalt, f107, coeff_dir, ccir_or_ursi)
 
-    with open("Test_Output.json", "r") as f:
+    json_path = os.path.join(os.path.dirname(__file__),
+                             "../testdata/Test_Output.json")
+    with open(json_path, "r") as f:
         ref = json.load(f)
 
     def assert_close(actual, expected, key, atol=1e-2):
