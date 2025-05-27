@@ -2,9 +2,9 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## 0.0.3 (XX-XX-2024)
+## 0.0.3 (05-27-2025)
 * Added magnetic filed strength and orientation as an output for IGRF library.
-* Added altitude as an input to the IGRF function.
+* Added altitude as an optional input to the IGRF function.
 * Added unit tests for the IGRF library functions.
 * Added pytest and coveralls to main CI tests.
 * Updated the README to include more links and information.
@@ -13,10 +13,11 @@ adheres to [Semantic Versioning](https://semver.org/).
 * Added logger and fixed merge conflicts between @aburrell and
   @victoriyaforsythe develop branches
 * Added a function to calculate vertical TEC
-* New approach for the F1 region modeling is added, where all fields are now
-  continuous. This is important for the raytracing application.
-* The construction of the EDP was modified to improve the reliability of the
-  code.
+* New library edp_update is added that introduces a new approach for the F1
+  region modeling, where all fields are now continuous. This is important for
+  the raytracing application.
+* The construction of the EDP in edp_update was modified to improve the
+  reliability of the code.
 
 ## 0.0.2 (11-15-2023)
 * The order of interpolation was changed. Previously the EDPs were

@@ -1711,3 +1711,53 @@ def PyIRI_plot_1location_diurnal_density(EDP, alon, alat, lon_plot, lat_plot,
     cbar.set_label('Electron Density (m$^{-3}$)')
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
+
+def PyIRI_plot_vTEC(TEC, aUT, alon, alat, alon_2d, alat_2d, sun,
+                    UT, plot_dir, plot_name='PyIRI_vTEC.png'):
+    """Plot vTEC.
+
+    Parameters
+    ----------
+    TEC : array-like
+        Array output of edp_to_vtec.
+    aUT : array-like
+        Array of universal times in hours used in PyIRI.
+    alon : array-like
+        Flattened array of geo longitudes in degrees.
+    alat : array-like
+        Flattened array of geo latitudes in degrees.
+    alon_2d : array-like
+        2-D array of geo longitudes in degrees.
+    alat_2d : array-like
+        2-D array of geo latitudes in degrees.
+    sun : dict
+        Dictionary output of IRI_monthly_mean_parameters.
+    UT : float
+        UT time frame from array aUT to plot.
+    plot_dir : str
+        Direction where to save the figure.
+    plot_name : str
+        Name for the output figure, without directory
+        (default='PyIRI_NmF1_min_max.png')
+
+    """
+    ind_time = np.where(aUT == UT)
+    ind_grid = np.where(np.isfinite(alon))
+    figname = os.path.join(plot_dir, plot_name)
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(6, 3),
+                           constrained_layout=True)
+    plt.xlim([-180, 180])
+    plt.ylim([-90, 90])
+    plt.xticks(np.arange(-180, 180 + 45, 90))
+    plt.yticks(np.arange(-90, 90 + 45, 45))
+    ax.set_facecolor('grey')
+    ax.set_xlabel('Geo Lon (°)')
+    ax.set_ylabel('Geo Lat (°)')
+    z = np.reshape(TEC[ind_time, ind_grid], alon_2d.shape)
+    mesh = ax.pcolormesh(alon_2d, alat_2d, z)
+    cbar = fig.colorbar(mesh, ax=ax)
+    ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
+               c='red', s=20, edgecolors="black", linewidths=0.5)
+    cbar.set_label('vTEC (TECU)')
+    plt.savefig(figname, format='pdf', bbox_inches='tight')
+    return
