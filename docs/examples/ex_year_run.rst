@@ -22,7 +22,8 @@ interest.
    import pandas as pd
    from tqdm import tqdm
 
-1. Read your F10.7 solar index time series and a corresponding time array:
+
+2. Read your F10.7 solar index time series and a corresponding time array:
 
 ::
 
@@ -124,7 +125,7 @@ interest.
 ::
 
     for i in tqdm(range(0, at_days.size)):
-    	t_before, t_after, fr1, fr2 = main.day_of_the_month_corr(at_days[i].year, at_days[i].month, at_days[i].day)   
+    	t_before, t_after, fr1, fr2 = ml.day_of_the_month_corr(at_days[i].year, at_days[i].month, at_days[i].day)
     	NmF2_days[i, :, :, :] = NmF2[t_before.month - 1, :, :, :] * fr1 + NmF2[t_after.month - 1, :, :, :] * fr2
     	hmF2_days[i, :, :, :] = hmF2[t_before.month - 1, :, :, :] * fr1 + hmF2[t_after.month - 1, :, :, :] * fr2
 
@@ -176,6 +177,7 @@ interest.
     ax_plot.plot(timearray[t1: t2], NmF2_days[t1: t2, iloc, 1], linewidth=1, label='Model Max', c='red')
     ax_plot.plot(timearray[t1: t2], NmF2_solar[t1: t2, iloc], linewidth=1, label='Output', c='green')
     ax_plot.legend(loc='upper left', prop={'size': 10})
+
 
 
 .. image:: Figs/PyIRI_Continuous_Time_Series.png
