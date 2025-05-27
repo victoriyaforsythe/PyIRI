@@ -15,6 +15,7 @@ except ImportError:
     osflag = True
 
 # Import the package modules and top-level classes
+from PyIRI import edp_update  # noqa F401
 from PyIRI import igrf_library  # noqa F401
 from PyIRI import main_library  # noqa F401
 from PyIRI import plotting  # noqa F401
@@ -28,12 +29,5 @@ if osflag:
                              'coefficients')
 else:
     coeff_dir = str(resources.files(__package__).joinpath('coefficients'))
-
-# Determine the coefficient root directory
-if osflag:
-    testdata_dir = os.path.join(os.path.realpath(os.path.dirname(__file__)),
-                                'testdata')
-else:
-    testdata_dir = str(resources.files(__package__).joinpath('testdata'))
 
 del osflag

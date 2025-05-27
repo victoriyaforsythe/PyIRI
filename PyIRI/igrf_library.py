@@ -123,7 +123,7 @@ def inc2magnetic_dip_latitude(inc):
     return magnetic_dip_latitude
 
 
-def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
+def inclination(coeff_dir, date_decimal, alon, alat, alt=300., only_inc=True):
     """Calculate magnetic inclination using IGRF13.
 
     Parameters
@@ -138,22 +138,25 @@ def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
         Flattened array of geographic latitudes in degrees.
     alt : flt
         Altitude in km, default is 300 km.
+    only_inc : bool
+        Only output the inclination, otherwise output the magnetic field
+        information as well (default=True)
 
     Returns
     -------
-    X : array-like
-        North component of the magnetic field in nT.
-    Y : array-like
-        East component of the magnetic field in nT.
-    Z : array-like
-        Vertical component of the magnetic field in nT.
-    dec : array-like
-        Declination of the magnetic field in degrees.
-    hoz : array-like
-        Horizontal intensity of the magnetic field in nT.
     inc : array-like
         Magnetic inclination in degrees.
-    eff : array-like
+    X : array-like (optional)
+        North component of the magnetic field in nT.
+    Y : array-like (optional)
+        East component of the magnetic field in nT.
+    Z : array-like (optional)
+        Vertical component of the magnetic field in nT.
+    dec : array-like (optional)
+        Declination of the magnetic field in degrees.
+    hoz : array-like (optional)
+        Horizontal intensity of the magnetic field in nT.
+    eff : array-like (optional)
         Total intensity of the magnetic field in nT.
 
     Raises
@@ -219,7 +222,12 @@ def inclination(coeff_dir, date_decimal, alon, alat, alt=300.):
     # Compute the four non-linear components
     dec, hoz, inc, eff = xyz2dhif(X, Y, Z)
 
-    return X, Y, Z, dec, hoz, inc, eff
+    if only_inc:
+        out = inc
+    else:
+        out = (inc, X, Y, Z, dec, hoz, eff)
+
+    return out
 
 
 def gg_to_geo(h, gdcolat):
