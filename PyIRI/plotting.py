@@ -1712,6 +1712,7 @@ def PyIRI_plot_1location_diurnal_density(EDP, alon, alat, lon_plot, lat_plot,
     plt.savefig(figname, format='pdf', bbox_inches='tight')
     return
 
+
 def PyIRI_plot_vTEC(TEC, aUT, alon, alat, alon_2d, alat_2d, sun,
                     UT, plot_dir, plot_name='PyIRI_vTEC.png'):
     """Plot vTEC.

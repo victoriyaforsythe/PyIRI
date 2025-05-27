@@ -47,7 +47,8 @@ print(edens_prof.shape)
 ```
 
 The resulting electron density profile (`edens_prof`) will have a shape of
-12 x 70 x 2701.  More examples are available in the documentation.
+12 x 70 x 2701.  More examples are available in the documentation and Jupyter
+Notebooks tutorials.
 
 
 PyIRI does not calculate the Total Electron Content (TEC) automatically, as
