@@ -10,8 +10,8 @@ import pathlib
 import PyIRI
 from PyIRI import edp_update as ml
 
-test_dir = os.path.join(str(pathlib.Path(
-PyIRI.tests.__file__).resolve().parent), "testdata")
+test_dir = os.path.join(str(pathlib.Path(PyIRI.tests.__file__).resolve(
+    ).parent), "testdata")
 
 def test_IRI_monthly_mean_par_coarse_regression():
     """Compare monthly mean outputs and profiles to reference data."""

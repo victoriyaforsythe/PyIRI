@@ -10,8 +10,8 @@ import pathlib
 import PyIRI
 from PyIRI import edp_update as ml
 
-test_dir = os.path.join(str(pathlib.Path(
-PyIRI.tests.__file__).resolve().parent), "testdata")
+test_dir = os.path.join(str(pathlib.Path(PyIRI.tests.__file__).resolve(
+    ).parent), "testdata")
 
 def test_IRI_density_1day_regression():
     """Compare IRI_density_1day output to known reference, single location."""
@@ -24,7 +24,6 @@ def test_IRI_density_1day_regression():
     aalt = np.arange(90, 700, 10)
     f107 = 100
     coeff_dir = PyIRI.coeff_dir
-    testdata_dir = PyIRI.testdata_dir
     ccir_or_ursi = 0
 
     f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
