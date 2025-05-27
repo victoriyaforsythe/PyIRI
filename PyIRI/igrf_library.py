@@ -604,4 +604,3 @@ def xyz2dhif(x, y, z):
     inc = np.rad2deg(np.arctan2(z, hoz))
 
     return dec, hoz, inc, eff
-
