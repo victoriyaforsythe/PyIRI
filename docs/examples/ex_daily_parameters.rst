@@ -165,7 +165,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_NmF2.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_NmF2.png
+.. image:: Figs/PyIRI_NmF2.png
     :width: 600px
     :align: center
     :alt: Global distribution of NmF2.
@@ -176,7 +176,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foF2.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_foF2.png
+.. image:: Figs/PyIRI_foF2.png
     :width: 600px
     :align: center
     :alt: Global distribution of foF2.
@@ -187,7 +187,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_M3000.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_M3000_min_max.png
+.. image:: Figs/PyIRI_M3000_min_max.png
     :width: 600px
     :align: center
     :alt: Global distribution of M3000.
@@ -198,12 +198,12 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_hmF2.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_hmF2.png
+.. image:: Figs/PyIRI_hmF2.png
     :width: 600px
     :align: center
     :alt: Global distribution of hmF2.
 
-11. Plot results for F1 region:
+1.  Plot results for F1 region:
 
 ::
 
@@ -211,7 +211,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_NmF1.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_NmF1.png
+.. image:: Figs/PyIRI_NmF1.png
     :width: 600px
     :align: center
     :alt: Global distribution of NmF1.
@@ -222,7 +222,7 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foF1.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_foF1.png
+.. image:: Figs/PyIRI_foF1.png
     :width: 600px
     :align: center
     :alt: Global distribution of foF1.
@@ -233,12 +233,12 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_hmF1.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_hmF1.png
+.. image:: Figs/PyIRI_hmF1.png
     :width: 600px
     :align: center
     :alt: Global distribution of hmF1.
 
-12. Plot results for E region:
+1.  Plot results for E region:
 
 ::
 
@@ -246,12 +246,12 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foE.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_foE.png
+.. image:: Figs/PyIRI_foE.png
     :width: 600px
     :align: center
     :alt: Global distribution of foE.
 
-13. Plot results for Es region:
+1.  Plot results for Es region:
 
 ::
 
@@ -259,12 +259,12 @@ edp array:
    UT_plot, plot_dir, plot_name='PyIRI_foEs.png')
 
 
-.. image:: /docs/examples/Figs/PyIRI_foEs.png
+.. image:: Figs/PyIRI_foEs.png
     :width: 600px
     :align: center
     :alt: Global distribution of foEs for min and max levels of solar activity.
 
-14. Plot electron density vertical profiles from one location.
+1.  Plot electron density vertical profiles from one location.
     Make sure this location belongs to alon and alat arrays.
 
 ::
@@ -276,7 +276,7 @@ edp array:
 
 
 
-.. image:: /docs/examples/Figs/PyIRI_EDP_sample_1day.png
+.. image:: Figs/PyIRI_EDP_sample_1day.png
     :width: 600px
     :align: center
     :alt: Electron density profile for 1 location.
