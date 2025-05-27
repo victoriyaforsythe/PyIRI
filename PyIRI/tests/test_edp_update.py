@@ -1,11 +1,17 @@
+"""
+Unit tests for PyIRI's edp_update module.
+"""
+
 import numpy as np
 import pytest
+
 import PyIRI
 from PyIRI import edp_update
 from PyIRI import edp_update as ml
 
 
 def test_IRI_density_1day_runs():
+    """Test that IRI_density_1day runs and returns expected shape."""
     year = 2024
     mth = 6
     day = 21
@@ -25,6 +31,7 @@ def test_IRI_density_1day_runs():
 
 
 def test_Probability_F1_output():
+    """Test output of Probability_F1 against expected values."""
     year = 2020
     month = 4
     aUT = np.arange(0, 24, 24)
@@ -33,11 +40,14 @@ def test_Probability_F1_output():
     expected = np.array([[[0.00210238, 0.00210238]]])
 
     result = ml.Probability_F1(year, month, aUT, alon, alat)
-    assert result.shape == expected.shape, "Shape mismatch in Probability_F1 output"
-    assert np.allclose(result, expected, atol=1e-8), "Value mismatch in Probability_F1 output"
+    assert result.shape == expected.shape, (
+        "Shape mismatch in Probability_F1 output")
+    assert np.allclose(result, expected, atol=1e-8), (
+        "Value mismatch in Probability_F1 output")
 
 
 def test_drop_up_output():
+    """Test drop_up returns expected value."""
     z_E = 230.0
     z_F = 110.0
     z_top = 250.0
@@ -48,6 +58,7 @@ def test_drop_up_output():
 
 
 def test_logistic_curve_output():
+    """Test logistic_curve returns expected value."""
     z = 240.0
     z0 = 200.0
     scale = 50.0
@@ -58,6 +69,7 @@ def test_logistic_curve_output():
 
 
 def test_derive_dependent_F1_parameters_output():
+    """Test derive_dependent_F1_parameters output accuracy."""
     p_F1 = np.array([0.5])
     NmF2 = np.array([1.0e11])
     hmF2 = np.array([350.])
@@ -72,6 +84,8 @@ def test_derive_dependent_F1_parameters_output():
         p_F1, NmF2, hmF2, B_F2_bot, z_E)
 
     assert np.allclose(NmF1, expected_NmF1, atol=1e-6), "NmF1 mismatch"
-    assert np.allclose(B_F1_bot, expected_B_F1_bot, atol=1e-6), "B_F1_bot mismatch"
+    assert np.allclose(B_F1_bot, expected_B_F1_bot,
+                       atol=1e-6), "B_F1_bot mismatch"
     assert np.allclose(hmF1, expected_hmF1, atol=1e-6), "hmF1 mismatch"
-    assert np.allclose(thickness, expected_thickness, atol=1e-6), "thickness mismatch"
+    assert np.allclose(thickness, expected_thickness,
+                       atol=1e-6), "thickness mismatch"
