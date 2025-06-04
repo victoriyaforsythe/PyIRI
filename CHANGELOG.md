@@ -2,6 +2,9 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.0.4 (06-04-2025)
+* Limit to the peaks of density is set so it doesn't go negative anywhere
+
 ## 0.0.3 (05-27-2025)
 * Added magnetic filed strength and orientation as an output for IGRF library.
 * Added altitude as an optional input to the IGRF function.
