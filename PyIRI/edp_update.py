@@ -173,15 +173,11 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
                                          foE,
                                          foEs)
 
-    # Limit NmF2 to 1e8
-    # Apparently, sometimes PyIRI gives nan at night
-    # E.g. 20240722 04:15 with F107 = 191
-    # Here check that no NaNs go further, because we hate NaNs
-    # Do the same for the E region, also just in case
-    NmF2 = np.nan_to_num(NmF2)
-    NmF2[NmF2 < 1e8] = 1e8
-    NmE = np.nan_to_num(NmE)
-    NmE[NmE < 1e8] = 1e8
+    # Introduce a minimum limit for the peaks to avoid negative density
+    NmF2 = main.limit_Nm(NmF2)
+    NmE = main.limit_Nm(NmE)
+    NmEs = main.limit_Nm(NmEs)
+    # We should not limit the F1 region because it is a function of F2
 
     # --------------------------------------------------------------------------
     # Find heights of the F2 and E ionospheric layers
@@ -369,7 +365,15 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     E = main.solar_interpolation_of_dictionary(E, F107)
     Es = main.solar_interpolation_of_dictionary(Es, F107)
 
-    # derive_dependent_F1_parameters one more time after the interpolation
+    # Introduce a minimum limit for the peaks to avoid negative density as a
+    # result of the interpolation in case the F10.7 is high the extrapolation
+    # can cause NmF2 to go negative
+    F2['Nm'] = main.limit_Nm(F2['Nm'])
+    E['Nm'] = main.limit_Nm(E['Nm'])
+    Es['Nm'] = main.limit_Nm(Es['Nm'])
+    # We should not limit the F1 region because it is a function of F2
+
+    # Derive_dependent_F1_parameters one more time after the interpolation
     # so that the F1 location does not carry the little errors caused by the
     # interpolation
     NmF1, foF1, hmF1, B_F1_bot = derive_dependent_F1_parameters(F1['P'],

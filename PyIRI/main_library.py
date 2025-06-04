@@ -3189,3 +3189,26 @@ def decimal_year(dtime):
     # year plus decimal
     date_decimal = dtime.year + decimal
     return date_decimal
+
+
+def limit_Nm(Nm):
+    """Replace negative density with 1e6.
+
+    Parameters
+    ----------
+    Nm : array-like
+        Electron density in m-3.
+
+    Returns
+    -------
+    Nm : array-like
+        Electron density in m-3 without negative values.
+
+    Notes
+    -----
+    This function replaces nans and negative density with 1e6.
+
+    """
+    Nm = np.nan_to_num(Nm)
+    Nm[Nm < 1e6] = 1e6
+    return Nm
