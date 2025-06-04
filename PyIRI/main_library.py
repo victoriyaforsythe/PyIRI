@@ -349,6 +349,14 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     E = solar_interpolation_of_dictionary(E, F107)
     Es = solar_interpolation_of_dictionary(Es, F107)
 
+    # Introduce a minimum limit for the peaks to avoid negative density as a
+    # result of the interpolation in case the F10.7 is high the extrapolation
+    # can cause NmF2 to go negative
+    F2['Nm'] = limit_Nm(F2['Nm'])
+    E['Nm'] = limit_Nm(E['Nm'])
+    Es['Nm'] = limit_Nm(Es['Nm'])
+    # We should not limit the F1 region because it is a function of F2
+
     # construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
 
