@@ -3212,5 +3212,5 @@ def limit_Nm(Nm, edens_lim=1e6):
 
     """
     Nm = np.nan_to_num(Nm)
-    Nm[Nm < 1e6] = 1e6
+    Nm[Nm < edens_lim] = edens_lim
     return Nm
