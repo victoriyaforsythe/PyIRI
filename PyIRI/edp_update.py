@@ -387,7 +387,7 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F1['fo'] = foF1
     F1['B_bot'] = B_F1_bot
 
-    # construct density
+    # Construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
 
     return F2, F1, E, Es, sun, mag, EDP
