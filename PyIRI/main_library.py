@@ -3198,6 +3198,8 @@ def limit_Nm(Nm, edens_lim=1e6):
     ----------
     Nm : array-like
         Electron density in m-3.
+    edens_lim : float
+        Lowest allowable electron density (default=1e6)
 
     Returns
     -------
