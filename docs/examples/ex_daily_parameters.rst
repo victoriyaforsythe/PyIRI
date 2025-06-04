@@ -183,17 +183,6 @@ edp array:
 
 ::
 
-   plot.PyIRI_plot_M3000(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
-   UT_plot, plot_dir, plot_name='PyIRI_M3000.png')
-
-
-.. image:: Figs/PyIRI_M3000_min_max.png
-    :width: 600px
-    :align: center
-    :alt: Global distribution of M3000.
-
-::
-
    plot.PyIRI_plot_hmF2(f2, ahr, alon, alat, alon_2d, alat_2d, sun,
    UT_plot, plot_dir, plot_name='PyIRI_hmF2.png')
 
