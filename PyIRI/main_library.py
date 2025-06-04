@@ -3191,7 +3191,7 @@ def decimal_year(dtime):
     return date_decimal
 
 
-def limit_Nm(Nm):
+def limit_Nm(Nm, edens_lim=1e6):
     """Replace negative density with 1e6.
 
     Parameters
