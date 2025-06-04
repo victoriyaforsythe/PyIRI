@@ -349,6 +349,14 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     E = solar_interpolation_of_dictionary(E, F107)
     Es = solar_interpolation_of_dictionary(Es, F107)
 
+    # Introduce a minimum limit for the peaks to avoid negative density as a
+    # result of the interpolation in case the F10.7 is high the extrapolation
+    # can cause NmF2 to go negative
+    F2['Nm'] = limit_Nm(F2['Nm'])
+    E['Nm'] = limit_Nm(E['Nm'])
+    Es['Nm'] = limit_Nm(Es['Nm'])
+    # We should not limit the F1 region because it is a function of F2
+
     # construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
 
@@ -3189,3 +3197,28 @@ def decimal_year(dtime):
     # year plus decimal
     date_decimal = dtime.year + decimal
     return date_decimal
+
+
+def limit_Nm(Nm, edens_lim=1e6):
+    """Enforce a realistic lower limit on the electron density.
+
+    Parameters
+    ----------
+    Nm : array-like
+        Electron density in m-3.
+    edens_lim : float
+        Lowest allowable electron density (default=1e6)
+
+    Returns
+    -------
+    Nm : array-like
+        Electron density in m-3 without negative values.
+
+    Notes
+    -----
+    This function replaces nans and negative density with 1e6.
+
+    """
+    Nm = np.nan_to_num(Nm)
+    Nm[Nm < edens_lim] = edens_lim
+    return Nm
