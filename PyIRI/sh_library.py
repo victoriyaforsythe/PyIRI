@@ -135,9 +135,9 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat,
 
     # -------------------------------------------------------------------------
     # Convert inputs to Numpy arrays
-    aUT = to_numpy_array(aUT)
-    alon = to_numpy_array(alon)
-    alat = to_numpy_array(alat)
+    aUT = main.to_numpy_array(aUT)
+    alon = main.to_numpy_array(alon)
+    alat = main.to_numpy_array(alat)
     apdtime = (pd.to_datetime(dt.datetime(year, month, 15))
                + pd.to_timedelta(aUT, 'hours'))
 
@@ -394,10 +394,10 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
 
     # -------------------------------------------------------------------------
     # Convert inputs to Numpy arrays
-    aUT = to_numpy_array(aUT)
-    alon = to_numpy_array(alon)
-    alat = to_numpy_array(alat)
-    aalt = to_numpy_array(aalt)
+    aUT = main.to_numpy_array(aUT)
+    alon = main.to_numpy_array(alon)
+    alat = main.to_numpy_array(alat)
+    aalt = main.to_numpy_array(aalt)
 
     # -------------------------------------------------------------------------
     # Calculate required monhtly means and associated weights
@@ -524,9 +524,9 @@ def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
 
     # -------------------------------------------------------------------------
     # Convert inputs to Numpy arrays
-    aUT = to_numpy_array(aUT)
-    alon = to_numpy_array(alon)
-    alat = to_numpy_array(alat)
+    aUT = main.to_numpy_array(aUT)
+    alon = main.to_numpy_array(alon)
+    alat = main.to_numpy_array(alat)
     apdtime = (pd.to_datetime(dt.datetime(year, month, 15))
                + pd.to_timedelta(aUT, 'hours'))
 
@@ -648,10 +648,10 @@ def sporadic_E_1day(year, month, day, aUT, alon, alat, aalt, F107,
 
     # -------------------------------------------------------------------------
     # Convert inputs to Numpy arrays
-    aUT = to_numpy_array(aUT)
-    alon = to_numpy_array(alon)
-    alat = to_numpy_array(alat)
-    aalt = to_numpy_array(aalt)
+    aUT = main.to_numpy_array(aUT)
+    alon = main.to_numpy_array(alon)
+    alat = main.to_numpy_array(alat)
+    aalt = main.to_numpy_array(aalt)
 
     # -------------------------------------------------------------------------
     # Calculate required monhtly means and associated weights
@@ -1038,8 +1038,8 @@ def real_SH_func(theta, phi, lmax=29):
     """
     # -------------------------------------------------------------------------
     # Convert inputs to arrays if lists or int or float
-    theta = to_numpy_array(theta)
-    phi = to_numpy_array(phi)
+    theta = main.to_numpy_array(theta)
+    phi = main.to_numpy_array(phi)
 
     # -------------------------------------------------------------------------
     # If theta has shape (n_pos,), i.e., if user input coord='mlt', theta and
@@ -1152,7 +1152,7 @@ def real_FS_func(aUT, N_FS_c=5):
     """
     # -------------------------------------------------------------------------
     # Convert inputs to Numpy arrays
-    aUT = to_numpy_array(aUT)
+    aUT = main.to_numpy_array(aUT)
 
     N_T = aUT.size
     N_FS_r = 2 * N_FS_c - 1
@@ -1272,26 +1272,6 @@ def load_Es_coeff_matrix(month, coeff_dir=None):
     return C
 
 
-def to_numpy_array(x):
-    """Convert input to a numpy float array.
-
-    Parameters
-    ----------
-    x : int, float, or array-like
-        Input to convert to numpy float array.
-
-    Returns
-    -------
-    np.ndarray
-        Input converted to numpy float array with dtype float.
-
-    """
-    if isinstance(x, (int, float)):
-        return np.array([x], dtype=float)
-    else:
-        return np.asarray(x, dtype=float)
-
-
 def gammaE_dynamic(year, month, aUT, alon, alat, aIG):
     """Calculate numerical maps for critical frequency of E region.
 
@@ -1338,9 +1318,9 @@ def gammaE_dynamic(year, month, aUT, alon, alat, aIG):
     """
     # -------------------------------------------------------------------------
     # Convert inputs to Numpy arrays
-    aUT = to_numpy_array(aUT)
-    alon = to_numpy_array(alon)
-    alat = to_numpy_array(alat)
+    aUT = main.to_numpy_array(aUT)
+    alon = main.to_numpy_array(alon)
+    alat = main.to_numpy_array(alat)
 
     # -------------------------------------------------------------------------
     # Determine which coordinates are used as inputs

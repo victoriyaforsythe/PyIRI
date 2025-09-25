@@ -1470,16 +1470,16 @@ def freq_to_Nm(foF2, foF1, foE, foEs):
 
     """
     # F2 peak
-    NmF2 = freq2den(foF2)  # Previously: * 1e11
+    NmF2 = freq2den(foF2)
 
     # F1 peak
-    NmF1 = freq2den(foF1)  # Previously: * 1e11
+    NmF1 = freq2den(foF1)
 
     # E
-    NmE = freq2den(foE)  # Previously: * 1e11
+    NmE = freq2den(foE)
 
     # Es
-    NmEs = freq2den(foEs)  # Previously: * 1e11
+    NmEs = freq2den(foEs)
 
     # exclude negative values, in case there are any
     NmF2[np.where(NmF2 <= 0)] = 1.
@@ -1720,7 +1720,7 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
     # typo.
     dNdHmx = -3.467 + 1.714 * np.log(foF2) + 2.02 * np.log(M3000)
     dNdHmx = 0.01 * fexp(dNdHmx)
-    B_F2_bot = 3.85e-12 * NmF2 / dNdHmx  # Previously: 0.385 * NmF2 / dNdHmx
+    B_F2_bot = 3.85e-12 * NmF2 / dNdHmx
 
     # B_F2_top..................................................................
     # set empty arrays
@@ -1897,7 +1897,7 @@ def freq2den(freq):
     This function converts ionospheric frequency to plasma density.
 
     """
-    dens = 1.24e10 * freq**2  # Previously: 0.124 * freq**2
+    dens = 1.24e10 * freq**2
 
     return dens
 
@@ -3220,3 +3220,24 @@ def limit_Nm(Nm, edens_lim=1e6):
     Nm = np.nan_to_num(Nm)
     Nm[Nm < edens_lim] = edens_lim
     return Nm
+
+
+def to_numpy_array(x):
+    """Convert input to a numpy float array.
+
+    Parameters
+    ----------
+    x : int, float, or array-like
+        Input to convert to numpy float array.
+
+    Returns
+    -------
+    np.ndarray
+        Input converted to numpy float array with dtype float.
+
+    """
+    x_array = np.asarray(x, dtype=float)
+    if x_array.shape == ():
+        x_array = np.array([x], dtype=float)
+
+    return x_array
