@@ -316,7 +316,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     Space Weather.
 
     """
-
     # find out what monthly means are needed first and what their weights
     # will be
     t_before, t_after, fr1, fr2 = day_of_the_month_corr(year, mth, day)
@@ -1471,16 +1470,16 @@ def freq_to_Nm(foF2, foF1, foE, foEs):
 
     """
     # F2 peak
-    NmF2 = freq2den(foF2) * 1e11
+    NmF2 = freq2den(foF2)  # Previously: * 1e11
 
     # F1 peak
-    NmF1 = freq2den(foF1) * 1e11
+    NmF1 = freq2den(foF1)  # Previously: * 1e11
 
     # E
-    NmE = freq2den(foE) * 1e11
+    NmE = freq2den(foE)  # Previously: * 1e11
 
     # Es
-    NmEs = freq2den(foEs) * 1e11
+    NmEs = freq2den(foEs)  # Previously: * 1e11
 
     # exclude negative values, in case there are any
     NmF2[np.where(NmF2 <= 0)] = 1.
@@ -1721,7 +1720,7 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
     # typo.
     dNdHmx = -3.467 + 1.714 * np.log(foF2) + 2.02 * np.log(M3000)
     dNdHmx = 0.01 * fexp(dNdHmx)
-    B_F2_bot = 0.385 * NmF2 / dNdHmx
+    B_F2_bot = 3.85e-12 * NmF2 / dNdHmx  # Previously: 0.385 * NmF2 / dNdHmx
 
     # B_F2_top..................................................................
     # set empty arrays
@@ -1898,7 +1897,7 @@ def freq2den(freq):
     This function converts ionospheric frequency to plasma density.
 
     """
-    dens = 0.124 * freq**2
+    dens = 1.24e10 * freq**2  # Previously: 0.124 * freq**2
 
     return dens
 
@@ -2878,7 +2877,6 @@ def create_reg_grid(hr_res=1, lat_res=1, lon_res=1, alt_res=10, alt_min=0,
     arrays that have only 1 element. Size of aUT is [N_T].
 
     """
-
     alon, alat, alon_2d, alat_2d = set_geo_grid(lon_res, lat_res)
 
     aalt = np.arange(alt_min, alt_max, alt_res)
