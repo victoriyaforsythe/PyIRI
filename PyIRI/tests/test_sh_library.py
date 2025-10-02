@@ -39,4 +39,5 @@ def test_vectorized_behavior():
     prob_array = sh_library.Probability_F1_with_solzen(solzen_array)
 
     assert np.isscalar(prob_scalar), "Scalar input did not return scalar"
-    assert prob_array.shape == solzen_array.shape, "Array input did not preserve shape"
+    string = "Array input did not preserve shape"
+    assert prob_array.shape == solzen_array.shape, string
