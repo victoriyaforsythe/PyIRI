@@ -1,8 +1,8 @@
 import numpy as np
-import pytest
 
 import PyIRI
-from your_module import sh_library
+from PyIRI import sh_library
+
 
 def test_output_shape():
     """Test that the output shape matches input shape."""
@@ -10,11 +10,13 @@ def test_output_shape():
     prob = sh_library.Probability_F1_with_solzen(solzen)
     assert prob.shape == solzen.shape, "Output shape mismatch"
 
+
 def test_range_of_output():
     """Test that the output is within expected probability range [0,1]."""
     solzen = np.linspace(0, 180, num=1000).reshape((10, 10, 10))
     prob = sh_library.Probability_F1_with_solzen(solzen)
     assert np.all((prob >= 0.0) & (prob <= 1.0)), "Probability out of range"
+
 
 def test_known_values():
     """Test known input values and expected output."""
@@ -30,6 +32,7 @@ def test_known_values():
     # Zenith angle = 180° (cos(180) = -1), so (0)^gamma = 0
     prob180 = sh_library.Probability_F1_with_solzen(np.array(180))
     assert np.isclose(prob180, 0.0), "Expected 0.0 at solzen = 180°"
+
 
 def test_vectorized_behavior():
     """Test that function works on array input and scalar input."""
