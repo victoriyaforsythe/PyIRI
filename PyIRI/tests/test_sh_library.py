@@ -1,6 +1,4 @@
 import numpy as np
-
-import PyIRI
 from PyIRI import sh_library
 
 
@@ -27,7 +25,8 @@ def test_known_values():
     # Zenith angle = 90° (cos(90)=0), so (0.5)^gamma
     expected90 = (0.5)**2.36
     prob90 = sh_library.Probability_F1_with_solzen(np.array(90))
-    assert np.isclose(prob90, expected90), f"Expected {expected90} at solzen = 90°"
+    string = f"Expected {expected90} at solzen = 90°"
+    assert np.isclose(prob90, expected90), string
 
     # Zenith angle = 180° (cos(180) = -1), so (0)^gamma = 0
     prob180 = sh_library.Probability_F1_with_solzen(np.array(180))
