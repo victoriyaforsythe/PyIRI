@@ -27,17 +27,17 @@ in ionospheric mapping by numerical methods.
 """
 
 # from apexpy import Apex
-import datetime as dt
-import netCDF4 as nc
-import numpy as np
-import opt_einsum as oe
-import os
-import pandas as pd
-import PyIRI
-import PyIRI.edp_update as edpup
-import PyIRI.igrf_library as igrf
-import PyIRI.main_library as main
-import scipy.special as ss
+# import datetime as dt
+# import netCDF4 as nc
+# import numpy as np
+# import opt_einsum as oe
+# import os
+# import pandas as pd
+# import PyIRI
+# import PyIRI.edp_update as edpup
+# import PyIRI.igrf_library as igrf
+# import PyIRI.main_library as main
+# import scipy.special as ss
 
 
 def Probability_F1_with_solzen(solzen):
