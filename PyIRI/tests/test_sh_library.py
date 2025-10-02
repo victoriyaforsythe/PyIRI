@@ -2,7 +2,9 @@
 Unit tests for PyIRI's sh_library module.
 """
 
+import netCDF4 as nc
 import numpy as np
+import os
 from PyIRI import sh_library
 
 
@@ -47,3 +49,17 @@ def test_vectorized_behavior():
     assert np.isscalar(prob_scalar), "Scalar input did not return scalar"
     string = "Array input did not preserve shape"
     assert prob_array.shape == solzen_array.shape, string
+
+
+def test_foEs_coeff_shape():
+    """Test that foEs.nc contains Coefficients with shape (2, 12, 11, 8100)."""
+    
+    path = "/Users/vmakarevich/Downloads/foEs.nc"  # Change to your actual file path
+
+    with nc.Dataset(path) as ds:
+        assert "Coefficients" in ds.variables, "Variable 'Coefficients' not found"
+
+        var = ds["Coefficients"]
+        shape = var.shape
+
+        assert shape == (2, 12, 11, 8100), f"Expected shape (2, 12, 11, 8100), got {shape}"
