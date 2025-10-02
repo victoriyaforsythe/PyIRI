@@ -54,13 +54,13 @@ def test_vectorized_behavior():
 
 def test_foEs_coeff_shape():
     """Test that foEs.nc contains coeff with shape (2, 12, 11, 8100)."""
-    
+
     filename = 'foEs.nc'
     path = os.path.join(PyIRI.coeff_dir, 'SH', filename)
-
     with nc.Dataset(path) as ds:
         string = "Variable 'Coefficients' not found"
         assert "Coefficients" in ds.variables, string
+
 
         var = ds["Coefficients"]
         shape = var.shape
