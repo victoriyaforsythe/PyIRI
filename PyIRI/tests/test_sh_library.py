@@ -1,3 +1,7 @@
+"""
+Unit tests for PyIRI's sh_library module.
+"""
+
 import numpy as np
 from PyIRI import sh_library
 
