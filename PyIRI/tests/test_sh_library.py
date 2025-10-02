@@ -5,6 +5,7 @@ Unit tests for PyIRI's sh_library module.
 import netCDF4 as nc
 import numpy as np
 import os
+import PyIRI
 from PyIRI import sh_library
 
 
@@ -52,14 +53,16 @@ def test_vectorized_behavior():
 
 
 def test_foEs_coeff_shape():
-    """Test that foEs.nc contains Coefficients with shape (2, 12, 11, 8100)."""
+    """Test that foEs.nc contains coeff with shape (2, 12, 11, 8100)."""
     
-    path = "/Users/vmakarevich/Downloads/foEs.nc"  # Change to your actual file path
+    filename = 'foEs.nc'
+    path = os.path.join(PyIRI.coeff_dir, 'SH', filename)
 
     with nc.Dataset(path) as ds:
-        assert "Coefficients" in ds.variables, "Variable 'Coefficients' not found"
+        string = "Variable 'Coefficients' not found"
+        assert "Coefficients" in ds.variables, string
 
         var = ds["Coefficients"]
         shape = var.shape
-
-        assert shape == (2, 12, 11, 8100), f"Expected shape (2, 12, 11, 8100), got {shape}"
+        string = f"Expected shape (2, 12, 11, 8100), got {shape}"
+        assert shape == (2, 12, 11, 8100), string
