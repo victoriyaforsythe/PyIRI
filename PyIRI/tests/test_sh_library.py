@@ -60,8 +60,6 @@ def test_foEs_coeff_shape():
     with nc.Dataset(path) as ds:
         string = "Variable 'Coefficients' not found"
         assert "Coefficients" in ds.variables, string
-
-
         var = ds["Coefficients"]
         shape = var.shape
         string = f"Expected shape (2, 12, 11, 8100), got {shape}"
