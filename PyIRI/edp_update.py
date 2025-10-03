@@ -363,7 +363,7 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F2 = main.solar_interpolation_of_dictionary(F2, F107)
     F1 = main.solar_interpolation_of_dictionary(F1, F107)
     E = main.solar_interpolation_of_dictionary(E, F107)
-    Es = main.solar_interpolation_of_dictionary(Es, F107)
+    Es = main.solar_interpolation_of_dictionary(Es, F107, use_R12 = True)
 
     # Introduce a minimum limit for the peaks to avoid negative density as a
     # result of the interpolation in case the F10.7 is high the extrapolation
