@@ -347,7 +347,7 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F2 = solar_interpolation_of_dictionary(F2, F107)
     F1 = solar_interpolation_of_dictionary(F1, F107)
     E = solar_interpolation_of_dictionary(E, F107)
-    Es = solar_interpolation_of_dictionary(Es, F107, use_R12 = True)
+    Es = solar_interpolation_of_dictionary(Es, F107, use_R12=True)
 
     # Introduce a minimum limit for the peaks to avoid negative density as a
     # result of the interpolation in case the F10.7 is high the extrapolation
@@ -2701,13 +2701,13 @@ def solar_interpolate_R12(F_min, F_max, R12):
     -----
     This function interpolates the given F_min and F_max parameters
     (corresponding to solar min and solar max) to the given R12 index.
-    The R12 reference points corresponding to solar min and max are 
-    R12=10 and 180 as specified by Leftin, 1968. 
+    The R12 reference points corresponding to solar min and max are
+    R12=10 and 180 as specified by Leftin, 1968.
 
     References
     ----------
-    Leftin, M., Ostrow, S. M., and Preston, C. (1968), Numerical Maps of 
-    foEs for Solar Cycle Minimum and Maximum, ESSA Tech Report ERL 73-ITS63, 
+    Leftin, M., Ostrow, S. M., and Preston, C. (1968), Numerical Maps of
+    foEs for Solar Cycle Minimum and Maximum, ESSA Tech Report ERL 73-ITS63,
     US GPO, Washington, DC.
 
     """
@@ -2722,6 +2722,7 @@ def solar_interpolate_R12(F_min, F_max, R12):
 
     return F
 
+
 def solar_interpolation_of_dictionary(F, F107, use_R12=False):
     """Interpolate given dictionary to provided F10.7.
 
@@ -2733,7 +2734,7 @@ def solar_interpolation_of_dictionary(F, F107, use_R12=False):
     F107 : float
         Interpolate to this particular level of F10.7.
     use_R12 : bool
-        Convert F10.7 to R12 and use R12 to perform the interpolation 
+        Convert F10.7 to R12 and use R12 to perform the interpolation
         (default = False)
 
     Returns
@@ -2744,17 +2745,16 @@ def solar_interpolation_of_dictionary(F, F107, use_R12=False):
     Notes
     -----
     This function looks at each key in the dictionary and interpolates
-    it between solar min and solar max to the given F10.7 value. 
-    
-    By default, the reference points are set in terms of IG12 coefficients 
-    of 0 and 100. The F10.7 is first converted to IG12 and then the 
+    it between solar min and solar max to the given F10.7 value.
+
+    By default, the reference points are set in terms of IG12 coefficients
+    of 0 and 100. The F10.7 is first converted to IG12 and then the
     interpolation is occurred.
 
     If use_R12 is set to 'True', F10.7 is converted to a corresponding R12
-    index and this is used to interpolate the provided dictionary. The R12 
-    reference points corresponding to solar min and max are R12=10 and 180 
+    index and this is used to interpolate the provided dictionary. The R12
+    reference points corresponding to solar min and max are R12=10 and 180
     as specified by Leftin, 1968. (This is required for foEs interpolation)
-    
 
     References
     ----------
@@ -2766,8 +2766,8 @@ def solar_interpolation_of_dictionary(F, F107, use_R12=False):
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60.
 
-    Leftin, M., Ostrow, S. M., and Preston, C. (1968), Numerical Maps of 
-    foEs for Solar Cycle Minimum and Maximum, ESSA Tech Report ERL 73-ITS63, 
+    Leftin, M., Ostrow, S. M., and Preston, C. (1968), Numerical Maps of
+    foEs for Solar Cycle Minimum and Maximum, ESSA Tech Report ERL 73-ITS63,
     US GPO, Washington, DC.
 
     """
