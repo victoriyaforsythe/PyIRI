@@ -504,7 +504,7 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False):
         F_Es_upper = F_Es_upper[0:coef['nj']['Es_upper'],
                                 0:coef['nk']['Es_upper'], :]
         F_Es_lower = F_Es_lower[0:coef['nj']['Es_lower'],
-                            0:coef['nk']['Es_lower'], :]
+                                0:coef['nk']['Es_lower'], :]
 
         # Define the output
         output = (F_fof2_CCIR, F_fof2_URSI, F_M3000, F_Es_median, F_Es_lower,
