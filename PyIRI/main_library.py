@@ -363,7 +363,7 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     return F2, F1, E, Es, sun, mag, EDP
 
 
-def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
+def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False):
     """Read coefficients from CCIR, URSI, and Es.
 
     Parameters
@@ -372,8 +372,8 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
         Month.
     coeff_dir : str
         Place where the coefficient files are.
-    output_quartiles : bool
-        Return an additional output, the upper and lower quartiles of the
+    output_deciles : bool
+        Return an additional output, the upper and lower deciles of the
         Bradley coefficients for Es (default=False)
 
     Returns
@@ -386,10 +386,10 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
         CCIR coefficients for M3000.
     F_Es_median : array-like
         Bradley coefficients for Es.
-    F_Es_low : array-like
-        Optional output only included if `output_quartiles` is True.
+    F_Es_lower : array-like
+        Optional output only included if `output_deciles` is True.
     F_Es_upper : array-like
-        Optional output only included if `output_quartiles` is True.
+        Optional output only included if `output_deciles` is True.
 
     Notes
     -----
@@ -496,18 +496,18 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
     F_Es_median = F_Es_median[0:coef['nj']['Es_median'],
                               0:coef['nk']['Es_median'], :]
 
-    if output_quartiles:
+    if output_deciles:
         F_Es_upper = F_E[:, :, 0:2]
-        F_Es_low = F_E[:, :, 4:6]
+        F_Es_lower = F_E[:, :, 4:6]
 
         # Trim E-region arrays to the exact shape of the functions
         F_Es_upper = F_Es_upper[0:coef['nj']['Es_upper'],
                                 0:coef['nk']['Es_upper'], :]
-        F_Es_low = F_Es_low[0:coef['nj']['Es_lower'],
+        F_Es_lower = F_Es_lower[0:coef['nj']['Es_lower'],
                             0:coef['nk']['Es_lower'], :]
 
         # Define the output
-        output = (F_fof2_CCIR, F_fof2_URSI, F_M3000, F_Es_median, F_Es_low,
+        output = (F_fof2_CCIR, F_fof2_URSI, F_M3000, F_Es_median, F_Es_lower,
                   F_Es_upper)
     else:
         # Define the output
