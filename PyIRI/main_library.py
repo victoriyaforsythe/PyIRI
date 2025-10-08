@@ -91,7 +91,7 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
         'Nm' is peak density of Es region in m-3.
         'fo' is critical frequency of Es region in MHz.
         'hm' is height of the Es peak in km.
-        'B_top' is top thickness of the Es region in km.
+        'B_top' is the top thickness of the Es region in km.
         'B_bot' is bottom thickness of the Es region in km.
         Shape [N_T, N_G, 2].
     sun : dict
