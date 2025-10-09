@@ -84,7 +84,7 @@ def Apex(Lat, Lon, dtime, type):
         # Find the closest available year
         ind_year = nearest_element(ayear, np.mean(dtime.year))
 
-        if (np.mean(dtime.year) < 1900) | (np.mean(dtime.year) > ayear[-1]):
+        if (np.mean(dtime.year) < 1900) | (np.mean(dtime.year) > np.max(ayear)):
             msg = ("Apex coefficients are available only "
                    f"from {ayear[0]} to {ayear[-1]}. "
                    f"Using {ayear[ind_year]} for input year {dtime.year}.")
