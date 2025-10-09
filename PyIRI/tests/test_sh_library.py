@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 
 # import PyIRI
-from PyIRI import nearest_element
-from PyIRI import to_numpy_array
+from PyIRI.sh_library import nearest_element
+from PyIRI.sh_library import to_numpy_array
 
 
 class TestNearestElement:
