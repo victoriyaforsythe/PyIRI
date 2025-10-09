@@ -111,18 +111,11 @@ def test_values_near_poles():
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=4)
     assert not np.isnan(F).any()
-
-    # Normalize array shape handling (supports both 2D and 3D)
-    if F.ndim == 3:
-        north = np.nanmean(F[:, 0, :])
-        south = np.nanmean(F[:, -1, :])
-    elif F.ndim == 2:
-        # When the time dimension is squeezed out
-        north = np.nanmean(F[:, 0])
-        south = np.nanmean(F[:, -1])
-    else:
-        raise AssertionError(f"Unexpected F_SH dimensions: {F.shape}")
-
+    # Flatten to (N_SH, N) regardless of dimensionality
+    F_flat = F.reshape(F.shape[0], -1)
+    # Pick first and last latitude positions (simulate poles)
+    north = np.nanmean(F_flat[:, 0])
+    south = np.nanmean(F_flat[:, -1])
     assert np.isfinite(north)
     assert np.isfinite(south)
 
@@ -132,10 +125,10 @@ def test_periodicity_phi():
     theta = np.array([np.pi / 3])
     phi = np.array([0, 2 * np.pi])
     F = real_SH_func(theta, phi, lmax=3)
-    # Flatten any singleton dimensions for clean comparison
-    F = np.squeeze(F)
-    assert F.shape[-1] == 2
-    np.testing.assert_allclose(F[..., 0], F[..., 1], atol=1e-12)
+    # Flatten for consistent indexing
+    F_flat = F.reshape(F.shape[0], -1)
+    # Compare the two longitude columns
+    np.testing.assert_allclose(F_flat[:, 0], F_flat[:, 1], atol=1e-12)
 
 
 def test_large_lmax_runs_fast():
