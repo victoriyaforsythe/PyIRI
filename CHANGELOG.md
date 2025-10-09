@@ -2,6 +2,10 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.0.5 (MM-DD-2025)
+* Added a new capability to do the Apex coordinate transformation without ApexPy
+* Added unit tests for Apex_library
+
 ## 0.0.4 (06-04-2025)
 * Limit to the peaks of density is set so it doesn't go negative anywhere
 
