@@ -15,7 +15,7 @@ References
 ----------
 Emmert et al. (2010), A computationally compact representation of
 Magnetic-Apex and Quasi-Dipole coordinates with smooth base vectors,
-J. Geophys. Res., 115(A8), A08322, doi:10.1029/2010JA015326. 
+J. Geophys. Res., 115(A8), A08322, doi:10.1029/2010JA015326.
 
 Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
 International Reference Ionosphere Modeling Implemented in Python,
@@ -24,14 +24,15 @@ doi:10.22541/essoar.169592556.61105365/v1.
 
 """
 
-import datetime as dt
 import numpy as np
+import os
 
 import netCDF4 as nc
 import opt_einsum as oe
 import scipy.special as ss
 
 import PyIRI
+from PyIRI import logger
 
 
 def Apex(Lat, Lon, dtime, type):
@@ -84,7 +85,7 @@ def Apex(Lat, Lon, dtime, type):
         ind_year = nearest_element(ayear, dtime.year)
 
         if (dtime.year < 1900) | (dtime.year > ayear[-1]):
-            msg = (f"Apex coefficients are available only "
+            msg = ("Apex coefficients are available only "
                    f"from {ayear[0]} to {ayear[-1]}. "
                    f"Using {ayear[ind_year]} for input year {dtime.year}.")
             logger.error(msg)
@@ -126,8 +127,8 @@ def Apex(Lat, Lon, dtime, type):
             return np.reshape(GeoLat, Lat.shape), np.reshape(GeoLon, Lon.shape)
 
         else:
-            raise ValueError(f"Parameter 'type' must be either "
-                             f"'GEO_2_QD' or 'QD_2_GEO'.")
+            raise ValueError("Parameter 'type' must be either "
+                             "'GEO_2_QD' or 'QD_2_GEO'.")
 
 
 def real_SH_func(theta, phi, lmax=29):
@@ -165,7 +166,7 @@ def real_SH_func(theta, phi, lmax=29):
     """
     # Convert inputs to arrays if lists or int or float
     theta = to_numpy_array(theta)
-    phi   = to_numpy_array(phi)
+    phi = to_numpy_array(phi)
 
     # If theta has shape (n_pos,), i.e., if user input coord='mlt', theta and
     # phi arrays must be artificially expanded to shape (1, n_pos)
@@ -173,7 +174,7 @@ def real_SH_func(theta, phi, lmax=29):
     if len(theta.shape) == 1:
         mlt_flag = 1
         theta = theta[np.newaxis, :]
-        phi   = phi[np.newaxis, :]
+        phi = phi[np.newaxis, :]
 
     # Argument for the associated Legendre polynomials
     z = np.cos(theta)                  # shape (N_T, N_G)
@@ -188,29 +189,29 @@ def real_SH_func(theta, phi, lmax=29):
 
     # Fill basis directly using lpmv, preserving your original normalization,
     # ordering, and index mapping i = l*(l+1)+m (with m in [-l..l]).
-    for l in range(lmax + 1):
-        base = l * (l + 1)  # center index for this degree
+    for L in range(lmax + 1):
+        base = L * (L + 1)  # center index for this degree
 
         # m = 0
-        P_l0 = ss.lpmv(0, l, z)
+        P_l0 = ss.lpmv(0, L, z)
         if np.any(mask_pole):
             P_l0 = P_l0.copy()
-            P_l0[mask_pole] = (-1.0) ** l
+            P_l0[mask_pole] = (-1.0) ** L
 
         # 4π normalization: sqrt((2 - δ_{m0})*(2l+1)* (l-m)!/(l+m)!)
-        norm0 = np.sqrt((2 - 1) * (2 * l + 1) * ss.factorial(l - 0)
-                        / ss.factorial(l + 0))
+        norm0 = np.sqrt((2 - 1) * (2 * L + 1) * ss.factorial(L - 0)
+                        / ss.factorial(L + 0))
         F_SH[base, :, :] = P_l0 * norm0  # i = l*(l+1) for m=0
 
         # m = 1..l
-        for m in range(1, l + 1):
-            P_lm = ss.lpmv(m, l, z)
+        for m in range(1, L + 1):
+            P_lm = ss.lpmv(m, L, z)
             if np.any(mask_pole):
                 P_lm = P_lm.copy()
                 P_lm[mask_pole] = 0.0  # P_l^m(-1) = 0 for m>0
 
-            norm = np.sqrt((2 - 0) * (2 * l + 1) * ss.factorial(l - m)
-                           / ss.factorial(l + m))
+            norm = np.sqrt((2 - 0) * (2 * L + 1) * ss.factorial(L - m)
+                           / ss.factorial(L + m))
             P_lm *= norm
 
             # Correct index mapping:
