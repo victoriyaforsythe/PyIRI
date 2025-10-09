@@ -120,49 +120,6 @@ def test_large_lmax_runs_fast():
     assert F.shape == ((10 + 1) ** 2, theta.size)
 
 
-@pytest.fixture
-def fake_dataset():
-    """Create a mock NetCDF dataset with minimal structure."""
-
-    ds = mock.MagicMock()
-    # Fake year array
-    ds.__enter__.return_value = ds  # so it works with 'with' context
-    ds['Year'].__getitem__.return_value = np.array([2000, 2005, 2010])
-
-    # Suppose each coefficient field is (N_years, N_SH)
-    n_years, n_sh = 3, 4
-    shape = (n_years, n_sh)
-    data = np.arange(n_years * n_sh).reshape(shape).astype(float)
-
-    ds['QDLat'].__getitem__.return_value = data
-    ds['QDLon_cos'].__getitem__.return_value = data + 1
-    ds['QDLon_sin'].__getitem__.return_value = data + 2
-    ds['GeoLat'].__getitem__.return_value = data + 3
-    ds['GeoLon_cos'].__getitem__.return_value = data + 4
-    ds['GeoLon_sin'].__getitem__.return_value = data + 5
-
-    # For attribute access
-    ds['QDLat'].shape = shape
-    ds['GeoLat'].shape = shape
-    return ds
-
-
-@pytest.fixture
-def patch_environment(fake_dataset):
-    """Patch dependencies of Apex."""
-
-    with mock.patch("PyIRI.sh_library.nc.Dataset",
-                    return_value=fake_dataset), \
-         mock.patch("PyIRI.sh_library.real_SH_func",
-                    return_value=np.ones((4, 5))), \
-         mock.patch("PyIRI.sh_library.oe.contract",
-                    side_effect=lambda expr, a, b: np.ones(5)), \
-         mock.patch("PyIRI.sh_library.PyIRI.main_library.adjust_longitude",
-                    ide_effect=lambda x, mode: x), \
-         mock.patch("PyIRI.sh_library.logger"):
-        yield
-
-
 def test_geo_to_qd(patch_environment):
     """Test GEO_2_QD transformation returns arrays of correct shape."""
 
