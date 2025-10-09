@@ -111,19 +111,29 @@ def test_values_near_poles():
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=4)
     assert not np.isnan(F).any()
-    # Mean over all dimensions except SH
-    north = np.nanmean(F[:, 0, :])
-    south = np.nanmean(F[:, -1, :])
+
+    # Normalize array shape handling (supports both 2D and 3D)
+    if F.ndim == 3:
+        north = np.nanmean(F[:, 0, :])
+        south = np.nanmean(F[:, -1, :])
+    elif F.ndim == 2:
+        # When the time dimension is squeezed out
+        north = np.nanmean(F[:, 0])
+        south = np.nanmean(F[:, -1])
+    else:
+        raise AssertionError(f"Unexpected F_SH dimensions: {F.shape}")
+
     assert np.isfinite(north)
     assert np.isfinite(south)
 
 
 def test_periodicity_phi():
-    """Ensure lon periodicity (φ=0 and φ=2π) produce same values."""
+    """Ensure longitude periodicity (φ=0 and φ=2π) produce same values."""
     theta = np.array([np.pi / 3])
     phi = np.array([0, 2 * np.pi])
     F = real_SH_func(theta, phi, lmax=3)
-    # Output shape is (N_SH, N_G)
+    # Flatten any singleton dimensions for clean comparison
+    F = np.squeeze(F)
     assert F.shape[-1] == 2
     np.testing.assert_allclose(F[..., 0], F[..., 1], atol=1e-12)
 
