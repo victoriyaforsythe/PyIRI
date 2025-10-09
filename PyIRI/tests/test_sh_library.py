@@ -1,13 +1,15 @@
 """Unit tests for PyIRI's sh_library."""
 
 import datetime as dt
+from unittest import mock
+
 import numpy as np
 import pytest
+
 from PyIRI.sh_library import Apex
 from PyIRI.sh_library import nearest_element
 from PyIRI.sh_library import real_SH_func
 from PyIRI.sh_library import to_numpy_array
-from unittest import mock
 
 
 class TestNearestElement:
