@@ -174,16 +174,21 @@ def real_SH_func(theta, phi, lmax=29):
     if len(theta.shape) == 1:
         mlt_flag = 1
         theta = theta[np.newaxis, :]
-        phi = phi[np.newaxis, :]
+        # Ensure phi has same shape as z for broadcasting
+        if phi.shape != z.shape:
+            phi = np.broadcast_to(phi, z.shape)
 
     # Argument for the associated Legendre polynomials
-    z = np.cos(theta)                  # shape (N_T, N_G)
+    z = np.cos(theta)  # shape (N_T, N_G)
     N_T, N_G = z.shape
     N_SH = (lmax + 1) ** 2
 
+    # Broadcast phi to match z
+    if phi.shape != z.shape:
+        phi = np.broadcast_to(phi, z.shape)
+
     # Preallocate target directly (no 4D buffers or NaN masking)
     F_SH = np.empty((N_SH, N_T, N_G), dtype=float)
-
     # Pole mask once, then reuse
     mask_pole = np.isclose(z, -1.0)
 
