@@ -139,6 +139,7 @@ def fake_dataset():
     return ds
 
 
+
 @pytest.fixture
 def patch_environment(fake_dataset):
     """Patch dependencies of Apex."""
