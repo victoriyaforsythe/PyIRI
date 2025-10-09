@@ -138,4 +138,3 @@ def test_large_lmax_runs_fast():
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=10)
     assert F.shape == ((10 + 1) ** 2, theta.size)
-
