@@ -31,6 +31,7 @@ from fortranformat import FortranRecordReader
 import math
 import numpy as np
 import os
+import warnings
 
 import PyIRI
 import PyIRI.igrf_library as igrf
@@ -85,14 +86,14 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
         'fo' is critical frequency of E region in MHz.
         'hm' is height of the E peak in km.
         'B_top' is the top thickness of the E region in km.
-        'B_bot' is bottom thickness of the E region in km.
+        'B_bot' is the bottom thickness of the E region in km.
         Shape [N_T, N_G, 2].
     Es : dict
         'Nm' is peak density of Es region in m-3.
         'fo' is critical frequency of Es region in MHz.
         'hm' is height of the Es peak in km.
         'B_top' is the top thickness of the Es region in km.
-        'B_bot' is bottom thickness of the Es region in km.
+        'B_bot' is the bottom thickness of the Es region in km.
         Shape [N_T, N_G, 2].
     sun : dict
         'lon' is longitude of subsolar point in degrees.
@@ -363,7 +364,8 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     return F2, F1, E, Es, sun, mag, EDP
 
 
-def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False):
+def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
+                         output_quartiles=None):
     """Read coefficients from CCIR, URSI, and Es.
 
     Parameters
@@ -375,6 +377,12 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False):
     output_deciles : bool
         Return an additional output, the upper and lower deciles of the
         Bradley coefficients for Es (default=False)
+    output_quartiles : bool
+        **Deprecated since version 0.0.5**
+        This argument will be removed in a future release.
+        Use 'output_deciles' instead.
+        Return an additional output, the upper and lower deciles
+        (not quartiles) of the Bradley coefficients for Es (default=None)
 
     Returns
     -------
@@ -406,6 +414,10 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False):
     The final development work and production of the foEs maps was supported
     by the U.S Information Agency.
     Acknowledgments to Doug Drob (NRL) for giving me these coefficients.
+
+    .. deprecated:: 0.0.5
+       The 'output_quartiles' parameter is deprecated and will be removed
+       in a future relase. Use 'output_deciles' instead.
 
     References
     ----------
@@ -492,11 +504,21 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False):
     F_M3000 = F_M3000_2
     F_Es_median = F_E[:, :, 2:4]
 
+    # Deprecation warning if output_quartiles is used
+    if output_quartiles is not None:
+        warnings.warn(
+            "output_quartiles is deprecated and will be removed in a future"
+            " version. Use output_deciles instead.",
+            DeprecationWarning,
+            stacklevel=2)
+    else:
+        output_quartiles = False
+
     # Trim E-region arrays to the exact shape of the functions
     F_Es_median = F_Es_median[0:coef['nj']['Es_median'],
                               0:coef['nk']['Es_median'], :]
 
-    if output_deciles:
+    if output_deciles or output_quartiles:
         F_Es_upper = F_E[:, :, 0:2]
         F_Es_lower = F_E[:, :, 4:6]
 
