@@ -115,10 +115,11 @@ def test_values_near_poles():
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=4)
     assert not np.isnan(F).any()
-    # Check continuity near poles
+    # Mean over all dimensions except SH
     north = np.nanmean(F[:, 0, :])
     south = np.nanmean(F[:, -1, :])
-    assert np.isfinite(north) and np.isfinite(south)
+    assert np.isfinite(north)
+    assert np.isfinite(south)
 
 
 def test_periodicity_phi():
@@ -126,6 +127,7 @@ def test_periodicity_phi():
     theta = np.array([np.pi / 3])
     phi = np.array([0, 2 * np.pi])
     F = real_SH_func(theta, phi, lmax=3)
+    # Output shape is (N_SH, N_G)
     assert F.shape[-1] == 2
     np.testing.assert_allclose(F[..., 0], F[..., 1], atol=1e-12)
 
@@ -136,3 +138,4 @@ def test_large_lmax_runs_fast():
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=10)
     assert F.shape == ((10 + 1) ** 2, theta.size)
+
