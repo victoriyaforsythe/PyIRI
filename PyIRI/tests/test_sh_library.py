@@ -1,7 +1,6 @@
 """Unit tests for PyIRI's sh_library."""
 
 import datetime as dt
-from unittest import mock
 
 import numpy as np
 import pytest
