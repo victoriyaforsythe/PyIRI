@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
+from unittest import mock
 
-# import PyIRI
+from PyIRI.sh_library import Apex
 from PyIRI.sh_library import nearest_element
 from PyIRI.sh_library import real_SH_func
 from PyIRI.sh_library import to_numpy_array
@@ -111,3 +112,79 @@ def test_large_lmax_runs_fast():
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=10)
     assert F.shape == ((10 + 1) ** 2, theta.size)
+
+@pytest.fixture
+def fake_dataset():
+    """Create a mock NetCDF dataset with minimal structure."""
+    ds = mock.MagicMock()
+    # Fake year array
+    ds.__enter__.return_value = ds  # so it works with 'with' context
+    ds['Year'].__getitem__.return_value = np.array([2000, 2005, 2010])
+
+    # Suppose each coefficient field is (N_years, N_SH)
+    n_years, n_sh = 3, 4
+    shape = (n_years, n_sh)
+    data = np.arange(n_years * n_sh).reshape(shape).astype(float)
+
+    ds['QDLat'].__getitem__.return_value = data
+    ds['QDLon_cos'].__getitem__.return_value = data + 1
+    ds['QDLon_sin'].__getitem__.return_value = data + 2
+    ds['GeoLat'].__getitem__.return_value = data + 3
+    ds['GeoLon_cos'].__getitem__.return_value = data + 4
+    ds['GeoLon_sin'].__getitem__.return_value = data + 5
+
+    # For attribute access
+    ds['QDLat'].shape = shape
+    ds['GeoLat'].shape = shape
+    return ds
+
+
+@pytest.fixture
+def patch_environment(fake_dataset):
+    """Patch dependencies of Apex."""
+    with mock.patch("PyIRI.sh_library.nc.Dataset",
+                    return_value=fake_dataset), \
+         mock.patch("PyIRI.sh_library.real_SH_func",
+                    return_value=np.ones((4, 5))), \
+         mock.patch("PyIRI.sh_library.oe.contract",
+                    side_effect=lambda expr, a, b: np.ones(5)), \
+         mock.patch("PyIRI.sh_library.PyIRI.main_library.adjust_longitude",
+                    ide_effect=lambda x, mode: x), \
+         mock.patch("PyIRI.sh_library.logger"):
+        yield
+
+
+def test_geo_to_qd(patch_environment):
+    """Test GEO_2_QD transformation returns arrays of correct shape."""
+    Lat = np.array([[10, 20], [30, 40]])
+    Lon = np.array([[100, 120], [140, 160]])
+    dtime = dt.datetime(2005, 1, 1)
+    QDLat, QDLon = Apex(Lat, Lon, dtime, type="GEO_2_QD")
+    assert QDLat.shape == Lat.shape
+    assert QDLon.shape == Lon.shape
+    assert np.all(np.isfinite(QDLat))
+    assert np.all(np.isfinite(QDLon))
+
+
+def test_qd_to_geo(patch_environment):
+    """Test QD_2_GEO transformation returns arrays of correct shape."""
+    Lat = np.array([10, 20, 30])
+    Lon = np.array([100, 150, 200])
+    dtime = dt.datetime(2010, 6, 1)
+
+    GeoLat, GeoLon = Apex(Lat, Lon, dtime, type="QD_2_GEO")
+
+    assert GeoLat.shape == Lat.shape
+    assert GeoLon.shape == Lon.shape
+    assert np.all(np.isfinite(GeoLat))
+    assert np.all(np.isfinite(GeoLon))
+
+
+def test_invalid_type_raises(patch_environment):
+    """Ensure invalid 'type' argument raises ValueError."""
+    Lat = np.array([0])
+    Lon = np.array([0])
+    dtime = dt.datetime(2005, 1, 1)
+
+    with pytest.raises(ValueError):
+        Apex(Lat, Lon, dtime, type="INVALID")
