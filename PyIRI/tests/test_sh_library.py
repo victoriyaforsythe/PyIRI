@@ -82,8 +82,8 @@ def test_shape_and_type(lmax):
     F = real_SH_func(theta, phi, lmax=lmax)
     n_sh = (lmax + 1) ** 2
     assert isinstance(F, np.ndarray)
-    assert F.shape == (n_sh, phi.size)
     assert F.dtype == float
+    assert F.shape == ((lmax + 1)**2, phi.size)
 
 
 def test_shape_for_2d_input():
