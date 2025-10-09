@@ -86,7 +86,7 @@ def Apex(Lat, Lon, dtime, type):
 
         if (np.mean(dtime.year) < 1900) | (np.mean(dtime.year) > np.max(ayear)):
             msg = ("Apex coefficients are available only "
-                   f"from {ayear[0]} to {ayear[-1]}. "
+                   f"from {ayear[0]} to {np.nanmax(ayear)}. "
                    f"Using {ayear[ind_year]} for input year {dtime.year}.")
             logger.error(msg)
 
