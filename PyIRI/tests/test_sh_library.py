@@ -106,29 +106,26 @@ def test_known_small_case():
 
 
 def test_values_near_poles():
-    """Ensure no NaNs or jumps near θ=0 and θ=π."""
+    """Ensure no NaNs or infs anywhere in output."""
     theta = np.linspace(0, np.pi, 20)
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=4)
-    assert not np.isnan(F).any()
-    # Flatten to (N_SH, N) regardless of dimensionality
-    F_flat = F.reshape(F.shape[0], -1)
-    # Pick first and last latitude positions (simulate poles)
-    north = np.nanmean(F_flat[:, 0])
-    south = np.nanmean(F_flat[:, -1])
-    assert np.isfinite(north)
-    assert np.isfinite(south)
+    # Everything must be finite
+    assert np.all(np.isfinite(F))
+    # Mean value should be finite and real
+    mean_val = np.nanmean(F)
+    assert np.isfinite(mean_val)
 
 
 def test_periodicity_phi():
-    """Ensure longitude periodicity (φ=0 and φ=2π) produce same values."""
+    """Ensure φ=0 and φ=2π give identical results for each SH mode."""
     theta = np.array([np.pi / 3])
     phi = np.array([0, 2 * np.pi])
     F = real_SH_func(theta, phi, lmax=3)
-    # Flatten for consistent indexing
-    F_flat = F.reshape(F.shape[0], -1)
-    # Compare the two longitude columns
-    np.testing.assert_allclose(F_flat[:, 0], F_flat[:, 1], atol=1e-12)
+    # Squeeze all singleton dims so result is (N_SH, 2)
+    F2 = np.squeeze(F)
+    assert F2.ndim == 2 and F2.shape[1] == 2
+    np.testing.assert_allclose(F2[:, 0], F2[:, 1], atol=1e-12)
 
 
 def test_large_lmax_runs_fast():
