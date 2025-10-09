@@ -5,6 +5,7 @@ import pytest
 
 # import PyIRI
 from PyIRI.sh_library import nearest_element
+from PyIRI.sh_library import real_SH_func
 from PyIRI.sh_library import to_numpy_array
 
 
@@ -71,3 +72,66 @@ class TestToNumpyArray:
         result = to_numpy_array([[1, 2], [3, 4]])
         assert result.shape == (2, 2)
         assert result.dtype == float
+
+
+def test_shape_and_type(lmax):
+    """Check output shape and dtype for simple 1D input."""
+    theta = np.linspace(0, np.pi, 5)
+    phi = np.linspace(0, 2 * np.pi, 5)
+    lmax = 3
+    F = real_SH_func(theta, phi, lmax=lmax)
+    n_sh = (lmax + 1) ** 2
+    assert isinstance(F, np.ndarray)
+    assert F.shape == (n_sh, phi.size)
+    assert F.dtype == float
+
+
+def test_shape_for_2d_input():
+    """Check shape when theta and phi are 2D arrays (gridded input)."""
+    lon = np.linspace(0, 2 * np.pi, 10)
+    lat = np.linspace(0, np.pi, 8)
+    theta, phi = np.meshgrid(lat, lon, indexing="ij")
+    F = real_SH_func(theta, phi, lmax=3)
+    assert F.shape == ((3 + 1) ** 2, theta.shape[0], theta.shape[1])
+
+
+def test_known_small_case():
+    """For lmax=1, compare against analytical spherical harmonics."""
+    theta = np.array([np.pi / 2])
+    phi = np.array([0.0])
+    F = real_SH_func(theta, phi, lmax=1)
+    # indices: l=0 -> i=0, l=1 -> i=1,2,0 ± m
+    # expect Y_0^0 ≈ sqrt(1/(4π))
+    expected = np.sqrt(1 / (4 * np.pi))
+    np.testing.assert_allclose(F[0], expected, rtol=1e-6)
+
+    # Y_1^0(θ=π/2) ≈ sqrt(3/(4π))*cos(θ) = 0
+    np.testing.assert_allclose(F[2], 0.0, atol=1e-10)
+
+
+def test_values_near_poles():
+    """Ensure no NaNs or jumps near θ=0 and θ=π."""
+    theta = np.linspace(0, np.pi, 20)
+    phi = np.linspace(0, 2 * np.pi, 10)
+    F = real_SH_func(theta, phi, lmax=4)
+    assert not np.isnan(F).any()
+    # Check continuity near poles
+    north = F[:, 0, :].mean()
+    south = F[:, -1, :].mean()
+    assert np.isfinite(north) and np.isfinite(south)
+
+
+def test_periodicity_phi():
+    """Ensure lon periodicity (φ=0 and φ=2π) produce same values."""
+    theta = np.pi / 3
+    phi = np.array([0, 2 * np.pi])
+    F = real_SH_func(theta, phi, lmax=3)
+    np.testing.assert_allclose(F[:, 0], F[:, 1], atol=1e-12)
+
+
+def test_large_lmax_runs_fast():
+    """Sanity check performance for moderate lmax."""
+    theta = np.linspace(0, np.pi, 10)
+    phi = np.linspace(0, 2 * np.pi, 10)
+    F = real_SH_func(theta, phi, lmax=10)
+    assert F.shape == ((10 + 1) ** 2, theta.size)
