@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 
-import PyIRI
+# import PyIRI
 from PyIRI import nearest_element
 from PyIRI import to_numpy_array
 
