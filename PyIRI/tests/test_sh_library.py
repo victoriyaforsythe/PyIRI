@@ -102,7 +102,8 @@ def test_known_small_case():
     F = real_SH_func(theta, phi, lmax=1)
     # indices: l=0 -> i=0, l=1 -> i=1,2,0 ± m
     # expect Y_0^0 ≈ sqrt(1/(4π))
-    expected = np.sqrt(1 / (4 * np.pi))
+    # since function uses 4π normalization, not unit normalization
+    expected = 1.0
     np.testing.assert_allclose(F[0], expected, rtol=1e-6)
 
     # Y_1^0(θ=π/2) ≈ sqrt(3/(4π))*cos(θ) = 0
@@ -116,8 +117,8 @@ def test_values_near_poles():
     F = real_SH_func(theta, phi, lmax=4)
     assert not np.isnan(F).any()
     # Check continuity near poles
-    north = F[:, 0, :].mean()
-    south = F[:, -1, :].mean()
+    north = np.nanmean(F[:, 0, :])
+    south = np.nanmean(F[:, -1, :])
     assert np.isfinite(north) and np.isfinite(south)
 
 
