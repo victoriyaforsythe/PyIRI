@@ -4,7 +4,6 @@ import datetime as dt
 import numpy as np
 import pytest
 from unittest import mock
-
 from PyIRI.sh_library import Apex
 from PyIRI.sh_library import nearest_element
 from PyIRI.sh_library import real_SH_func
@@ -172,9 +171,7 @@ def test_qd_to_geo(patch_environment):
     Lat = np.array([10, 20, 30])
     Lon = np.array([100, 150, 200])
     dtime = dt.datetime(2010, 6, 1)
-
     GeoLat, GeoLon = Apex(Lat, Lon, dtime, type="QD_2_GEO")
-
     assert GeoLat.shape == Lat.shape
     assert GeoLon.shape == Lon.shape
     assert np.all(np.isfinite(GeoLat))
@@ -186,6 +183,5 @@ def test_invalid_type_raises(patch_environment):
     Lat = np.array([0])
     Lon = np.array([0])
     dtime = dt.datetime(2005, 1, 1)
-
     with pytest.raises(ValueError):
         Apex(Lat, Lon, dtime, type="INVALID")
