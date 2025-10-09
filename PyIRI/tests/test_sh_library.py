@@ -124,10 +124,11 @@ def test_values_near_poles():
 
 def test_periodicity_phi():
     """Ensure lon periodicity (φ=0 and φ=2π) produce same values."""
-    theta = np.pi / 3
+    theta = np.array([np.pi / 3])
     phi = np.array([0, 2 * np.pi])
     F = real_SH_func(theta, phi, lmax=3)
-    np.testing.assert_allclose(F[:, 0], F[:, 1], atol=1e-12)
+    assert F.shape[-1] == 2
+    np.testing.assert_allclose(F[..., 0], F[..., 1], atol=1e-12)
 
 
 def test_large_lmax_runs_fast():
