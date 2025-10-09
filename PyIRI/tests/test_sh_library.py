@@ -11,7 +11,7 @@ from PyIRI.sh_library import to_numpy_array
 class TestNearestElement:
     """Test TestNearestElement."""
 
-    def test_basic_nearest(self):
+    def test_nearest_basic(self):
         """Test TestNearestElement."""
 
         arr = np.array([0, 1, 2, 3, 4, 5])

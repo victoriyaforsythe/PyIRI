@@ -35,7 +35,9 @@ keywords = [
 dependencies = [
   "fortranformat",
   "matplotlib",
+  "netCDF4",
   "numpy",
+  "opt_einsum",
   "scipy"
 ]
 
