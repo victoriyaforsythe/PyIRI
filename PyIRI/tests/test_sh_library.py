@@ -74,7 +74,7 @@ class TestToNumpyArray:
         assert result.dtype == float
 
 
-def test_shape_and_type(lmax):
+def test_shape_and_type():
     """Check output shape and dtype for simple 1D input."""
     theta = np.linspace(0, np.pi, 5)
     phi = np.linspace(0, 2 * np.pi, 5)
@@ -82,7 +82,8 @@ def test_shape_and_type(lmax):
     F = real_SH_func(theta, phi, lmax=lmax)
     assert isinstance(F, np.ndarray)
     assert F.dtype == float
-    assert F.shape == ((lmax + 1)**2, phi.size)
+    # After squeeze, shape is (N_SH, N_G)
+    assert F.shape == ((lmax + 1) ** 2, phi.size)
 
 
 def test_shape_for_2d_input():
@@ -99,13 +100,8 @@ def test_known_small_case():
     theta = np.array([np.pi / 2])
     phi = np.array([0.0])
     F = real_SH_func(theta, phi, lmax=1)
-    # indices: l=0 -> i=0, l=1 -> i=1,2,0 ± m
-    # expect Y_0^0 ≈ sqrt(1/(4π))
-    # since function uses 4π normalization, not unit normalization
-    expected = 1.0
+    expected = 1.0  # uses 4π normalization
     np.testing.assert_allclose(F[0], expected, rtol=1e-6)
-
-    # Y_1^0(θ=π/2) ≈ sqrt(3/(4π))*cos(θ) = 0
     np.testing.assert_allclose(F[2], 0.0, atol=1e-10)
 
 
