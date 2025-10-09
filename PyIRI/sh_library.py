@@ -8,7 +8,7 @@
 
 The Apex coordinates were estimated for each year from
 1900 to 2025 using ApexPy. These results were converted
-to the spherical harmonic coefficients up to l=20 and
+to the spherical harmonic coefficients up to lmax=20 and
 saved in the .nc file PyIRI.coeff_dir / 'Apex' / 'Apex.nc'.
 
 References
