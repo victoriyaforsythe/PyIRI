@@ -3,11 +3,11 @@
 import datetime as dt
 import numpy as np
 import pytest
-from unittest import mock
 from PyIRI.sh_library import Apex
 from PyIRI.sh_library import nearest_element
 from PyIRI.sh_library import real_SH_func
 from PyIRI.sh_library import to_numpy_array
+from unittest import mock
 
 
 class TestNearestElement:
@@ -77,6 +77,7 @@ class TestToNumpyArray:
 
 def test_shape_and_type():
     """Check output shape and dtype for simple 1D input."""
+
     theta = np.linspace(0, np.pi, 5)
     phi = np.linspace(0, 2 * np.pi, 5)
     lmax = 3
@@ -89,6 +90,7 @@ def test_shape_and_type():
 
 def test_shape_for_2d_input():
     """Check shape when theta and phi are 2D arrays (gridded input)."""
+
     lon = np.linspace(0, 2 * np.pi, 10)
     lat = np.linspace(0, np.pi, 8)
     theta, phi = np.meshgrid(lat, lon, indexing="ij")
@@ -98,6 +100,7 @@ def test_shape_for_2d_input():
 
 def test_known_small_case():
     """For lmax=1, compare against analytical spherical harmonics."""
+
     theta = np.array([np.pi / 2])
     phi = np.array([0.0])
     F = real_SH_func(theta, phi, lmax=1)
@@ -108,14 +111,19 @@ def test_known_small_case():
 
 def test_large_lmax_runs_fast():
     """Sanity check performance for moderate lmax."""
+
     theta = np.linspace(0, np.pi, 10)
     phi = np.linspace(0, 2 * np.pi, 10)
     F = real_SH_func(theta, phi, lmax=10)
     assert F.shape == ((10 + 1) ** 2, theta.size)
 
+
 @pytest.fixture
+
+
 def fake_dataset():
     """Create a mock NetCDF dataset with minimal structure."""
+
     ds = mock.MagicMock()
     # Fake year array
     ds.__enter__.return_value = ds  # so it works with 'with' context
@@ -144,6 +152,7 @@ def fake_dataset():
 
 def patch_environment(fake_dataset):
     """Patch dependencies of Apex."""
+
     with mock.patch("PyIRI.sh_library.nc.Dataset",
                     return_value=fake_dataset), \
          mock.patch("PyIRI.sh_library.real_SH_func",
@@ -158,6 +167,7 @@ def patch_environment(fake_dataset):
 
 def test_geo_to_qd(patch_environment):
     """Test GEO_2_QD transformation returns arrays of correct shape."""
+
     Lat = np.array([[10, 20], [30, 40]])
     Lon = np.array([[100, 120], [140, 160]])
     dtime = dt.datetime(2005, 1, 1)
@@ -170,6 +180,7 @@ def test_geo_to_qd(patch_environment):
 
 def test_qd_to_geo(patch_environment):
     """Test QD_2_GEO transformation returns arrays of correct shape."""
+
     Lat = np.array([10, 20, 30])
     Lon = np.array([100, 150, 200])
     dtime = dt.datetime(2010, 6, 1)
@@ -182,6 +193,7 @@ def test_qd_to_geo(patch_environment):
 
 def test_invalid_type_raises(patch_environment):
     """Ensure invalid 'type' argument raises ValueError."""
+
     Lat = np.array([0])
     Lon = np.array([0])
     dtime = dt.datetime(2005, 1, 1)
