@@ -119,7 +119,7 @@ def test_large_lmax_runs_fast():
     assert F.shape == ((10 + 1) ** 2, theta.size)
 
 
-def test_geo_to_qd(patch_environment):
+def test_geo_to_qd():
     """Test GEO_2_QD transformation returns arrays of correct shape."""
 
     Lat = np.array([[10, 20], [30, 40]])
@@ -132,7 +132,7 @@ def test_geo_to_qd(patch_environment):
     assert np.all(np.isfinite(QDLon))
 
 
-def test_qd_to_geo(patch_environment):
+def test_qd_to_geo():
     """Test QD_2_GEO transformation returns arrays of correct shape."""
 
     Lat = np.array([10, 20, 30])
@@ -145,7 +145,7 @@ def test_qd_to_geo(patch_environment):
     assert np.all(np.isfinite(GeoLon))
 
 
-def test_invalid_type_raises(patch_environment):
+def test_invalid_type_raises():
     """Ensure invalid 'type' argument raises ValueError."""
 
     Lat = np.array([0])
