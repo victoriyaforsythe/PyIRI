@@ -175,8 +175,7 @@ def real_SH_func(theta, phi, lmax=29):
         mlt_flag = 1
         theta = theta[np.newaxis, :]
         # Ensure phi has same shape as z for broadcasting
-        if phi.shape != z.shape:
-            phi = np.broadcast_to(phi, z.shape)
+        phi = phi[np.newaxis, :]
 
     # Argument for the associated Legendre polynomials
     z = np.cos(theta)  # shape (N_T, N_G)
