@@ -6,19 +6,21 @@
 # --------------------------------------------------------
 """This library contains Apex components for PyIRI software.
 
+The Apex coordinates were estimated for each year from
+1900 to 2025 using ApexPy. These results were converted
+to the spherical harmonic coefficients up to l=20 and
+saved in the .nc file PyIRI.coeff_dir / 'Apex' / 'Apex.nc'.
+
 References
 ----------
+Emmert et al. (2010), A computationally compact representation of
+Magnetic-Apex and Quasi-Dipole coordinates with smooth base vectors,
+J. Geophys. Res., 115(A8), A08322, doi:10.1029/2010JA015326. 
+
 Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
 International Reference Ionosphere Modeling Implemented in Python,
 Space Weather, ESS Open Archive, September 28, 2023,
 doi:10.22541/essoar.169592556.61105365/v1.
-
-Bilitza et al. (2022), The International Reference Ionosphere
-model: A review and description of an ionospheric benchmark, Reviews
-of Geophysics, 60.
-
-Jones, W. B., Graham, R. P., & Leftin, M. (1966). Advances
-in ionospheric mapping by numerical methods.
 
 """
 
@@ -235,6 +237,7 @@ def nearest_element(array, value):
         raise ValueError("Input array is empty.")
     idx = np.abs(arr - value).argmin()
     return idx
+
 
 def to_numpy_array(x):
     """Convert input to a 1D numpy float array."""
