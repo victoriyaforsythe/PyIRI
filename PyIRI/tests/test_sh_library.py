@@ -119,8 +119,6 @@ def test_large_lmax_runs_fast():
 
 
 @pytest.fixture
-
-
 def fake_dataset():
     """Create a mock NetCDF dataset with minimal structure."""
 
@@ -148,8 +146,6 @@ def fake_dataset():
 
 
 @pytest.fixture
-
-
 def patch_environment(fake_dataset):
     """Patch dependencies of Apex."""
 
