@@ -3311,3 +3311,20 @@ def limit_Nm(Nm, edens_lim=1e6):
     Nm = np.nan_to_num(Nm)
     Nm[Nm < edens_lim] = edens_lim
     return Nm
+
+
+def nearest_element(array, value):
+    """Return index of the array element nearest to a given value."""
+    arr = np.asarray(array, dtype=float)
+    if arr.size == 0:
+        raise ValueError("Input array is empty.")
+    idx = np.abs(arr - value).argmin()
+    return idx
+
+
+def to_numpy_array(x):
+    """Convert input to a 1D numpy float array."""
+    x_array = np.asarray(x, dtype=float)
+    if x_array.ndim == 0:
+        x_array = x_array[None]  # makes it 1D without rebuilding
+    return x_array

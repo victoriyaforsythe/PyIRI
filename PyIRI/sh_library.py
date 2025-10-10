@@ -33,6 +33,7 @@ import scipy.special as ss
 
 import PyIRI
 from PyIRI import logger
+from PyIRI import main_library as ml
 
 
 def Apex(Lat, Lon, dtime, type):
@@ -82,7 +83,7 @@ def Apex(Lat, Lon, dtime, type):
         ayear = ds['Year'][:]
 
         # Find the closest available year
-        ind_year = nearest_element(ayear, np.mean(dtime.year))
+        ind_year = ml.nearest_element(ayear, np.mean(dtime.year))
         if (np.mean(dtime.year) < 1900) | (np.mean(dtime.year) > np.max(ayear)):
             msg = ("Apex coefficients are available only "
                    f"from {np.nanmax(ayear)} to {np.nanmax(ayear)}. "
@@ -164,8 +165,8 @@ def real_SH_func(theta, phi, lmax=29):
 
     """
     # Convert inputs to arrays if lists or int or float
-    theta = to_numpy_array(theta)
-    phi = to_numpy_array(phi)
+    theta = ml.to_numpy_array(theta)
+    phi = ml.to_numpy_array(phi)
 
     # If theta has shape (n_pos,), i.e., if user input coord='mlt', theta and
     # phi arrays must be artificially expanded to shape (1, n_pos)
@@ -232,20 +233,3 @@ def real_SH_func(theta, phi, lmax=29):
         F_SH = F_SH.squeeze(1)
 
     return F_SH
-
-
-def nearest_element(array, value):
-    """Return index of the array element nearest to a given value."""
-    arr = np.asarray(array, dtype=float)
-    if arr.size == 0:
-        raise ValueError("Input array is empty.")
-    idx = np.abs(arr - value).argmin()
-    return idx
-
-
-def to_numpy_array(x):
-    """Convert input to a 1D numpy float array."""
-    x_array = np.asarray(x, dtype=float)
-    if x_array.ndim == 0:
-        x_array = x_array[None]  # makes it 1D without rebuilding
-    return x_array
