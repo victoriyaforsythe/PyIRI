@@ -31,6 +31,7 @@ from fortranformat import FortranRecordReader
 import math
 import numpy as np
 import os
+import warnings
 
 import PyIRI
 import PyIRI.igrf_library as igrf
@@ -84,15 +85,15 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
         'Nm' is peak density of E region in m-3.
         'fo' is critical frequency of E region in MHz.
         'hm' is height of the E peak in km.
-        'B_top' is bottom thickness of the E region in km.
-        'B_bot' is bottom thickness of the E region in km.
+        'B_top' is the top thickness of the E region in km.
+        'B_bot' is the bottom thickness of the E region in km.
         Shape [N_T, N_G, 2].
     Es : dict
         'Nm' is peak density of Es region in m-3.
         'fo' is critical frequency of Es region in MHz.
         'hm' is height of the Es peak in km.
-        'B_top' is bottom thickness of the Es region in km.
-        'B_bot' is bottom thickness of the Es region in km.
+        'B_top' is the top thickness of the Es region in km.
+        'B_bot' is the bottom thickness of the Es region in km.
         Shape [N_T, N_G, 2].
     sun : dict
         'lon' is longitude of subsolar point in degrees.
@@ -347,7 +348,7 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F2 = solar_interpolation_of_dictionary(F2, F107)
     F1 = solar_interpolation_of_dictionary(F1, F107)
     E = solar_interpolation_of_dictionary(E, F107)
-    Es = solar_interpolation_of_dictionary(Es, F107)
+    Es = solar_interpolation_of_dictionary(Es, F107, use_R12=True)
 
     # Introduce a minimum limit for the peaks to avoid negative density as a
     # result of the interpolation in case the F10.7 is high the extrapolation
@@ -363,7 +364,8 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     return F2, F1, E, Es, sun, mag, EDP
 
 
-def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
+def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
+                         output_quartiles=None):
     """Read coefficients from CCIR, URSI, and Es.
 
     Parameters
@@ -372,9 +374,15 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
         Month.
     coeff_dir : str
         Place where the coefficient files are.
-    output_quartiles : bool
-        Return an additional output, the upper and lower quartiles of the
+    output_deciles : bool
+        Return an additional output, the upper and lower deciles of the
         Bradley coefficients for Es (default=False)
+    output_quartiles : bool
+        **Deprecated since version 0.0.5**
+        This argument will be removed in version 0.0.6+.
+        Use 'output_deciles' instead.
+        Return an additional output, the upper and lower deciles
+        (not quartiles) of the Bradley coefficients for Es (default=None)
 
     Returns
     -------
@@ -386,10 +394,14 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
         CCIR coefficients for M3000.
     F_Es_median : array-like
         Bradley coefficients for Es.
-    F_Es_low : array-like
-        Optional output only included if `output_quartiles` is True.
+    F_Es_lower : array-like
+        Lower decile sporadic E Bradley coefficients.
+        Optional output only included if `output_deciles`
+        (or the deprecated argument `output_quartiles`) is True.
     F_Es_upper : array-like
-        Optional output only included if `output_quartiles` is True.
+        Upper decile sporadic E Bradley coefficients.
+        Optional output only included if `output_deciles`
+        (or the deprecated argument `output_quartiles`) is True.
 
     Notes
     -----
@@ -406,6 +418,10 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
     The final development work and production of the foEs maps was supported
     by the U.S Information Agency.
     Acknowledgments to Doug Drob (NRL) for giving me these coefficients.
+
+    .. deprecated:: 0.0.5
+       The 'output_quartiles' parameter is deprecated and will be removed
+       in version 0.0.6+. Use 'output_deciles' instead.
 
     References
     ----------
@@ -492,22 +508,32 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_quartiles=False):
     F_M3000 = F_M3000_2
     F_Es_median = F_E[:, :, 2:4]
 
+    # Deprecation warning if output_quartiles is used
+    if output_quartiles is not None:
+        warnings.warn(
+            "output_quartiles is deprecated and will be removed in a future"
+            " version. Use output_deciles instead.",
+            DeprecationWarning,
+            stacklevel=2)
+    else:
+        output_quartiles = False
+
     # Trim E-region arrays to the exact shape of the functions
     F_Es_median = F_Es_median[0:coef['nj']['Es_median'],
                               0:coef['nk']['Es_median'], :]
 
-    if output_quartiles:
+    if output_deciles or output_quartiles:
         F_Es_upper = F_E[:, :, 0:2]
-        F_Es_low = F_E[:, :, 4:6]
+        F_Es_lower = F_E[:, :, 4:6]
 
         # Trim E-region arrays to the exact shape of the functions
         F_Es_upper = F_Es_upper[0:coef['nj']['Es_upper'],
                                 0:coef['nk']['Es_upper'], :]
-        F_Es_low = F_Es_low[0:coef['nj']['Es_lower'],
-                            0:coef['nk']['Es_lower'], :]
+        F_Es_lower = F_Es_lower[0:coef['nj']['Es_lower'],
+                                0:coef['nk']['Es_lower'], :]
 
         # Define the output
-        output = (F_fof2_CCIR, F_fof2_URSI, F_M3000, F_Es_median, F_Es_low,
+        output = (F_fof2_CCIR, F_fof2_URSI, F_M3000, F_Es_median, F_Es_lower,
                   F_Es_upper)
     else:
         # Define the output
@@ -2680,8 +2706,51 @@ def solar_interpolate(F_min, F_max, F107):
     return F
 
 
-def solar_interpolation_of_dictionary(F, F107):
-    """Interpolate given dictionary to provided F10.7 level.
+def solar_interpolate_R12(F_min, F_max, R12):
+    """Interpolate given array to provided R12 level.
+
+    Parameters
+    ----------
+    F_min : array-like
+        Any given array of parameters that corresponds to solar min.
+    F_max : array-like
+        Any given array of parameters that corresponds to solar max.
+    R12 : float
+        Given R12 index (12-month running mean of sunspot number).
+
+    Returns
+    -------
+    F : array-like
+        Parameters interpolated to the given R12.
+
+    Notes
+    -----
+    This function interpolates the given F_min and F_max parameters
+    (corresponding to solar min and solar max) to the given R12 index.
+    The R12 reference points corresponding to solar min and max are
+    R12=10 and 180 as specified by Leftin, 1968.
+
+    References
+    ----------
+    Leftin, M., Ostrow, S. M., and Preston, C. (1968), Numerical Maps of
+    foEs for Solar Cycle Minimum and Maximum, ESSA Tech Report ERL 73-ITS63,
+    US GPO, Washington, DC.
+
+    """
+    # min and max of IG12 Ionospheric Global Index
+    R12_min = 10.
+    R12_max = 180.
+
+    # linear interpolation of the whole matrix:
+    # https://en.wikipedia.org/wiki/Linear_interpolation
+    F = (F_min * (R12_max - R12) / (R12_max - R12_min)
+         + F_max * (R12 - R12_min) / (R12_max - R12_min))
+
+    return F
+
+
+def solar_interpolation_of_dictionary(F, F107, use_R12=False):
+    """Interpolate given dictionary to provided F10.7.
 
     Parameters
     ----------
@@ -2690,6 +2759,9 @@ def solar_interpolation_of_dictionary(F, F107):
         specified as 1st dimension.
     F107 : float
         Interpolate to this particular level of F10.7.
+    use_R12 : bool
+        Convert F10.7 to R12 and use R12 to perform the interpolation
+        (default = False)
 
     Returns
     -------
@@ -2699,9 +2771,16 @@ def solar_interpolation_of_dictionary(F, F107):
     Notes
     -----
     This function looks at each key in the dictionary and interpolates
-    it between to a given F10.7. The reference points are set in terms
-    of IG12 coefficients of 0 and 100. The F10.7 is first converted to
-    IG12 and then the interpolation is occurred.
+    it between solar min and solar max to the given F10.7 value.
+
+    By default, the reference points are set in terms of IG12 coefficients
+    of 0 and 100. The F10.7 is first converted to IG12 and then the
+    interpolation is occurred.
+
+    If use_R12 is set to 'True', F10.7 is converted to a corresponding R12
+    index and this is used to interpolate the provided dictionary. The R12
+    reference points corresponding to solar min and max are R12=10 and 180
+    as specified by Leftin, 1968. (This is required for foEs interpolation)
 
     References
     ----------
@@ -2713,6 +2792,10 @@ def solar_interpolation_of_dictionary(F, F107):
     model: A review and description of an ionospheric benchmark, Reviews
     of Geophysics, 60.
 
+    Leftin, M., Ostrow, S. M., and Preston, C. (1968), Numerical Maps of
+    foEs for Solar Cycle Minimum and Maximum, ESSA Tech Report ERL 73-ITS63,
+    US GPO, Washington, DC.
+
     """
     # Make dictionary with same elements as initial array
     F_new = F
@@ -2720,7 +2803,13 @@ def solar_interpolation_of_dictionary(F, F107):
     for key in F:
         F_key = F[key]
         F_key = np.swapaxes(F_key, 0, 2)
-        F_new[key] = solar_interpolate(F_key[0, :], F_key[1, :], F107)
+
+        if use_R12:
+            R12 = F107_2_R12(F107)
+            F_new[key] = solar_interpolate_R12(F_key[0, :], F_key[1, :], R12)
+        else:
+            F_new[key] = solar_interpolate(F_key[0, :], F_key[1, :], F107)
+
         F_new[key] = np.swapaxes(F_new[key], 0, 1)
 
     return F_new
