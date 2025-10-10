@@ -379,7 +379,7 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
         Bradley coefficients for Es (default=False)
     output_quartiles : bool
         **Deprecated since version 0.0.5**
-        This argument will be removed in a future release.
+        This argument will be removed in version 0.0.6+.
         Use 'output_deciles' instead.
         Return an additional output, the upper and lower deciles
         (not quartiles) of the Bradley coefficients for Es (default=None)
@@ -395,9 +395,13 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
     F_Es_median : array-like
         Bradley coefficients for Es.
     F_Es_lower : array-like
-        Optional output only included if `output_deciles` is True.
+        Lower decile sporadic E Bradley coefficients.
+        Optional output only included if `output_deciles`
+        (or the deprecated argument `output_quartiles`) is True.
     F_Es_upper : array-like
-        Optional output only included if `output_deciles` is True.
+        Upper decile sporadic E Bradley coefficients.
+        Optional output only included if `output_deciles`
+        (or the deprecated argument `output_quartiles`) is True.
 
     Notes
     -----
@@ -417,7 +421,7 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
 
     .. deprecated:: 0.0.5
        The 'output_quartiles' parameter is deprecated and will be removed
-       in a future relase. Use 'output_deciles' instead.
+       in version 0.0.6+. Use 'output_deciles' instead.
 
     References
     ----------

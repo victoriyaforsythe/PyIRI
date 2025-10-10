@@ -3,7 +3,8 @@ All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.0.5 (XX-XX-2025)
-* Corrected foEs interpolation method and updated test data.
+* Corrected foEs interpolation method and updated test data and example figures.
+* Deprecated `output_quartiles` argument in `read_ccir_ursi_coeff()` and replaced it with `output_deciles` (functionality is unchanged).
 * Some typo fixes
 
 ## 0.0.4 (06-04-2025)
