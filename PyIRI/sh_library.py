@@ -69,7 +69,11 @@ def Apex(Lat, Lon, dtime, type):
     Requires the file: PyIRI.coeff_dir / 'Apex' / 'Apex.nc'
 
     """
-    # Flatten input arrays
+    # Convert Lat and Lon to numpy arrays
+    Lat = ml.to_numpy_array(Lat)
+    Lon = ml.to_numpy_array(Lon)
+
+    # Flatten to 1D
     Lat_1d = Lat.reshape(Lat.size)
     Lon_1d = Lon.reshape(Lon.size)
 
