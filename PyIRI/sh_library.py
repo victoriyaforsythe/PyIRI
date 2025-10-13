@@ -36,7 +36,7 @@ from PyIRI import logger
 from PyIRI import main_library as ml
 
 
-def Apex(Lat, Lon, dtime, type):
+def Apex(Lat, Lon, dtime, transform_type):
     """Convert between geographic (GEO) and quasi-dipole (QD) coordinates.
 
     Parameters
@@ -47,7 +47,7 @@ def Apex(Lat, Lon, dtime, type):
         Geographic or quasi-dipole longitude grid [deg].
     dtime : datetime.datetime
         Datetime object specifying the target year for Apex coefficients.
-    type : str
+    transform_type : str
         Transformation type:
             'GEO_2_QD' — convert from geographic to quasi-dipole
             'QD_2_GEO' — convert from quasi-dipole to geographic
@@ -101,7 +101,7 @@ def Apex(Lat, Lon, dtime, type):
         F_SH = real_SH_func(atheta, aphi, lmax=lmax)
 
         # GEO → QD
-        if type == 'GEO_2_QD':
+        if transform_type == 'GEO_2_QD':
             C_QDLat = ds['QDLat'][ind_year, :]
             C_QDLon_cos = ds['QDLon_cos'][ind_year, :]
             C_QDLon_sin = ds['QDLon_sin'][ind_year, :]
@@ -116,7 +116,7 @@ def Apex(Lat, Lon, dtime, type):
             return np.reshape(QDLat, Lat.shape), np.reshape(QDLon, Lon.shape)
 
         # QD → GEO
-        elif type == 'QD_2_GEO':
+        elif transform_type == 'QD_2_GEO':
             C_GeoLat = ds['GeoLat'][ind_year, :]
             C_GeoLon_cos = ds['GeoLon_cos'][ind_year, :]
             C_GeoLon_sin = ds['GeoLon_sin'][ind_year, :]
@@ -131,7 +131,7 @@ def Apex(Lat, Lon, dtime, type):
             return np.reshape(GeoLat, Lat.shape), np.reshape(GeoLon, Lon.shape)
 
         else:
-            raise ValueError("Parameter 'type' must be either "
+            raise ValueError("Parameter 'transform_type' must be either "
                              "'GEO_2_QD' or 'QD_2_GEO'.")
 
 
