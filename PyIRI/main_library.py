@@ -3313,21 +3313,15 @@ def limit_Nm(Nm, edens_lim=1e6):
     return Nm
 
 
-def nearest_element(array, value):
-    """Return index of the array element nearest to a given value."""
-    arr = np.asarray(array, dtype=float)
-    if arr.size == 0:
-        raise ValueError("Input array is empty.")
-    idx = np.abs(arr - value).argmin()
-    return idx
-
-
 def to_numpy_array(x):
     """Convert input to a numpy float array.
+
     Parameters
     ----------
     x : array-like
-        Anything that numpy.asarray can interpret (e.g.: scalar, list, numpy array).
+        Anything that numpy.asarray can interpret (e.g.: scalar, list,
+        numpy array).
+
     Returns
     -------
     numpy.ndarray
