@@ -193,12 +193,21 @@ def real_SH_func(theta, phi, lmax=29):
     # Preallocate F_SH array
     F_SH = np.empty((N_SH, N_T, N_G), dtype=float)
 
-    # Fill basis using lpmv and index mapping i = l*(l+1)+m (with m in [-l..l])
+    # Correct a bug in Scipy which causes P(l, m=0, z=-1.0) to be =1.0 instead
+    # of =(-1.0)**l
+    mask_pole = np.where(z == -1.0)
+    mask_pole_time = mask_pole[0]
+    mask_pole_pos = mask_pole[1]
+
+    # Fill basis using index mapping i = l*(l+1)+m (with m in [-l..l])
     for L in range(lmax + 1):
         base = L * (L + 1)  # center index for this degree
 
         # m = 0
-        P_l0 = ss.lpmv(0, L, z)
+        P_l0 = ss.assoc_legendre_p(L, 0, z)[0]
+        if np.any(mask_pole):
+            P_l0 = P_l0.copy()
+            P_l0[mask_pole_time, mask_pole_pos] = (-1.0) ** L
 
         # 4π normalization: sqrt((2 - δ_{m0}) * (2l + 1) * (l-m)! / (l+m)!)
         norm0 = np.sqrt((2 - 1) * (2 * L + 1) * ss.factorial(L - 0)
@@ -207,7 +216,7 @@ def real_SH_func(theta, phi, lmax=29):
 
         # m = 1..l
         for m in range(1, L + 1):
-            P_lm = ss.lpmv(m, L, z)
+            P_lm = ss.assoc_legendre_p(L, m, z)[0]
 
             norm = np.sqrt((2 - 0) * (2 * L + 1) * ss.factorial(L - m)
                            / ss.factorial(L + m))
