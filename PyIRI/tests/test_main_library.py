@@ -1,7 +1,6 @@
 """Unit tests for PyIRI's main_library."""
 
 import numpy as np
-import pytest
 
 from PyIRI.main_library import to_numpy_array
 
