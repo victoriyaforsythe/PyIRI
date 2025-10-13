@@ -3332,6 +3332,7 @@ def to_numpy_array(x):
     -------
     numpy.ndarray
         Float array; scalars are promoted to 1D arrays.
+
     """
     x_array = np.asarray(x, dtype=float)
     if x_array.ndim == 0:
