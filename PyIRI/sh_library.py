@@ -186,33 +186,24 @@ def real_SH_func(theta, phi, lmax=29):
     if phi.shape != z.shape:
         phi = np.broadcast_to(phi, z.shape)
 
-    # Preallocate target directly (no 4D buffers or NaN masking)
+    # Preallocate F_SH array
     F_SH = np.empty((N_SH, N_T, N_G), dtype=float)
-    # Pole mask once, then reuse
-    mask_pole = np.isclose(z, -1.0)
 
-    # Fill basis directly using lpmv, preserving your original normalization,
-    # ordering, and index mapping i = l*(l+1)+m (with m in [-l..l]).
+    # Fill basis using lpmv and index mapping i = l*(l+1)+m (with m in [-l..l])
     for L in range(lmax + 1):
         base = L * (L + 1)  # center index for this degree
 
         # m = 0
         P_l0 = ss.lpmv(0, L, z)
-        if np.any(mask_pole):
-            P_l0 = P_l0.copy()
-            P_l0[mask_pole] = (-1.0) ** L
 
-        # 4π normalization: sqrt((2 - δ_{m0})*(2l+1)* (l-m)!/(l+m)!)
+        # 4π normalization: sqrt((2 - δ_{m0}) * (2l + 1) * (l-m)! / (l+m)!)
         norm0 = np.sqrt((2 - 1) * (2 * L + 1) * ss.factorial(L - 0)
                         / ss.factorial(L + 0))
-        F_SH[base, :, :] = P_l0 * norm0  # i = l*(l+1) for m=0
+        F_SH[base, :, :] = P_l0 * norm0
 
         # m = 1..l
         for m in range(1, L + 1):
             P_lm = ss.lpmv(m, L, z)
-            if np.any(mask_pole):
-                P_lm = P_lm.copy()
-                P_lm[mask_pole] = 0.0  # P_l^m(-1) = 0 for m>0
 
             norm = np.sqrt((2 - 0) * (2 * L + 1) * ss.factorial(L - m)
                            / ss.factorial(L + m))
