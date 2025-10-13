@@ -58,7 +58,7 @@ def test_geo_to_qd():
     Lat = np.array([[10, 20], [30, 40]])
     Lon = np.array([[100, 120], [140, 160]])
     dtime = dt.datetime(2005, 1, 1)
-    QDLat, QDLon = Apex(Lat, Lon, dtime, type="GEO_2_QD")
+    QDLat, QDLon = Apex(Lat, Lon, dtime, transform_type="GEO_2_QD")
     assert QDLat.shape == Lat.shape
     assert QDLon.shape == Lon.shape
     assert np.all(np.isfinite(QDLat))
@@ -71,7 +71,7 @@ def test_qd_to_geo():
     Lat = np.array([10, 20, 30])
     Lon = np.array([100, 150, 200])
     dtime = dt.datetime(2010, 6, 1)
-    GeoLat, GeoLon = Apex(Lat, Lon, dtime, type="QD_2_GEO")
+    GeoLat, GeoLon = Apex(Lat, Lon, dtime, transform_type="QD_2_GEO")
     assert GeoLat.shape == Lat.shape
     assert GeoLon.shape == Lon.shape
     assert np.all(np.isfinite(GeoLat))
