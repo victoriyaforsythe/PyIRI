@@ -3311,3 +3311,24 @@ def limit_Nm(Nm, edens_lim=1e6):
     Nm = np.nan_to_num(Nm)
     Nm[Nm < edens_lim] = edens_lim
     return Nm
+
+
+def to_numpy_array(x):
+    """Convert input to a numpy float array.
+
+    Parameters
+    ----------
+    x : array-like
+        Anything that numpy.asarray can interpret (e.g.: scalar, list,
+        numpy array).
+
+    Returns
+    -------
+    numpy.ndarray
+        Float array; scalars are promoted to 1D arrays.
+
+    """
+    x_array = np.asarray(x, dtype=float)
+    if x_array.ndim == 0:
+        x_array = x_array[None]  # makes it 1D without rebuilding
+    return x_array
