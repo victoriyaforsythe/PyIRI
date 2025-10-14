@@ -85,4 +85,4 @@ def test_invalid_type_raises():
     Lon = np.array([0])
     dtime = dt.datetime(2005, 1, 1)
     with pytest.raises(ValueError):
-        Apex(Lat, Lon, dtime, type="INVALID")
+        Apex(Lat, Lon, dtime, transform_type="INVALID")
