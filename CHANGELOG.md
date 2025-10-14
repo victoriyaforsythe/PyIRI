@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## 0.0.5 (10-14-2025)
+## 0.0.5 (XX-XX-2025)
 * Added a function for Fourier Series analysis.
 * Increased min python version to 3.10 (which is a requirement for some scipy functions).
 * Added a new capability to do the Apex coordinate transformation without ApexPy.
