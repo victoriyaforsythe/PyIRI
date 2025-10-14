@@ -7,7 +7,7 @@ name = "PyIRI"
 version = "0.0.4"
 description = "Python implementation of International Reference Ionosphere"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 license = {file = "LICENSE"}
 authors = [
     {name = "Victoriya Forsythe", email = "victoriya.makarevich@nrl.navy.mil"},
@@ -38,7 +38,7 @@ dependencies = [
   "netCDF4",
   "numpy",
   "opt_einsum",
-  "scipy >= 1.16.1"
+  "scipy >= 1.15.3"
 ]
 
 [project.optional-dependencies]
