@@ -237,3 +237,44 @@ def real_SH_func(theta, phi, lmax=29):
         F_SH = F_SH.squeeze(1)
 
     return F_SH
+
+
+def real_FS_func(aUT, N_FS_c=5):
+    """Generate a real-valued Fourier Series (FS) basis matrix.
+
+    Parameters
+    ----------
+    aUT : int, float, or array-like
+        User input time values in Universal Time (UT) [0-24) [hour]. Scalar
+        inputs will be converted to a Numpy array.
+        Shape (N_T,)
+
+    N_FS_c : int
+        Number of complex Fourier coefficients to use (i.e., truncation level).
+        (default=5) The associated number of real Fourier coefficients is
+        N_FS_r=2*N_FS_c-1.
+
+    Returns
+    -------
+    F_FS : array-like
+        Real-valued FS basis matrix.
+        Shape (N_T, N_FS_r)
+
+    """
+    # -------------------------------------------------------------------------
+    # Convert inputs to Numpy arrays
+    aUT = ml.to_numpy_array(aUT)
+
+    N_T = aUT.size
+    N_FS_r = 2 * N_FS_c - 1
+    F_FS = np.empty((N_T, N_FS_r))
+
+    k_vals = np.arange(1, N_FS_c)
+    omega = 2 * np.pi * k_vals / 24
+    phase = np.outer(aUT, omega)
+
+    F_FS[:, 0] = 1
+    F_FS[:, 1::2] = np.cos(phase)
+    F_FS[:, 2::2] = np.sin(phase)
+
+    return F_FS
