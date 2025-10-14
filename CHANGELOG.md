@@ -2,16 +2,14 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## 0.0.6 (XX-XX-2025)
-* Added a function for Fourier Series analysis.
-
 ## 0.0.5 (10-14-2025)
-* Increased min python version to 3.10 (which is a requirement for some scipy functions)
-* Added a new capability to do the Apex coordinate transformation without ApexPy
-* Added unit tests for Apex_library
+* Added a function for Fourier Series analysis.
+* Increased min python version to 3.10 (which is a requirement for some scipy functions).
+* Added a new capability to do the Apex coordinate transformation without ApexPy.
+* Added unit tests for Apex_library.
 * Corrected foEs interpolation method and updated test data and example figures.
 * Deprecated `output_quartiles` argument in `read_ccir_ursi_coeff()` and replaced it with `output_deciles` (functionality is unchanged).
-* Some typo fixes
+* Typos are fixed in the Es section.
 
 ## 0.0.4 (06-04-2025)
 * Limit to the peaks of density is set so it doesn't go negative anywhere
