@@ -237,3 +237,60 @@ def real_SH_func(theta, phi, lmax=29):
         F_SH = F_SH.squeeze(1)
 
     return F_SH
+
+
+def real_FS_func(aUT, N_FS_c=5):
+    """Generate a real-valued Fourier Series (FS) basis matrix.
+
+    Parameters
+    ----------
+    aUT : int, float, or array-like
+        User input time values in Universal Time (UT) [0-24) [hour]. Scalar
+        inputs will be converted to a Numpy array.
+        Shape (N_T,)
+
+    N_FS_c : int
+        Number of complex Fourier coefficients to use as a truncation level.
+        The default is N_FS_c = 5. The associated number of real Fourier
+        coefficients is N_FS_r = 2 * N_FS_c - 1.
+
+    Returns
+    -------
+    F_FS : array-like
+        Real-valued FS basis matrix.
+        Shape (N_T, N_FS_r)
+
+    """
+    # Convert inputs to Numpy arrays
+    aUT = ml.to_numpy_array(aUT)
+
+    # Number of time samples
+    N_T = aUT.size
+
+    # Number of real Fourier coefficients
+    # (constant term + sine + cosine pairs)
+    N_FS_r = 2 * N_FS_c - 1
+
+    # Initialize the output matrix for the Fourier Series basis
+    F_FS = np.empty((N_T, N_FS_r))
+
+    # Indices for harmonic terms (excluding the constant term)
+    k_vals = np.arange(1, N_FS_c)
+
+    # Angular frequencies (convert 24-hour period to radians)
+    omega = 2 * np.pi * k_vals / 24
+
+    # Compute the phase angles for each time and harmonic
+    phase = np.outer(aUT, omega)
+
+    # First column: constant (DC) term
+    F_FS[:, 0] = 1
+
+    # Even-indexed columns: cosine terms for each harmonic
+    F_FS[:, 1::2] = np.cos(phase)
+
+    # Odd-indexed columns: sine terms for each harmonic
+    F_FS[:, 2::2] = np.sin(phase)
+
+    # Return the complete real-valued Fourier Series basis matrix
+    return F_FS
