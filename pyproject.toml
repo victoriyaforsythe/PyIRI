@@ -37,7 +37,8 @@ dependencies = [
   "netCDF4",
   "numpy",
   "opt_einsum",
-  "scipy >= 1.13.1"
+  "scipy >= 1.13.1",
+  "pandas"
 ]
 
 [project.optional-dependencies]
