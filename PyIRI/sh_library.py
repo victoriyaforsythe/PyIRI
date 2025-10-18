@@ -34,9 +34,9 @@ import os
 import pandas as pd
 
 import PyIRI
-from PyIRI import logger
 import PyIRI.edp_update as edpup
 import PyIRI.igrf_library as igrf
+import PyIRI.logger as logger
 import PyIRI.main_library as ml
 
 import scipy.special as ss
