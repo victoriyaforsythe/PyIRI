@@ -8,7 +8,7 @@
 
 The Apex coordinates were estimated for each year from 1900 to 2025 using
 apexpy. These results were converted to the spherical harmonic coefficients up
-to lmax=20 and saved in the .nc file PyIRI.coeff_dir / 'SH' / 'Apex.nc'.
+to lmax=20 and saved in the .nc file PyIRI.coeff_dir / 'Apex' / 'Apex.nc'.
 
 The ionospheric parameters of F2, F1, E, and Es are computed using spherical
 harmonics based on the IRI (and PyIRI) model.
@@ -1300,7 +1300,7 @@ def Apex_geo_qd(Lat, Lon, dtime, transform_type):
     Coefficients are 4π-normalized real spherical harmonics.
     If the requested year is outside the available range, the nearest available
     year is used and an error is logged.
-    Requires the file: PyIRI.coeff_dir / 'SH' / 'Apex.nc'
+    Requires the file: PyIRI.coeff_dir / 'Apex' / 'Apex.nc'
 
     """
     # Convert Lat and Lon to numpy arrays
@@ -1316,7 +1316,7 @@ def Apex_geo_qd(Lat, Lon, dtime, transform_type):
     aphi = np.deg2rad(Lon_1d)
 
     # Open coefficient file safely
-    filename = os.path.join(PyIRI.coeff_dir, 'SH', 'Apex.nc')
+    filename = os.path.join(PyIRI.coeff_dir, 'Apex', 'Apex.nc')
     with nc.Dataset(filename, "r") as ds:
         ayear = ds['Year'][:]
 
