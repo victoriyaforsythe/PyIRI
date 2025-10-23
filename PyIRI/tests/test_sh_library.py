@@ -9,6 +9,51 @@ import PyIRI
 import PyIRI.sh_library as sh
 
 
+# EDP_builder_continuous
+def test_EDP_builder_continuous():
+    """Exercise EDP_builder_continuous."""
+    N_T = 3
+    N_G = 2
+    N_V = 4
+
+    F2 = {'Nm': np.ones((N_T, N_G)) * 1.2e12,
+          'hm': np.ones((N_T, N_G)) * 350,
+          'B0': np.ones((N_T, N_G)) * 120,
+          'B1': np.ones((N_T, N_G)) * 2,
+          'B_top': np.ones((N_T, N_G)) * 38}
+    F1 = {'Nm': np.ones((N_T, N_G)) * 2e11,
+          'hm': np.ones((N_T, N_G)) * 200,
+          'B_bot': np.ones((N_T, N_G)) * 17}
+    E = {'Nm': np.ones((N_T, N_G)) * 5e10,
+         'hm': np.ones((N_T, N_G)) * 110,
+         'B_top': np.ones((N_T, N_G)) * 5,
+         'B_bot': np.ones((N_T, N_G)) * 7}
+
+    aalt = np.linspace(600, 700, N_V)
+
+    EDP = sh.EDP_builder_continuous(F2, F1, E, aalt)
+
+    assert EDP.shape == (N_T, N_V, N_G), ("EDP shape mismatch:"
+                                          f" expected {(N_T, N_V, N_G)},"
+                                          f" got {EDP.shape}")
+
+
+# Ramakrishnan_Rawer_function
+def test_Ramakrishnan_Rawer_function():
+    """Exercise Ramakrishnan_Rawer_function."""
+    NmF2 = np.ones((2, 3, 4)) * 1.2e12
+    hmF2 = np.ones((2, 3, 4)) * 350
+    B0 = np.ones((2, 3, 4)) * 120
+    B1 = np.ones((2, 3, 4)) * 2
+    h = np.ones((2, 3, 4)) * 100
+
+    den = sh.Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, h)
+
+    assert den.shape == (2, 3, 4), ("Density shape mismatch:"
+                                    f" expected (2, 3, 4),"
+                                    f" got {den.shape}")
+
+
 # find_subsolar
 def test_find_subsolar():
     """Exercise find_subsolar."""
@@ -146,7 +191,7 @@ def test_run_seas_iri_reg_grid():
     coord = 'MLT'
 
     (alon, alat, alon_2d, alat_2d, aalt,
-        aUT, F2, F1, E, sun, mag, EDP) = sh.run_seas_iri_reg_grid(
+        aUT, F2, F1, E, sun, mag) = sh.run_seas_iri_reg_grid(
             year, month, hr_res=hr_res, lat_res=lat_res, lon_res=lon_res,
             alt_res=alt_res, alt_min=alt_min, alt_max=alt_max,
             coord=coord, coeff_dir=coeff_dir,
@@ -172,9 +217,6 @@ def test_run_seas_iri_reg_grid():
     assert F2['fo'].shape == (N_hr, N_G, 2), ("foF2 shape mismatch:"
                                               f" expected {(N_hr, N_G, 2)},"
                                               f" got {F2['fo'].shape}")
-    assert EDP.shape == (N_hr, N_alt, N_G, 2), ("EDP shape mismatch: expected "
-                                                f"{(N_hr, N_alt, N_G, 2)},"
-                                                f" got {EDP.shape}")
 
 
 # run_iri_reg_grid

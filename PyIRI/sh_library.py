@@ -1780,7 +1780,7 @@ def Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, h):
     Returns
     -------
     den : numpy.ndarray
-        Constructed density [m-3].
+        Constructed density [m-3]. Same shape as inputs.
 
     Notes
     -----
