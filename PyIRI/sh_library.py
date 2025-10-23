@@ -446,7 +446,7 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     F1['B_bot'] = B_F1_bot
 
     # Construct density
-    EDP = edpup.reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
+    EDP = EDP_builder_continuous(F2, F1, E, aalt)
 
     return F2, F1, E, sun, mag, EDP
 
@@ -972,9 +972,6 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
         'modip' : Modified dip angle [deg].
         'mag_dip_lat' : Magnetic dip latitude [deg].
         Shape (N_G) if coord='GEO' or 'QD', (N_T, N_G) if coord='MLT'
-    EDP : numpy.ndarray
-        Electron density profiles [m-3].
-        Shape (N_T, N_V, N_G, 2)
 
     See Also
     --------
@@ -995,13 +992,7 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
                                                coeff_dir, foF2_coeff,
                                                hmF2_model, coord)
 
-    # Create electron density profiles
-    EDP = edpup.reconstruct_density_from_parameters(F2, F1, E, aalt)
-
-    # Reshape EDP so IG axis is last as per convention
-    EDP = EDP.reshape(EDP.shape[1], EDP.shape[2], EDP.shape[3], EDP.shape[0])
-
-    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun, mag, EDP
+    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun, mag
 
 
 def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
@@ -1626,3 +1617,185 @@ def real_FS_func(aUT, N_FS_c=5):
 
     # Return the complete real-valued Fourier Series basis matrix
     return F_FS
+
+
+def EDP_builder_continuous(F2, F1, E, aalt):
+    """Construct vertical EDP with continuous F1 layer.
+
+    Parameters
+    ----------
+    F2 : dict
+        Dictionary of parameters for the F2 layer.
+        Shape (N_T, N_G)
+    F1 : dict
+        Dictionary of parameters for the F1 layer.
+        Shape (N_T, N_G)
+    E : dict
+        Dictionary of parameters for the E layer.
+        Shape (N_T, N_G)
+    aalt : array-like
+        1-D array of altitudes [km].
+        Shape (N_V,)
+
+    Returns
+    -------
+    density : numpy.ndarray
+        3-D electron density profiles [m-3].
+        Shape (N_T, N_V, N_G)
+
+    Notes
+    -----
+    This function builds the EDP from the provided parameters for all time
+    frames, all vertical and all horizontal points.
+
+    References
+    ----------
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    International Reference Ionosphere Modeling Implemented in Python,
+    Space Weather.
+
+    """
+    # Number of elements in horizontal dimension of grid
+    N_G = F2['Nm'].shape[1]
+
+    # Vertical dimension
+    N_V = aalt.size
+
+    # Time dimension
+    N_T = F2['Nm'].shape[0]
+
+    # Empty arrays
+    density_F2 = np.zeros((N_V, N_T, N_G))
+    full_F1 = np.zeros((N_V, N_T, N_G))
+    density_F1 = np.zeros((N_V, N_T, N_G))
+    density_E = np.zeros((N_V, N_T, N_G))
+
+    # Grid altitude array to compare with hmFs later
+    a_alt = np.full((N_G, N_T, N_V), aalt)
+    a_alt = np.swapaxes(a_alt, 0, 2)
+
+    # Import parameter data
+    NmF2 = F2['Nm']
+    NmF1 = F1['Nm']
+    NmE = E['Nm']
+    hmF2 = F2['hm']
+    hmF1 = F1['hm']
+    hmE = E['hm']
+    B0 = F2['B0']
+    B1 = F2['B1']
+    B_F2_top = F2['B_top']
+    B_F1_bot = F1['B_bot']
+    B_E_bot = E['B_bot']
+    B_E_top = E['B_top']
+
+    # Set to some parameters if zero or lower:
+    B_F2_top[np.where(B_F2_top <= 0)] = 10
+
+    # Fill arrays with parameters to add height dimension and populate it
+    # with same values, this is important to keep all operations in matrix
+    # form
+    shape = (N_V, N_T, N_G)
+    a_NmF2 = np.full(shape, NmF2)
+    a_NmF1 = np.full(shape, NmF1)
+    a_NmE = np.full(shape, NmE)
+    a_hmF2 = np.full(shape, hmF2)
+    a_hmF1 = np.full(shape, hmF1)
+    a_hmE = np.full(shape, hmE)
+    a_B_F2_top = np.full(shape, B_F2_top)
+    a_B0 = np.full(shape, B0)
+    a_B1 = np.full(shape, B1)
+    a_B_F1_bot = np.full(shape, B_F1_bot)
+    a_B_E_top = np.full(shape, B_E_top)
+    a_B_E_bot = np.full(shape, B_E_bot)
+
+    # Drop functions to reduce contributions of the layers when adding them up
+    multiplier_down_F2 = edpup.drop_down(a_alt, a_hmF2, a_hmE)
+    multiplier_down_F1 = edpup.drop_down(a_alt, a_hmF1, a_hmE)
+    multiplier_up = edpup.drop_up(a_alt, a_hmE, a_hmF2)
+
+    # ------F2 region------
+    # F2 top
+    a = np.where(a_alt >= a_hmF2)
+    density_F2[a] = ml.epstein_function_top_array(4. * a_NmF2[a], a_hmF2[a],
+                                                  a_B_F2_top[a], a_alt[a])
+    # F2 bottom down to E
+    a = np.where((a_alt < a_hmF2) & (a_alt >= a_hmE))
+    density_F2[a] = (Ramakrishnan_Rawer_function(a_NmF2[a], a_hmF2[a],
+                                                 a_B0[a], a_B1[a], a_alt[a])
+                     * multiplier_down_F2[a])
+
+    # ------E region-------
+    a = np.where((a_alt >= a_hmE) & (a_alt < a_hmF2))
+    density_E[a] = ml.epstein_function_array(4. * a_NmE[a],
+                                             a_hmE[a],
+                                             a_B_E_top[a],
+                                             a_alt[a]) * multiplier_up[a]
+    a = np.where(a_alt < a_hmE)
+    density_E[a] = ml.epstein_function_array(4. * a_NmE[a],
+                                             a_hmE[a],
+                                             a_B_E_bot[a],
+                                             a_alt[a])
+
+    # Add F2 and E layers
+    density = density_F2 + density_E
+
+    # ------F1 region------
+    a = np.where((a_alt > a_hmE) & (a_alt < a_hmF1))
+    full_F1[a] = ml.epstein_function_array(4. * a_NmF1[a],
+                                           a_hmF1[a],
+                                           a_B_F1_bot[a],
+                                           a_alt[a]) * multiplier_down_F1[a]
+    # Find the difference between the EDP and the F1 layer and add to the EDP
+    # the positive part
+    density_F1 = full_F1 - density
+    density_F1[density_F1 < 0] = 0.
+
+    density = density + density_F1
+
+    # Make 1 everything that is <= 0 (just in case)
+    density[np.where(density <= 1.0)] = 1.0
+
+    # Reshape to correct shape
+    density = np.swapaxes(density, 0, 1)
+
+    return density
+
+
+def Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, h):
+    """Construct density of the Ramakrishnan & Rawer F2 bottomside.
+
+    Parameters
+    ----------
+    NmF2 : array-like
+        F2 region peak electron density [m-3].
+    hmF2 : array-like
+        F2 region peak height [km].
+    B0 : array-like
+        F2 region thickness parameter [km].
+    B1 : array-like
+        F2 region thickness parameter [km].
+    h : array-like
+        Altitude [km].
+
+    Returns
+    -------
+    den : numpy.ndarray
+        Constructed density [m-3].
+
+    Notes
+    -----
+    This function constructs bottomside of F2 layer using
+    Ramakrishnan & Rawer equation (as in IRI). All inputs are supposed
+    to have same size.
+
+    References
+    ----------
+    Bilitza et al. (2022), The International Reference Ionosphere
+    model: A review and description of an ionospheric benchmark, Reviews
+    of Geophysics, 60.
+
+    """
+    x = (hmF2 - h) / B0
+    den = NmF2 * ml.fexp(-(np.sign(x) * (np.abs(x)**B1))) / np.cosh(x)
+
+    return den
