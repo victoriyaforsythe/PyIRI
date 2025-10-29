@@ -244,11 +244,12 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat,
         aIG)
 
     # Find height of the F1 layer based on the P and F2
-    NmF1, foF1, hmF1, B_F1_bot = edpup.derive_dependent_F1_parameters(
+    NmF1, foF1, hmF1, B_F1_bot = derive_dependent_F1_parameters(
         P_F1,
         NmF2,
         hmF2,
-        B_F2_bot,
+        B0,
+        B1,
         hmE)
 
     # Add all parameters to dictionaries:
@@ -432,11 +433,12 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
 
     # Derive dependent F1 parameters after the interpolation so that the F1
     # location does not carry the little errors caused by the interpolation
-    NmF1, foF1, hmF1, B_F1_bot = edpup.derive_dependent_F1_parameters(
+    NmF1, foF1, hmF1, B_F1_bot = derive_dependent_F1_parameters(
         F1['P'],
         F2['Nm'],
         F2['hm'],
-        F2['B_bot'],
+        F2['B0'],
+        F2['B1'],
         E['hm'])
 
     # Update the F1 dictionary with the re-derived parameters
@@ -1799,3 +1801,69 @@ def Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, h):
     den = NmF2 * ml.fexp(-(np.sign(x) * (np.abs(x)**B1))) / np.cosh(x)
 
     return den
+
+
+def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
+    """Combine DA with background F1 region.
+
+    Parameters
+    ----------
+    P : array-like
+        Probability of F1 to occurre from PyIRI.
+    NmF2 : array-like
+        NmF2 parameter peak density of F2 layer.
+    hmF2 : array-like
+        hmF2 parameter height of the peak of F2.
+    B0 : array-like
+        B0 parameter thickness of F2.
+    B1 : array-like
+        B1 parameter shape of F2.
+    hmE : array-like
+        hmE parameter height of E layer.
+
+    Returns
+    -------
+    NmF1 : array_like
+        NmF1 parameter peak of F1 layer.
+    hmF1 : array_like
+        hmF1 parameter peak height of F1 layer.
+    B_F1_bot : array_like
+        B_F1_bot thickness of F1 layer.
+
+    Notes
+    -----
+    This function derives F1 from F2 fields.
+
+    """
+    # Compute B_F1_bot using normalized probability P with a flexible
+    # threshold.
+    threshold = 0.1
+    P_clipped = np.clip(P, threshold, 1)
+    norm_shift = P_clipped - threshold
+    max_shift = np.max(norm_shift)
+
+    # Prevent division by zero
+    norm_shifted = np.divide(norm_shift,
+                             max_shift,
+                             out=np.zeros_like(norm_shift),
+                             where=max_shift != 0)
+
+    # Map to [0.5, 1], then to [0, 1]
+    norm_P = (np.clip(norm_shifted + 0.5, 0.5, 1) - 0.5) / 0.5
+
+    # Estimate the F1 layer peak height (hmF1) using the B0 information
+    # Improved formulation
+    hmF1 = hmF2 - (hmF2 - B0) * (0.5 + 0.5 * norm_P)
+
+    # Estimate bottom-side F1 thickness
+    B_F1_bot = (hmF1 - hmE) * 0.5 * norm_P
+
+    # Find the exact NmF1 at the hmF1 using F2 bottom function with
+    # the drop down function
+    NmF1 = Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, hmF1
+                                      ) * drop_down(hmF1, hmF2, hmE)
+
+    # Clip NmF1 to minimum of 1 to avoid crashing a later log10(NmF1)
+    # with zeros. 
+    NmF1[NmF1 <= 0.] = 1.
+    return NmF1, hmF1, B_F1_bot
