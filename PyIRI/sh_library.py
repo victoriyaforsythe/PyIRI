@@ -1825,6 +1825,8 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
     -------
     NmF1 : array_like
         NmF1 parameter peak of F1 layer.
+    foF1 : array_like
+        foF1 parameter peak of F1 layer.
     hmF1 : array_like
         hmF1 parameter peak height of F1 layer.
     B_F1_bot : array_like
@@ -1869,4 +1871,8 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
     # Clip NmF1 to minimum of 1 to avoid crashing a later log10(NmF1)
     # with zeros.
     NmF1[NmF1 <= 0.] = 1.
-    return NmF1, hmF1, B_F1_bot
+
+    # Convert plasma density to freqeuncy
+    foF1 = ml.den2freq(NmF1)
+
+    return NmF1, foF1, hmF1, B_F1_bot
