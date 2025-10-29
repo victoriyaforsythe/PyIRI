@@ -1861,9 +1861,9 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
     # Find the exact NmF1 at the hmF1 using F2 bottom function with
     # the drop down function
     NmF1 = Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, hmF1
-                                      ) * drop_down(hmF1, hmF2, hmE)
+                                      ) * edpup.drop_down(hmF1, hmF2, hmE)
 
     # Clip NmF1 to minimum of 1 to avoid crashing a later log10(NmF1)
-    # with zeros. 
+    # with zeros.
     NmF1[NmF1 <= 0.] = 1.
     return NmF1, hmF1, B_F1_bot
