@@ -3,7 +3,11 @@ All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.0.5 (XX-XX-2025)
-* Added a function for Fourier Series analysis.
+* Added an EDP builder derived from PyIRTAM to build the bottomside F2 layer using B0 and B1.
+* Added a tutorial to generate SH EDP parameters.
+* Added pandas to the list of dependencies.
+* Added unit tests for the new spherical harmonics features.
+* Added spherical harmonics reconstruction features for IRI EDP parameters (foF2, hmF2, B0, B1, foEs, M3000(F2)).
 * Increased min python version to 3.10 (which is a requirement for some scipy functions).
 * Added a new capability to do the Apex coordinate transformation without ApexPy.
 * Added unit tests for Apex_library.
