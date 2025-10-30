@@ -13,7 +13,7 @@ entire given global grid and for the entire day simultaneously.
 
 # Installation
 
-PyIRI may be installed from PyPi, which will handle all dependencies.
+PyIRI may be installed from PyPI, which will handle all dependencies.
 
 ```
 pip install PyIRI
@@ -36,7 +36,7 @@ Notebooks [tutorials].
 PyIRI can calculate monthly mean ionospheric parameters
 for the user provided grid. The estimation of the parameters
 occurs simultaneously at all grid points and for all
-desired diurnal time frames,
+desired diurnal time frames.
 
 ```
 import numpy as np
@@ -83,7 +83,7 @@ f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
     coeff_dir=None, foF2_coeff=foF2_coeff, hmF2_model=hmF2_model, coord=coord)
 ```
 
-Alternatively, one can use the original URSI or CCIR coefficinets:
+Alternatively, one can use the original URSI or CCIR coefficients:
 
 ```
 ccir_or_ursi = 0     # 0 = CCIR and 1 = URSI
@@ -125,7 +125,7 @@ day = 1
     coord=coord)
 ```
 
-Alternatively, one can use the original URSI or CCIR coefficinets as in PyIRI v0.0.4:
+Alternatively, one can use the original URSI or CCIR coefficients as in PyIRI v0.0.4:
 
 ```
 f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(year, month, day, aUT, alon, alat, aalt, f107, PyIRI.coeff_dir, ccir_or_ursi)
