@@ -2,6 +2,20 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.1.0 (10-29-2025)
+* Added an EDP builder derived from PyIRTAM to build the bottomside F2 layer using B0 and B1.
+* Added a tutorial to generate SH EDP parameters.
+* Added pandas to the list of dependencies.
+* Added unit tests for the new spherical harmonics features.
+* Added spherical harmonics reconstruction features for IRI EDP parameters (foF2, hmF2, B0, B1, foEs, M3000(F2)).
+* Increased min python version to 3.10 (which is a requirement for some scipy functions).
+* Added a new capability to do the Apex coordinate transformation without ApexPy.
+* Added unit tests for Apex_library.
+* Corrected foEs interpolation method and updated test data and example figures.
+* Deprecated `output_quartiles` argument in `read_ccir_ursi_coeff()` and replaced it with `output_deciles` (functionality is unchanged).
+* Typos are fixed in the Es section.
+* Added new hmF1 derivation based on B0 parameter.
+
 ## 0.0.4 (06-04-2025)
 * Limit to the peaks of density is set so it doesn't go negative anywhere
 

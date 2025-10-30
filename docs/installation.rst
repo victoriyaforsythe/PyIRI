@@ -7,12 +7,14 @@ Prerequisites
 -------------
 
 PyIRI uses the Python modules included in the list below. This module
-officially supports Python 3.9+.
+officially supports Python 3.10+.
 
 1. fortranformat
 2. matplotlib
-3. numpy
-4. scipy
+3. netCDF4
+4. numpy
+5. opt_einsum
+6. scipy
 
 
 Installation Options

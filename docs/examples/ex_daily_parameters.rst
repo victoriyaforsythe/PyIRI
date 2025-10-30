@@ -120,7 +120,7 @@ e_peak dictionary contains:
 -  thickness of the topside 'B_top' in km.
 
 
-e_peak dictionary contains:
+es_peak dictionary contains:
 
 -  peak density 'Nm' in m-3
 

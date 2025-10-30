@@ -332,7 +332,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     Space Weather.
 
     """
-
     # find out what monthly means are needed first and what their weights
     # will be
     t_before, t_after, fr1, fr2 = main.day_of_the_month_corr(year, mth, day)
@@ -363,7 +362,7 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F2 = main.solar_interpolation_of_dictionary(F2, F107)
     F1 = main.solar_interpolation_of_dictionary(F1, F107)
     E = main.solar_interpolation_of_dictionary(E, F107)
-    Es = main.solar_interpolation_of_dictionary(Es, F107)
+    Es = main.solar_interpolation_of_dictionary(Es, F107, use_R12=True)
 
     # Introduce a minimum limit for the peaks to avoid negative density as a
     # result of the interpolation in case the F10.7 is high the extrapolation
@@ -869,7 +868,6 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B_F2_bot, hmE):
     This function derives F1 from F2 fields.
 
     """
-
     # Estimate the F1 layer peak height (hmF1) as 0.4 between the F2 peak
     # height (hmF2) and the E layer peak height (hmE)
     hmF1 = hmF2 - (hmF2 - hmE) * 0.4
