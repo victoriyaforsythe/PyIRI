@@ -1397,6 +1397,11 @@ def Apex(Lat, Lon, dtime, transform_type):
     Apex_geo_qd
 
     """
+    # Convert Lat and Lon to numpy arrays
+    Lat = ml.to_numpy_array(Lat)
+    Lon = ml.to_numpy_array(Lon)
+
+    # Convert to selected coordinate system
     if transform_type in ['GEO_2_MLT', 'MLT_2_GEO', 'QD_2_MLT', 'MLT_2_QD']:
         sLon, sLat = find_subsolar(dtime)
         sQDLat, sQDLon = Apex_geo_qd(sLat, sLon, dtime, 'GEO_2_QD')
