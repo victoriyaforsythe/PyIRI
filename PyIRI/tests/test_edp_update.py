@@ -1,6 +1,4 @@
-"""
-Unit tests for PyIRI's edp_update module.
-"""
+"""Unit tests for PyIRI's edp_update module."""
 
 import numpy as np
 import pytest
@@ -8,6 +6,31 @@ import pytest
 import PyIRI
 from PyIRI import edp_update
 from PyIRI import edp_update as ml
+from PyIRI.main_library import den2freq
+from PyIRI.main_library import IG12_2_F107
+
+
+def test_fo_1day_interpolation():
+    """Test linear interpolation of foF2."""
+    F2, F1, E, Es, *_ = ml.IRI_density_1day(2024,
+                                            3,
+                                            8,
+                                            np.array([0]),
+                                            np.array([20]),
+                                            np.array([40]),
+                                            np.array([0]),
+                                            IG12_2_F107(40),
+                                            PyIRI.coeff_dir)
+
+    fo_1day = []
+    true_fo = []
+    for layer in [F2, F1, E, Es]:
+        fo_1day.append(layer['fo'][0, 0])
+        Nm_1day = layer['Nm'][0, 0]
+        true_fo.append(den2freq(Nm_1day))
+
+    assert fo_1day == true_fo, ("fo 1day interpolation error: fo = "
+                                f"{fo_1day}, should be {true_fo}")
 
 
 def test_IRI_density_1day_runs():

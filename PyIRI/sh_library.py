@@ -450,6 +450,11 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     # Construct density
     EDP = EDP_builder_continuous(F2, F1, E, aalt)
 
+    # Correct for linear interpolation in fo
+    F2['fo'] = ml.den2freq(F2['Nm'])
+    F1['fo'] = ml.den2freq(F1['Nm'])
+    E['fo'] = ml.den2freq(E['Nm'])
+
     return F2, F1, E, sun, mag, EDP
 
 
@@ -660,6 +665,9 @@ def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
     # Introduce a minimum limit for the peaks to avoid negative density (for
     # high F10.7, extrapolation can cause NmF2 to go negative)
     Es['Nm'] = ml.limit_Nm(Es['Nm'])
+
+    # Correct for linear interpolation for foEs
+    Es['fo'] = ml.den2freq(Es['Nm'])
 
     return Es
 
