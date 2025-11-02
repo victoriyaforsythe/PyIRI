@@ -2,9 +2,9 @@
 
 import numpy as np
 
-from PyIRI.main_library import to_numpy_array
-import PyIRI.main_library as main
 import PyIRI
+import PyIRI.main_library as main
+from PyIRI.main_library import to_numpy_array
 
 
 class TestToNumpyArray:

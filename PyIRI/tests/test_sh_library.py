@@ -6,9 +6,9 @@ import numpy as np
 import pytest
 
 import PyIRI
-import PyIRI.sh_library as sh
 from PyIRI.main_library import den2freq
 from PyIRI.main_library import IG12_2_F107
+import PyIRI.sh_library as sh
 
 
 def test_fo_1day_interpolation():
