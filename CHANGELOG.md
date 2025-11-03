@@ -5,6 +5,8 @@ adheres to [Semantic Versioning](https://semver.org/).
 ## 0.1.1 (XX-XX-2025)
 * Added conversion to numpy array in Apex function
 * Corrected for linear interpolation of foF2
+* Removed examples
+* Updated all tutorials
 
 ## 0.1.0 (10-29-2025)
 * Added an EDP builder derived from PyIRTAM to build the bottomside F2 layer using B0 and B1.

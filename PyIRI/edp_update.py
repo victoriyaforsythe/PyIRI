@@ -922,8 +922,21 @@ def logistic_curve(h, h0, B):
         Logistic function value(s) in the range (0, 1).
     """
     h = np.asarray(h)
+    z = (h - h0) / B
 
-    return 1. / (1. + np.exp(-(h - h0) / B))
+    # Use a numerically stable sigmoid formulation
+    out = np.empty_like(z, dtype=np.float64)
+
+    # For z >= 0
+    idx = z >= 0
+    out[idx] = 1. / (1. + np.exp(-z[idx]))
+
+    # For z < 0, use an alternative equivalent form to avoid overflow
+    idx = ~idx
+    exp_z = np.exp(z[idx])
+    out[idx] = exp_z / (1. + exp_z)
+
+    return out
 
 
 def drop_up(h, hmE, hmF2, drop_fraction=0.2):
