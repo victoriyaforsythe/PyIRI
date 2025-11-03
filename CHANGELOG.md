@@ -2,9 +2,11 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## 0.1.0 (10-29-2025)
+## 0.1.1 (XX-XX-2025)
 * Added conversion to numpy array in Apex function
 * Corrected for linear interpolation of fo
+
+## 0.1.0 (10-29-2025)
 * Added an EDP builder derived from PyIRTAM to build the bottomside F2 layer using B0 and B1.
 * Added a tutorial to generate SH EDP parameters.
 * Added pandas to the list of dependencies.
