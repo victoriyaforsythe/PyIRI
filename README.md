@@ -91,6 +91,14 @@ f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
     coord=coord)
 ```
 
+<div align="center">
+  <img src="docs/figures/PyIRI_sh_foF2_min_max.png" width="45%">
+  <img src="docs/figures/PyIRI_sh_hmF2_min_max.png" width="45%">
+  <img src="docs/figures/PyIRI_sh_B0_min_max.png" width="45%">
+  <img src="docs/figures/PyIRI_sh_B1_min_max.png" width="45%">
+  <img src="docs/figures/PyIRI_sh_B_top_min_max.png" width="45%">
+</div>
+
 Alternatively, the original URSI or CCIR climatological coefficients can be used:
 
 ```python
@@ -100,28 +108,34 @@ f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
     PyIRI.coeff_dir, ccir_or_ursi)
 ```
 
-<div align="center">
-  <img src="docs/figures/PyIRI_foF2_min_max.png" width="45%">
-  <img src="docs/figures/PyIRI_hmF2_min_max.png" width="45%">
-</div>
-
 ---
 
 ## Example: Daily Ionospheric Parameters (F10.7 Driven)
 
-PyIRI can also compute daily ionospheric parameters, interpolated in time and solar activity.  
+PyIRI can also compute daily ionospheric parameters, interpolated in time and solar activity.
 The user provides the F10.7 index for the day of interest.
 
+Define F10.7 index in solar flux units:
+
 ```python
-# Define F10.7 index in solar flux units
 F107 = 100
+```
 
-# Create altitude array in km
+Create altitude array in km:
+
+```python
 aalt = np.arange(90, 1000, 1)
+```
 
-# Define day of interest
+Define day of interest:
+
+```python
 day = 1
+```
 
+Run PyIRI (with spherical harmonic coefficients):
+
+```python
 F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     coeff_dir=None,
@@ -130,6 +144,12 @@ F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
     coord=coord)
 ```
 
+<div align="center">
+  <img src="docs/figures/PyIRI_sh_foF2.png" width="45%">
+  <img src="docs/figures/PyIRI_sh_hmF2.png" width="45%">
+</div>
+
+
 Or, use the original CCIR/URSI version for compatibility:
 
 ```python
@@ -137,11 +157,6 @@ f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     PyIRI.coeff_dir, ccir_or_ursi)
 ```
-
-<div align="center">
-  <img src="docs/figures/PyIRI_foF2.png" width="45%">
-  <img src="docs/figures/PyIRI_hmF2.png" width="45%">
-</div>
 
 ---
 
@@ -155,19 +170,23 @@ TEC = PyIRI.main_library.edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0)
 ```
 
 <div align="center">
-  <img src="docs/figures/PyIRI_vTEC.png" width="50%">
+  <img src="docs/figures/PyIRI_sh_vTEC.png" width="50%">
 </div>
 
 ---
 
 ## Example: Single‑Location Diurnal Variation
 
-To evaluate parameters at a single location, provide 1‑element NumPy arrays:
+To evaluate parameters at a single location, provide locations:
 
 ```python
 alon = 10.
 alat = 20.
+```
 
+Run PyIRI (with spherical harmonic coefficients):
+
+```python
 F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     coeff_dir=None,
@@ -177,7 +196,29 @@ F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
 ```
 
 <div align="center">
-  <img src="docs/figures/PyIRI_EDP_diurnal.png" width="60%">
+  <img src="docs/figures/PyIRI_sh_EDP_diurnal.png" width="60%">
+</div>
+
+---
+
+## Example: Sporadic E
+
+Sporadic E fields require more spherical harmonic coefficients and threfore were de-coupled from the main call:
+
+Run PyIRI Es (with spherical harmonic coefficients):
+
+```python
+Es = sh.sporadic_E_monthly_mean(year,
+                                month,
+                                aUT,
+                                alon,
+                                alat,
+                                coeff_dir=None,
+                                coord='GEO')
+```
+
+<div align="center">
+  <img src="docs/figures/PyIRI_sh_foEs_min_max.png" width="45%">
 </div>
 
 ---
