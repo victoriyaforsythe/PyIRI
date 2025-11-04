@@ -15,9 +15,8 @@ The model supports multiple coordinate systems and can efficiently evaluate all 
 
 ## Highlights
 
-- **Spherical harmonics framework** for: **foF2**, **hmF2**, **B0**, **B1**, **foE**, and **foEs**
+- **Spherical harmonics framework** for: **foF2**, **hmF2**, **B0**, **B1** and **foEs**
 - Supports **GEO**, **QD**, and **MLT** coordinate systems  
-- Smooth interpolation in **solar activity (F10.7)** and **time**
 - Compatible with both the new **SH‑based** and legacy **URSI/CCIR** coefficient models
 - Modular and fully in Python — no external dependencies or Fortran libraries
 
