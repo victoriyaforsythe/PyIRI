@@ -7,38 +7,48 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8235173.svg)](https://doi.org/10.5281/zenodo.8235173)
 [![Coverage Status](https://coveralls.io/repos/github/victoriyaforsythe/PyIRI/badge.svg?branch=main)](https://coveralls.io/github/victoriyaforsythe/PyIRI?branch=main)
 
-Python implementation of the International Reference Ionosphere (IRI) that
-evaluates the electron density and associated ionospheric parameters on the
-entire given global grid and for the entire day simultaneously. 
+**PyIRI** is a modern Python implementation of the International Reference Ionosphere (IRI) model.  
+It provides fast, global, and altitude‑dependent evaluation of ionospheric parameters using a new **spherical harmonics (SH) architecture**.  
+The model supports multiple coordinate systems and can efficiently evaluate all grid points and time frames simultaneously.
 
-# Installation
+---
 
-PyIRI may be installed from PyPI, which will handle all dependencies.
+## Highlights
 
-```
+- **Spherical harmonics framework** for: **foF2**, **hmF2**, **B0**, **B1**, **foE**, and **foEs**
+- Supports **GEO**, **QD**, and **MLT** coordinate systems  
+- Smooth interpolation in **solar activity (F10.7)** and **time**
+- Compatible with both the new **SH‑based** and legacy **URSI/CCIR** coefficient models
+- Modular and fully in Python — no external dependencies or Fortran libraries
+
+---
+
+## Installation
+
+Install from PyPI:
+
+```bash
 pip install PyIRI
 ```
 
-You may also clone and install PyIRI from the GitHub repository.
+Or clone and install from the GitHub repository:
 
-```
+```bash
 git clone https://github.com/victoriyaforsythe/PyIRI.git
-cd /path/to/PyIRI
-python -m build .
+cd PyIRI
 pip install .
 ```
 
-For more details about the dependencies, see the [examples] and Jupyter
-Notebooks [tutorials].
+For more details and usage examples, see the Jupyter [tutorials](https://github.com/victoriyaforsythe/PyIRI/tree/main/docs/tutorials).
 
-# Example
+---
 
-PyIRI can calculate monthly mean ionospheric parameters
-for the user provided grid. The estimation of the parameters
-occurs simultaneously at all grid points and for all
-desired diurnal time frames.
+## Example: Monthly Mean Ionospheric Parameters
 
-```
+PyIRI can compute monthly mean ionospheric parameters for a user‑defined grid.  
+The evaluation occurs simultaneously across all grid points and for all desired Universal Time (UT) frames.
+
+```python
 import numpy as np
 import PyIRI
 import PyIRI.edp_update as ml
@@ -47,77 +57,73 @@ import PyIRI.plotting as plot
 
 year = 2020
 month = 4
-
 ```
 
-Create any horizontal grid (regular or irregular, global or regional).
-The grid arrays (alon and alat) should be flattened to be 1-D arrays. 
-This is an example of a regular global grid:
+Create any horizontal grid (regular or irregular, global or regional).  
+Grid arrays must be flattened to 1‑D NumPy arrays:
 
-```
+```python
 dlon = 5
 dlat = 5
 alon_2d, alat_2d = np.mgrid[-180:180 + dlon:dlon, -90:90 + dlat:dlat]
-alon = np.reshape(alon_2d, alon_2d.size)
-alat = np.reshape(alat_2d, alat_2d.size)
-
+alon = alon_2d.ravel()
+alat = alat_2d.ravel()
 ```
 
-Create any temporal array expressed in decimal hours (regular or irregular).
-For this example we use regularly spaced time array:
-```
+Create a time array in decimal hours:
+
+```python
 hr_res = 1
 aUT = np.arange(0, 24, hr_res)
 ```
 
-Find ionospheric parameters for F2, F1 and E regions by
-calling IRI_monthly_mean_par function using PyIRI v0.1.0 with new SH coefficients:
+Compute F2, F1, and E‑region parameters using the **new spherical harmonics coefficients**:
 
-```
-hmF2_model = 'SHU2015'   # Also available: 'AMTB2013' and 'BSE1979'
+```python
+hmF2_model = 'SHU2015'   # Also available: 'AMTB2013', 'BSE1979'
 foF2_coeff = 'URSI'      # Also available: 'CCIR'
-coord = 'GEO'            # Also available: 'QD' and 'MLT'
+coord = 'GEO'            # Also available: 'QD', 'MLT'
 
 f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
     year, month, aUT, alon, alat,
-    coeff_dir=None, foF2_coeff=foF2_coeff, hmF2_model=hmF2_model, coord=coord)
+    coeff_dir=None,
+    foF2_coeff=foF2_coeff,
+    hmF2_model=hmF2_model,
+    coord=coord)
 ```
 
-Alternatively, one can use the original URSI or CCIR coefficients:
+Alternatively, the original URSI or CCIR climatological coefficients can be used:
 
-```
-ccir_or_ursi = 0     # 0 = CCIR and 1 = URSI
-
+```python
+ccir_or_ursi = 0  # 0 = CCIR, 1 = URSI
 f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
     year, month, aUT, alon, alat,
     PyIRI.coeff_dir, ccir_or_ursi)
 ```
 
-![foF2_min_max](docs/examples/Figs/PyIRI_foF2_min_max.png)
-![hmF2_min_max](docs/examples/Figs/PyIRI_hmF2_min_max.png)
-![foE_min_max](docs/examples/Figs/PyIRI_foE_min_max.png)
-![EDP_min_max](docs/examples/Figs/PyIRI_EDP_sample.png)
+<div align="center">
+  <img src="docs/figures/PyIRI_foF2_min_max.png" width="45%">
+  <img src="docs/figures/PyIRI_hmF2_min_max.png" width="45%">
+</div>
 
-PyIRI can calculate daily ionospheric parameters for the user provided grid.
-The estimation of the parameters occurs simultaneously at all grid points
-and for all desired diurnal time frames. The parameters are obtained by
-linearly interpolating between min and max levels of solar activity, and
-by interpolation between median monthly values to the day of interest.
-The user should provide the F10.7 value for the day of interest.
+---
 
-Using a new PyIRI v0.1.0 with spherical harmonic coefficients:
+## Example: Daily Ionospheric Parameters (F10.7 Driven)
 
-```
-# Define F10.7 in SFU
-f107 = 100
+PyIRI can also compute daily ionospheric parameters, interpolated in time and solar activity.  
+The user provides the F10.7 index for the day of interest.
 
-# Create an array of altitudes in km
+```python
+# Define F10.7 index in solar flux units
+F107 = 100
+
+# Create altitude array in km
 aalt = np.arange(90, 1000, 1)
 
-# Define a day of interest
+# Define day of interest
 day = 1
 
-(F2, F1, E, sun, mag, EDP) = sh.IRI_density_1day(
+F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     coeff_dir=None,
     foF2_coeff=foF2_coeff,
@@ -125,38 +131,45 @@ day = 1
     coord=coord)
 ```
 
-Alternatively, one can use the original URSI or CCIR coefficients as in PyIRI v0.0.4:
+Or, use the original CCIR/URSI version for compatibility:
 
+```python
+f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
+    year, month, day, aUT, alon, alat, aalt, F107,
+    PyIRI.coeff_dir, ccir_or_ursi)
 ```
-f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(year, month, day, aUT, alon, alat, aalt, f107, PyIRI.coeff_dir, ccir_or_ursi)
+
+<div align="center">
+  <img src="docs/figures/PyIRI_foF2.png" width="45%">
+  <img src="docs/figures/PyIRI_hmF2.png" width="45%">
+</div>
+
+---
+
+## Total Electron Content (TEC)
+
+PyIRI does not calculate the Total Electron Content (TEC) automatically because altitude spacing affects accuracy.  
+The TEC can be derived from the electron density profile (EDP) using:
+
+```python
+TEC = PyIRI.main_library.edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0)
 ```
 
-![foF2](docs/examples/Figs/PyIRI_foF2.png)
-![hmF2](docs/examples/Figs/PyIRI_hmF2.png)
-![foE](docs/examples/Figs/PyIRI_foE.png)
-![EDP](docs/examples/Figs/PyIRI_EDP_sample_1day.png)
+<div align="center">
+  <img src="docs/figures/PyIRI_vTEC.png" width="50%">
+</div>
 
-PyIRI does not calculate the Total Electron Content (TEC) automatically, as
-the altitude array is provided by the user. If the user supplies an
-array with low resolution, the resulting TEC values may be inaccurate.
-The edp_to_vtec function can be used to calculate the vTEC from the edp output.
+---
 
-```
-# Find TEC in shape [N_time, N_grid]
-TEC = main.edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0)
+## Example: Single‑Location Diurnal Variation
 
-```
-![vTEC](docs/examples/Figs/PyIRI_vTEC.png)
+To evaluate parameters at a single location, provide 1‑element NumPy arrays:
 
-In case you are interested in a single location (as opposed to the grid)
-PyIRI can evaluate parameters at this location if it is passed as a 1-element
-NumPy array.
-
-```
+```python
 alon = np.array([10.])
 alat = np.array([20.])
 
-(F2, F1, E, sun, mag, EDP) = sh.IRI_density_1day(
+F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     coeff_dir=None,
     foF2_coeff=foF2_coeff,
@@ -164,7 +177,31 @@ alat = np.array([20.])
     coord=coord)
 ```
 
-![EDP_diurnal](docs/examples/Figs/PyIRI_EDP_diurnal.png)
+<div align="center">
+  <img src="docs/figures/PyIRI_EDP_diurnal.png" width="60%">
+</div>
 
+---
 
-For more examples see [tutorials](https://github.com/victoriyaforsythe/PyIRI/tree/main/docs/tutorials)
+## Tutorials
+
+Comprehensive Jupyter notebooks are available in [`docs/tutorials`](https://github.com/victoriyaforsythe/PyIRI/tree/main/docs/tutorials):
+
+- `Mean_monthly_parameters.ipynb`
+- `Daily_parameters.ipynb`
+- `Single_location.ipynb`
+- `Coordinate_Transformation.ipynb`
+- `PyIRI_year_run.ipynb`
+- `Generate_Apex_Coefficients.ipynb`
+- `SH_parameters.ipynb`
+
+---
+
+## Citation
+
+If you use PyIRI in your work, please cite:
+
+> Forsythe, V. (2025). *PyIRI: Python implementation of the IRI model using spherical harmonics.* Zenodo.  
+> [https://doi.org/10.5281/zenodo.8235173](https://doi.org/10.5281/zenodo.8235173)
+
+> Servan-Schreiber, N., Forsythe, V., et al. (2025). *A Major Update to the PyIRI model.* Space Weather, submitted.
