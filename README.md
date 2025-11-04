@@ -44,7 +44,7 @@ For more details and usage examples, see the Jupyter [tutorials](https://github.
 
 ## Example: Monthly Mean Ionospheric Parameters
 
-PyIRI can compute monthly mean ionospheric parameters for a user‑defined grid.  
+PyIRI can compute monthly mean ionospheric parameters for a user‑defined grid.
 The evaluation occurs simultaneously across all grid points and for all desired Universal Time (UT) frames.
 
 ```python
@@ -147,7 +147,7 @@ f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
 
 ## Total Electron Content (TEC)
 
-PyIRI does not calculate the Total Electron Content (TEC) automatically because altitude spacing affects accuracy.  
+PyIRI does not calculate the Total Electron Content (TEC) automatically because altitude spacing affects accuracy.
 The TEC can be derived from the electron density profile (EDP) using:
 
 ```python
@@ -200,7 +200,7 @@ Comprehensive Jupyter notebooks are available in [`docs/tutorials`](https://gith
 
 If you use PyIRI in your work, please cite:
 
-> Forsythe, V. (2025). *PyIRI: Python implementation of the IRI model using spherical harmonics.* Zenodo.  
+> Forsythe, V. (2025). *PyIRI: Python implementation of the IRI model using spherical harmonics.* Zenodo.
 > [https://doi.org/10.5281/zenodo.8235173](https://doi.org/10.5281/zenodo.8235173)
 
 > Servan-Schreiber, N., Forsythe, V., et al. (2025). *A Major Update to the PyIRI model.* Space Weather, submitted.
