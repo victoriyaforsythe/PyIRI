@@ -52,7 +52,6 @@ import numpy as np
 import PyIRI
 import PyIRI.edp_update as ml
 import PyIRI.sh_library as sh
-import PyIRI.plotting as plot
 
 year = 2020
 month = 4
