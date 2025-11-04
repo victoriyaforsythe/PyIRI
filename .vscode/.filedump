@@ -1,6 +1,0 @@
-
-		begin
-      f = addfile("/Users/vmakarevich/Documents/GitHub/PyIRI/docs/tutorials/Apex.nc","r")
-      print(f)
-		end
-    
