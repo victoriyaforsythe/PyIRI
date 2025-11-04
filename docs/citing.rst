@@ -29,7 +29,7 @@ examples here are from the second release.
     title        = {victoriyaforsythe/PyIRI},
     year         = 2025,
     publisher    = {Zenodo},
-    version      = {v0.1.0},
+    version      = {v0.1.1},
     doi          = {10.5281/zenodo.17479366},
     url          = {https://github.com/victoriyaforsythe/PyIRI}
   }
