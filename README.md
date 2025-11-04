@@ -58,7 +58,7 @@ year = 2020
 month = 4
 ```
 
-Create any horizontal grid (regular or irregular, global or regional).  
+Create any horizontal grid (regular or irregular, global or regional).
 Grid arrays must be flattened to 1‑D NumPy arrays:
 
 ```python
@@ -165,8 +165,8 @@ TEC = PyIRI.main_library.edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0)
 To evaluate parameters at a single location, provide 1‑element NumPy arrays:
 
 ```python
-alon = np.array([10.])
-alat = np.array([20.])
+alon = 10.
+alat = 20.
 
 F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
