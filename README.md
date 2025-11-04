@@ -9,8 +9,7 @@
 
 **PyIRI** is a modern Python implementation of the International Reference Ionosphere (IRI) model.  
 It provides fast, global, and altitude‑dependent evaluation of ionospheric parameters using a new **spherical harmonics (SH) architecture**.  
-The model supports multiple coordinate systems and can efficiently evaluate all grid points and time frames simultaneously.
-
+The model supports multiple coordinate systems and efficiently evaluates all grid points and time frames simultaneously.
 ---
 
 ## Highlights
@@ -44,7 +43,7 @@ For more details and usage examples, see the Jupyter [tutorials](https://github.
 
 ## Example: Monthly Mean Ionospheric Parameters
 
-PyIRI can compute monthly mean ionospheric parameters for a user‑defined grid.
+PyIRI computes monthly mean ionospheric parameters for a user‑defined grid.
 The evaluation occurs simultaneously across all grid points and for all desired Universal Time (UT) frames.
 
 ```python
@@ -62,7 +61,7 @@ month = 4
 ```
 
 Create any horizontal grid (regular or irregular, global or regional).
-Grid arrays must be flattened to 1‑D NumPy arrays:
+Grid arrays must be flattened into 1‑D NumPy arrays:
 
 ```python
 dlon = 5
@@ -115,10 +114,10 @@ f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
 
 ## Example: Daily Ionospheric Parameters (F10.7 Driven)
 
-PyIRI can also compute daily ionospheric parameters, interpolated in time and solar activity.
+PyIRI also computes daily ionospheric parameters, interpolated in both time and solar activity.
 The user provides the F10.7 index for the day of interest.
 
-Define F10.7 index in solar flux units:
+Define the F10.7 index in solar flux units (sfu):
 
 ```python
 F107 = 100
@@ -180,7 +179,7 @@ TEC = PyIRI.main_library.edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0)
 
 ## Example: Single‑Location Diurnal Variation
 
-To evaluate parameters at a single location, provide locations:
+To evaluate parameters at a single location, provide scalar longitude and latitude values:
 
 ```python
 alon = 10.
@@ -207,7 +206,7 @@ F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
 
 ## Example: Sporadic E
 
-Sporadic E fields require more spherical harmonic coefficients and threfore were de-coupled from the main call:
+Sporadic E fields require more spherical harmonic coefficients and were therefore decoupled from the main call:
 
 Run PyIRI Es (with spherical harmonic coefficients):
 
@@ -242,7 +241,7 @@ Comprehensive Jupyter notebooks are available in [`docs/tutorials`](https://gith
 
 ## Citation
 
-If you use PyIRI in your work, please cite:
+If you use PyIRI in your research, please cite:
 
 > Forsythe, V. (2025). *PyIRI: Python implementation of the IRI model using spherical harmonics.* Zenodo.
 > [https://doi.org/10.5281/zenodo.8235173](https://doi.org/10.5281/zenodo.8235173)
