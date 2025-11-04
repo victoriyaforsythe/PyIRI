@@ -197,6 +197,7 @@ F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
 
 <div align="center">
   <img src="docs/figures/PyIRI_sh_EDP_diurnal.png" width="60%">
+  <img src="docs/figures/PyIRI_sh_EDP.png" width="60%">
 </div>
 
 ---
@@ -233,7 +234,6 @@ Comprehensive Jupyter notebooks are available in [`docs/tutorials`](https://gith
 - `Coordinate_Transformation.ipynb`
 - `PyIRI_year_run.ipynb`
 - `Generate_Apex_Coefficients.ipynb`
-- `SH_parameters.ipynb`
 
 ---
 
