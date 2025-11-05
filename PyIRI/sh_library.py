@@ -450,6 +450,11 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     # Construct density
     EDP = EDP_builder_continuous(F2, F1, E, aalt)
 
+    # Correct for linear interpolation in fo
+    F2['fo'] = ml.den2freq(F2['Nm'])
+    F1['fo'] = ml.den2freq(F1['Nm'])
+    E['fo'] = ml.den2freq(E['Nm'])
+
     return F2, F1, E, sun, mag, EDP
 
 
@@ -660,6 +665,9 @@ def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
     # Introduce a minimum limit for the peaks to avoid negative density (for
     # high F10.7, extrapolation can cause NmF2 to go negative)
     Es['Nm'] = ml.limit_Nm(Es['Nm'])
+
+    # Correct for linear interpolation for foEs
+    Es['fo'] = ml.den2freq(Es['Nm'])
 
     return Es
 
@@ -1397,6 +1405,11 @@ def Apex(Lat, Lon, dtime, transform_type):
     Apex_geo_qd
 
     """
+    # Convert Lat and Lon to numpy arrays
+    Lat = ml.to_numpy_array(Lat)
+    Lon = ml.to_numpy_array(Lon)
+
+    # Convert to selected coordinate system
     if transform_type in ['GEO_2_MLT', 'MLT_2_GEO', 'QD_2_MLT', 'MLT_2_QD']:
         sLon, sLat = find_subsolar(dtime)
         sQDLat, sQDLon = Apex_geo_qd(sLat, sLon, dtime, 'GEO_2_QD')
@@ -1530,7 +1543,7 @@ def real_SH_func(theta, phi, lmax=29):
 
         # m = 0
         P_l0 = ss.assoc_legendre_p(L, 0, z)[0]
-        if np.any(mask_pole):
+        if (mask_pole_time.size > 0) or (mask_pole_pos.size > 0):
             P_l0 = P_l0.copy()
             P_l0[mask_pole_time, mask_pole_pos] = (-1.0) ** L
 

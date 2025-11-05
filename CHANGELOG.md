@@ -2,6 +2,13 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.1.1 (11-05-2025)
+* Added conversion to numpy array in Apex function
+* Corrected for linear interpolation of foF2
+* Removed examples
+* Updated all tutorials
+* Fixed bug in coordinate transform at the pole
+
 ## 0.1.0 (10-29-2025)
 * Added an EDP builder derived from PyIRTAM to build the bottomside F2 layer using B0 and B1.
 * Added a tutorial to generate SH EDP parameters.

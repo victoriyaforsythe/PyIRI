@@ -118,6 +118,11 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     Space Weather.
 
     """
+    # Convert inputs to Numpy arrays
+    aUT = to_numpy_array(aUT)
+    alon = to_numpy_array(alon)
+    alat = to_numpy_array(alat)
+
     # Set limits for solar driver based of IG12 = 0 - 100.
     aIG = np.array([0., 100.])
 
@@ -359,6 +364,12 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
     # construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
+
+    # Correct for linear interpolation in fo
+    F2['fo'] = den2freq(F2['Nm'])
+    F1['fo'] = den2freq(F1['Nm'])
+    E['fo'] = den2freq(E['Nm'])
+    Es['fo'] = den2freq(Es['Nm'])
 
     return F2, F1, E, Es, sun, mag, EDP
 

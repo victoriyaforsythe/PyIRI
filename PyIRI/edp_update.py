@@ -114,6 +114,11 @@ def IRI_monthly_mean_par(year, mth, aUT, alon, alat, coeff_dir, ccir_or_ursi=0):
     Space Weather.
 
     """
+    # Convert inputs to Numpy arrays
+    aUT = main.to_numpy_array(aUT)
+    alon = main.to_numpy_array(alon)
+    alat = main.to_numpy_array(alat)
+
     # Set limits for solar driver based of IG12 = 0 - 100.
     aIG = np.array([0., 100.])
 
@@ -388,6 +393,12 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
     # Construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
+
+    # Correct for linear interpolation in fo
+    F2['fo'] = main.den2freq(F2['Nm'])
+    F1['fo'] = main.den2freq(F1['Nm'])
+    E['fo'] = main.den2freq(E['Nm'])
+    Es['fo'] = main.den2freq(Es['Nm'])
 
     return F2, F1, E, Es, sun, mag, EDP
 
@@ -916,8 +927,21 @@ def logistic_curve(h, h0, B):
         Logistic function value(s) in the range (0, 1).
     """
     h = np.asarray(h)
+    z = (h - h0) / B
 
-    return 1. / (1. + np.exp(-(h - h0) / B))
+    # Use a numerically stable sigmoid formulation
+    out = np.empty_like(z, dtype=np.float64)
+
+    # For z >= 0
+    idx = z >= 0
+    out[idx] = 1. / (1. + np.exp(-z[idx]))
+
+    # For z < 0, use an alternative equivalent form to avoid overflow
+    idx = ~idx
+    exp_z = np.exp(z[idx])
+    out[idx] = exp_z / (1. + exp_z)
+
+    return out
 
 
 def drop_up(h, hmE, hmF2, drop_fraction=0.2):
