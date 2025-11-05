@@ -1543,7 +1543,7 @@ def real_SH_func(theta, phi, lmax=29):
 
         # m = 0
         P_l0 = ss.assoc_legendre_p(L, 0, z)[0]
-        if np.any(mask_pole):
+        if (mask_pole_time.size > 0) or (mask_pole_pos.size > 0):
             P_l0 = P_l0.copy()
             P_l0[mask_pole_time, mask_pole_pos] = (-1.0) ** L
 
