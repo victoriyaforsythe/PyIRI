@@ -94,11 +94,11 @@ f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
 ```
 
 <div align="center">
-  <img src="docs/figures/PyIRI_sh_foF2_min_max.png" width="45%">
-  <img src="docs/figures/PyIRI_sh_hmF2_min_max.png" width="45%">
-  <img src="docs/figures/PyIRI_sh_B0_min_max.png" width="45%">
-  <img src="docs/figures/PyIRI_sh_B1_min_max.png" width="45%">
-  <img src="docs/figures/PyIRI_sh_B_top_min_max.png" width="45%">
+  <img src="docs/figures/PyIRI_sh_foF2_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_hmF2_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_B0_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_B1_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_B_top_min_max.png" width="80%">
 </div>
 
 Alternatively, the original URSI or CCIR climatological coefficients can be used:
@@ -221,7 +221,7 @@ Es = sh.sporadic_E_monthly_mean(year,
 ```
 
 <div align="center">
-  <img src="docs/figures/PyIRI_sh_foEs_min_max.png" width="45%">
+  <img src="docs/figures/PyIRI_sh_foEs_min_max.png" width="80%">
 </div>
 
 Run PyIRI Es (with spherical harmonic coefficients) for a given day and F10.7 input:
