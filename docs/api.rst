@@ -14,3 +14,11 @@ Application Programming Interface
 
 .. automodule:: PyIRI.plotting
     :members:
+
+
+.. automodule:: PyIRI.sh_library
+    :members:
+
+
+.. automodule:: PyIRI.edp_update
+    :members:
