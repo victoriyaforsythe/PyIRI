@@ -208,7 +208,7 @@ F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
 
 Sporadic E fields require more spherical harmonic coefficients and were therefore decoupled from the main call:
 
-Run PyIRI Es (with spherical harmonic coefficients):
+Run PyIRI Es (with spherical harmonic coefficients) for solar min and solar max:
 
 ```python
 Es = sh.sporadic_E_monthly_mean(year,
@@ -223,6 +223,26 @@ Es = sh.sporadic_E_monthly_mean(year,
 <div align="center">
   <img src="docs/figures/PyIRI_sh_foEs_min_max.png" width="45%">
 </div>
+
+Run PyIRI Es (with spherical harmonic coefficients) for a given day and F10.7 input:
+
+```python
+Es = sh.sporadic_E_1day(year,
+                        month,
+                        day,
+                        aUT,
+                        alon,
+                        alat,
+                        F107,
+                        coeff_dir=None,
+                        coord='GEO')
+```
+
+<div align="center">
+  <img src="docs/figures/PyIRI_sh_foEs.png" width="45%">
+</div>
+
+
 
 ---
 
