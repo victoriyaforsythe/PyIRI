@@ -17,7 +17,7 @@ examples here are from the second release.
   Space Weather, ESS Open Archive, September 28, 2023,
   doi: 10.22541/essoar.169592556.61105365/v1
 
-* Servan-Schreiber, N., Forsythe, V., et al. (2026).
+* Servan-Schreiber, N., Forsythe, V., et al. (2025).
   A Major Update to the PyIRI model,
   Space Weather, submitted.
 
@@ -29,7 +29,7 @@ examples here are from the second release.
     title        = {victoriyaforsythe/PyIRI},
     year         = 2025,
     publisher    = {Zenodo},
-    version      = {v0.1.1},
+    version      = {v0.1.2},
     doi          = {10.5281/zenodo.17479366},
     url          = {https://github.com/victoriyaforsythe/PyIRI}
   }
