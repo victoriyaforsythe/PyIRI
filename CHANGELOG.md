@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## 0.1.2 (11-06-2025)
+## 0.1.3 (11-06-2025)
 * Order of linear interpolation changed. Parameters are now interpolated in fo, and converted to Nm.
   
 ## 0.1.1 (11-05-2025)
