@@ -354,6 +354,12 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     E = solar_interpolation_of_dictionary(E, F107)
     Es = solar_interpolation_of_dictionary(Es, F107, use_R12=True)
 
+    # Correct for linear interpolation in fo
+    F2['Nm'] = freq2den(F2['fo'])
+    F1['Nm'] = freq2den(F1['fo'])
+    E['Nm'] = freq2den(E['fo'])
+    Es['Nm'] = freq2den(Es['fo'])
+
     # Introduce a minimum limit for the peaks to avoid negative density as a
     # result of the interpolation in case the F10.7 is high the extrapolation
     # can cause NmF2 to go negative
@@ -364,12 +370,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
     # construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
-
-    # Correct for linear interpolation in fo
-    F2['fo'] = den2freq(F2['Nm'])
-    F1['fo'] = den2freq(F1['Nm'])
-    E['fo'] = den2freq(E['Nm'])
-    Es['fo'] = den2freq(Es['Nm'])
 
     return F2, F1, E, Es, sun, mag, EDP
 

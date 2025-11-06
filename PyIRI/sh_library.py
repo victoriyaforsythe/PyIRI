@@ -426,6 +426,11 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     F1 = ml.solar_interpolation_of_dictionary(F1, F107)
     E = ml.solar_interpolation_of_dictionary(E, F107)
 
+    # Correct for linear interpolation
+    # fo is interpolated linearly, and Nm is then found from fo
+    F2['Nm'] = ml.freq2den(F2['fo'])
+    E['Nm'] = ml.freq2den(E['fo'])
+
     # Introduce a minimum limit for the peaks to avoid negative density (for
     # high F10.7, extrapolation can cause NmF2 to go negative)
     F2['Nm'] = ml.limit_Nm(F2['Nm'])
@@ -449,11 +454,6 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
 
     # Construct density
     EDP = EDP_builder_continuous(F2, F1, E, aalt)
-
-    # Correct for linear interpolation in fo
-    F2['fo'] = ml.den2freq(F2['Nm'])
-    F1['fo'] = ml.den2freq(F1['Nm'])
-    E['fo'] = ml.den2freq(E['Nm'])
 
     return F2, F1, E, sun, mag, EDP
 
@@ -662,12 +662,12 @@ def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
     # Interpolate parameters in solar activity
     Es = ml.solar_interpolation_of_dictionary(Es, F107)
 
+    # Correct for linear interpolation for foEs
+    Es['Nm'] = ml.freq2den(Es['fo'])
+
     # Introduce a minimum limit for the peaks to avoid negative density (for
     # high F10.7, extrapolation can cause NmF2 to go negative)
     Es['Nm'] = ml.limit_Nm(Es['Nm'])
-
-    # Correct for linear interpolation for foEs
-    Es['fo'] = ml.den2freq(Es['Nm'])
 
     return Es
 

@@ -83,7 +83,8 @@ Compute F2, F1, and E‑region parameters using the **new spherical harmonics co
 ```python
 hmF2_model = 'SHU2015'   # Also available: 'AMTB2013', 'BSE1979'
 foF2_coeff = 'URSI'      # Also available: 'CCIR'
-coord = 'GEO'            # Also available: 'QD', 'MLT'
+coord = 'GEO'            # Also available: 'QD' for Quasi-Dipole Lon and Quasi-Dipole Lat inputs
+                         #                 'MLT' for MLT and Quasi-Dipole Lat inputs
 
 f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
     year, month, aUT, alon, alat,
