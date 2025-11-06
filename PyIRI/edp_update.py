@@ -377,6 +377,12 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     Es['Nm'] = main.limit_Nm(Es['Nm'])
     # We should not limit the F1 region because it is a function of F2
 
+    # Correct for linear interpolation in fo
+    F2['Nm'] = main.freq2den(F2['fo'])
+    F1['Nm'] = main.freq2den(F1['fo'])
+    E['Nm'] = main.freq2den(E['fo'])
+    Es['Nm'] = main.freq2den(Es['fo'])
+
     # Derive_dependent_F1_parameters one more time after the interpolation
     # so that the F1 location does not carry the little errors caused by the
     # interpolation
@@ -393,12 +399,6 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
 
     # Construct density
     EDP = reconstruct_density_from_parameters_1level(F2, F1, E, aalt)
-
-    # Correct for linear interpolation in fo
-    F2['fo'] = main.den2freq(F2['Nm'])
-    F1['fo'] = main.den2freq(F1['Nm'])
-    E['fo'] = main.den2freq(E['Nm'])
-    Es['fo'] = main.den2freq(Es['Nm'])
 
     return F2, F1, E, Es, sun, mag, EDP
 
