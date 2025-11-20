@@ -1765,7 +1765,7 @@ def EDP_builder_continuous(F2, F1, E, aalt):
     density_F1 = full_F1 - density
     density_F1[density_F1 < 0] = 0.
 
-    density = density + density_F1
+    density = density + density_F1 / 2.
 
     # Make 1 everything that is <= 0 (just in case)
     density[np.where(density <= 1.0)] = 1.0
@@ -1816,7 +1816,9 @@ def Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, h):
     return den
 
 
-def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
+def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE,
+                                   threshold=0.1,
+                                   thickness_fraction=0.75):
     """Combine DA with background F1 region.
 
     Parameters
@@ -1833,6 +1835,12 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
         B1 parameter shape of F2.
     hmE : array-like
         hmE parameter height of E layer.
+    threshold : flt
+        Cuts the probability P at this threshhold.
+        Default is 0.1.
+    thickness_fraction : flt
+        F1 thickness as a fraction of hmF1 - hmE.
+        Default is 0.75.
 
     Returns
     -------
@@ -1852,7 +1860,6 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
     """
     # Compute B_F1_bot using normalized probability P with a flexible
     # threshold.
-    threshold = 0.1
     P_clipped = np.clip(P, threshold, 1)
     norm_shift = P_clipped - threshold
     max_shift = np.max(norm_shift)
@@ -1867,11 +1874,13 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE):
     norm_P = (np.clip(norm_shifted + 0.5, 0.5, 1) - 0.5) / 0.5
 
     # Estimate the F1 layer peak height (hmF1) using the B0 information
-    # Improved formulation
-    hmF1 = hmF2 - (hmF2 - B0) * (0.5 + 0.5 * norm_P)
+    hmF1 = hmF2 - B0 * 0.875
+
+    # Don't let it go below 180 km.
+    hmF1[hmF1 <= 180.] = 180.
 
     # Estimate bottom-side F1 thickness
-    B_F1_bot = (hmF1 - hmE) * 0.5 * norm_P
+    B_F1_bot = (hmF1 - hmE) * thickness_fraction * norm_P
 
     # Find the exact NmF1 at the hmF1 using F2 bottom function with
     # the drop down function
