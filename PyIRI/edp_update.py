@@ -656,7 +656,7 @@ def EDP_builder(x, aalt):
     density_F1 = full_F1 - density
     density_F1[density_F1 < 0] = 0.
 
-    density = density + density_F1
+    density = density + density_F1 / 2.
 
     # Make 1 everything that is <= 0 (just in case)
     density[np.where(density <= 1.0)] = 1.0
