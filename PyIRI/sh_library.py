@@ -1874,7 +1874,7 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE,
     norm_P = (np.clip(norm_shifted + 0.5, 0.5, 1) - 0.5) / 0.5
 
     # Estimate the F1 layer peak height (hmF1) using the B0 information
-    hmF1 = hmF2 - B0 * 0.875
+    hmF1 = hmF2 - B0
 
     # Don't let it go below 180 km.
     hmF1[hmF1 <= 180.] = 180.

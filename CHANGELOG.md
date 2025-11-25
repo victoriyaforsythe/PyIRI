@@ -2,6 +2,9 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.1.5 (11-25-2025)
+* Fixed bug in F1 layer formula.
+
 ## 0.1.4 (11-20-2025)
 * Updated formulation of F1 layer that is now consistent with SAMI-4.
 

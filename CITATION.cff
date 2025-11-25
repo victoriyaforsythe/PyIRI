@@ -1,4 +1,4 @@
-cff-version: 0.1.4
+cff-version: 0.1.5
 message: "If you use this software, please cite it as below."
 authors:
   - family-names: Forsythe
@@ -17,6 +17,6 @@ authors:
     given-names: Henry C.
     orcid: https://orcid.org/0009-0000-2007-4291
     affiliation: U.S. Naval Research Laboratory
-title: victoriyaforsythe/PyIRI: v0.1.4
-version: v0.1.4
-date-released: 2025-11-06
+title: victoriyaforsythe/PyIRI: v0.1.5
+version: v0.1.5
+date-released: 2025-11-25
