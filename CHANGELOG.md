@@ -2,6 +2,9 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.1.6 (04-9-2026)
+* Updated Apex.nc file in coefficients directory through 2030.
+
 ## 0.1.5 (11-25-2025)
 * Fixed bug in F1 layer formula.
 

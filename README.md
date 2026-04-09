@@ -260,6 +260,13 @@ Comprehensive Jupyter notebooks are available in [`docs/tutorials`](https://gith
 
 ---
 
+## Routine Package Maintenance: IGRF Updates
+
+The PyIRI model relies on an accurate representation of the Earth's magnetic field for the spherical harmonics library. PyIRI's magnetic coordinate conversions are ultimately derived from IGRF coefficients, which apexpy uses to compute Apex and Quasi-Dipole (QD) coordinates via Spherical Harmonic (SH) fits. When a new International Geomagnetic Reference Field (IGRF) definition is released, the underlying IGRF coefficient files that apexpy depends on become obsolete.
+To maintain PyIRI when a new IGRF definition comes out, maintainers must first ensure that apexpy has been updated to incorporate the latest IGRF coefficients. Once apexpy is current, it must be rerun to generate a new apex.nc coefficient file via SH fits. This process synchronizes PyIRI's magnetic coordinate grids with the updated IGRF and ensures the model remains accurate in MLT–QDLat space for the new epoch.
+
+---
+
 ## Citation
 
 If you use PyIRI in your research, please cite:
