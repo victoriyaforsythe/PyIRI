@@ -55,7 +55,8 @@ doc = [
   "ipython",
   "m2r2",
   "numpydoc",
-  "sphinx",
+  "pyproject-parser",
+  "sphinx < 9.0",
   "sphinx_rtd_theme >= 1.2.2"
 ]
 
