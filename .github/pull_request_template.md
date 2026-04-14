@@ -42,4 +42,4 @@ your test configuration
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published in downstream modules
 - [ ] Add a note to ``CHANGELOG.md``, summarizing the changes
-- [ ] Update zenodo.json file for new code contributors
+- [ ] Update ``CITATION.cff`` file for new code contributors
