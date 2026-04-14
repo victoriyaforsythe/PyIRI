@@ -6,6 +6,7 @@ adheres to [Semantic Versioning](https://semver.org/).
 * Updated Apex.nc file in coefficients directory through 2030.
 * Fixed bug in documentation compilation.
 * Fixed zenodo link in README.
+* Removed .zenodo.json (now managed with CITATION.cff) and updated docs.
 
 ## 0.1.5 (11-25-2025)
 * Fixed bug in F1 layer formula.
