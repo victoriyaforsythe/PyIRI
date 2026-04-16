@@ -8,7 +8,6 @@ https://www.sphinx-doc.org/en/master/config
 
 """
 
-import json
 import os
 from pyproject_parser import PyProject
 import sys
@@ -56,9 +55,8 @@ master_doc = 'index'
 project = 'PyIRI'
 title = '{:s} Documentation'.format(project)
 info = PyProject.load('../pyproject.toml')
-zenodo = json.loads(open('../.zenodo.json').read())
-author = ', '.join([creator['name'] for creator in zenodo['creators']])
-manual_copyright = ', '.join(['2023', author])
+author = 'Victoriya Forsythe and the PyIRI Team'
+manual_copyright = ', '.join(['2026', author])
 category = 'Space Physics'
 description = 'Python implementation of the International Reference Ionosphere.'
 

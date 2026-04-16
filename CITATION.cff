@@ -17,6 +17,10 @@ authors:
     given-names: Henry C.
     orcid: https://orcid.org/0009-0000-2007-4291
     affiliation: U.S. Naval Research Laboratory
+  - family-names: Pepper
+    given-names: Andrew M.
+    orcid: https://orcid.org/0000-0002-5679-7421
+    affiliation: U.S. Naval Research Laboratory
 title: victoriyaforsythe/PyIRI: v0.1.5
 version: v0.1.5
 date-released: 2025-11-25
