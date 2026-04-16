@@ -1,4 +1,4 @@
-cff-version: 0.1.5
+cff-version: 0.1.6
 message: "If you use this software, please cite it as below."
 authors:
   - family-names: Forsythe
@@ -21,6 +21,6 @@ authors:
     given-names: Andrew M.
     orcid: https://orcid.org/0000-0002-5679-7421
     affiliation: U.S. Naval Research Laboratory
-title: victoriyaforsythe/PyIRI: v0.1.5
-version: v0.1.5
-date-released: 2025-11-25
+title: victoriyaforsythe/PyIRI: v0.1.6
+version: v0.1.6
+date-released: 2026-04-22
