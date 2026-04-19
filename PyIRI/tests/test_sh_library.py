@@ -10,25 +10,19 @@ from PyIRI.main_library import den2freq
 from PyIRI.main_library import IG12_2_F107
 import PyIRI.sh_library as sh
 
+print(PyIRI.__file__)
+
 
 def test_fo_1day_interpolation():
     """Test linear interpolation of foF2."""
-    F2, F1, E, *_ = sh.IRI_density_1day(2024,
-                                        3,
-                                        8,
-                                        np.array([0]),
-                                        np.array([20]),
-                                        np.array([40]),
-                                        np.array([0]),
-                                        IG12_2_F107(40))
-
-    Es = sh.sporadic_E_1day(2024,
-                            3,
-                            8,
-                            np.array([0]),
-                            np.array([20]),
-                            np.array([40]),
-                            IG12_2_F107(40))
+    F2, F1, E, Es, *_ = sh.IRI_density_1day(2024,
+                                            3,
+                                            8,
+                                            np.array([0]),
+                                            np.array([20]),
+                                            np.array([40]),
+                                            np.array([0]),
+                                            IG12_2_F107(40))
 
     fo_1day = []
     true_fo = []
@@ -165,23 +159,6 @@ def test_gammaE_dynamic(coord):
                                   f" got {slat.shape}")
 
 
-# load_Es_coeff_matrix
-def test_load_Es_coeff_matrix():
-    """Exercise load_Es_coeff_matrix."""
-    coeff_dir = PyIRI.coeff_dir
-    month = 11
-
-    C = sh.load_Es_coeff_matrix(month, coeff_dir=coeff_dir)
-
-    N_IG = 2
-    N_FS = 11
-    N_SH = 8100
-
-    assert C.shape == (N_IG, N_FS, N_SH), ("C shape mismatch: expected "
-                                           f"{(N_IG, N_FS, N_SH)},"
-                                           f" got {C.shape}")
-
-
 # load_coeff_matrices
 @pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
 @pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
@@ -194,9 +171,9 @@ def test_load_coeff_matrices(foF2_coeff, hmF2_model):
                                foF2_coeff=foF2_coeff, hmF2_model=hmF2_model)
 
     if hmF2_model == 'BSE1979':
-        N_P = 4
-    else:
         N_P = 5
+    else:
+        N_P = 6
     N_IG = 2
     N_FS = 11
     N_SH = 900
@@ -223,7 +200,7 @@ def test_run_seas_iri_reg_grid():
     coord = 'MLT'
 
     (alon, alat, alon_2d, alat_2d, aalt,
-        aUT, F2, F1, E, sun, mag) = sh.run_seas_iri_reg_grid(
+        aUT, F2, F1, E, Es, sun, mag) = sh.run_seas_iri_reg_grid(
             year, month, hr_res=hr_res, lat_res=lat_res, lon_res=lon_res,
             alt_res=alt_res, alt_min=alt_min, alt_max=alt_max,
             coord=coord, coeff_dir=coeff_dir,
@@ -270,7 +247,7 @@ def test_run_iri_reg_grid():
     coord = 'MLT'
 
     (alon, alat, alon_2d, alat_2d, aalt,
-        aUT, F2, F1, E, sun, mag, EDP) = sh.run_iri_reg_grid(
+        aUT, F2, F1, E, Es, sun, mag, EDP) = sh.run_iri_reg_grid(
             year, month, day, F107,
             hr_res=hr_res, lat_res=lat_res, lon_res=lon_res, alt_res=alt_res,
             alt_min=alt_min, alt_max=alt_max, coord=coord, coeff_dir=coeff_dir,
@@ -334,54 +311,6 @@ def test_create_reg_grid_geo_or_mag(coord):
                                              f"got {alon_2d.shape}")
 
 
-# sporadic_E_1day
-def test_Es_1day_runs():
-    """Exercise sporadic_E_1day."""
-    year = 2024
-    mth = 6
-    day = 21
-    aUT = np.array([12.0, 13.0, 14.0])
-    alon = [0]
-    alat = 0
-    coeff_dir = PyIRI.coeff_dir
-    F107 = 120
-    coord = 'MLT'
-
-    Es = sh.sporadic_E_1day(
-        year, mth, day, aUT, alon, alat, F107,
-        coeff_dir=coeff_dir, coord=coord)
-
-    expected_shape = (len(aUT), len(alon))
-    actual_shape = Es['fo'].shape
-
-    assert actual_shape == expected_shape, (
-        f"foEs shape mismatch: expected {expected_shape}, got {actual_shape}"
-    )
-
-
-# sporadic_E_monthly_mean
-@pytest.mark.parametrize("coord", ['GEO', 'QD', 'MLT'])
-def test_Es_monthly_mean_runs(coord):
-    """Exercise sporadic_E_monthly_mean."""
-    year = 2024
-    mth = 6
-    aUT = np.array([12.0, 13.0, 14.0])
-    alon = [0]
-    alat = 0
-    coeff_dir = PyIRI.coeff_dir
-
-    Es = sh.sporadic_E_monthly_mean(
-        year, mth, aUT, alon, alat,
-        coeff_dir=coeff_dir, coord=coord)
-
-    expected_shape = (len(aUT), len(alon), 2)
-    actual_shape = Es['fo'].shape
-
-    assert actual_shape == expected_shape, (
-        f"foEs shape mismatch: expected {expected_shape}, got {actual_shape}"
-    )
-
-
 # IRI_monthly_mean_par
 @pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
 @pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
@@ -395,7 +324,7 @@ def test_IRI_monthly_mean_par_runs(foF2_coeff, hmF2_model, coord):
     alat = 0
     coeff_dir = PyIRI.coeff_dir
 
-    F2, F1, E, sun, mag = sh.IRI_monthly_mean_par(
+    F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
         year, mth, aUT, alon, alat,
         coeff_dir=coeff_dir,
         foF2_coeff=foF2_coeff,
@@ -427,7 +356,7 @@ def test_IRI_density_1day_runs():
     hmF2_model = 'SHU2015'
     coord = 'MLT'
 
-    F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
+    F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
         year, mth, day, aUT, alon, alat, aalt, F107,
         coeff_dir=coeff_dir,
         foF2_coeff=foF2_coeff,
