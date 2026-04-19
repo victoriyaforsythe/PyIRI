@@ -106,6 +106,13 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat,
         'B_top' : Bottom thickness of the E region [km].
         'B_bot' : Bottom thickness of the E region [km].
         Shape (N_T, N_G, 2)
+    Es : dict
+        'Nm' : Peak density of Es region [m-3].
+        'fo' : Critical frequency of Es region [MHz].
+        'hm' : Height of the Es peak [km].
+        'B_top' : Bottom thickness of the Es region [km].
+        'B_bot' : Bottom thickness of the Es region [km].
+        Shape (N_T, N_G, 2)
     sun : dict
         'lon' : Subsolar point longitude (geographic or quasi-dipole) [deg] or
         magnetic local time [hour].
@@ -120,8 +127,10 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat,
     Notes
     -----
     This function returns monthly mean ionospheric parameters for min and max
-    levels of solar activity, i.e., 12-month running mean of the Global
-    Ionosonde Index IG12 of value 0 and 100.
+    levels of solar activity. For most parameters, this corresponds to IG12=0
+    and IG12=100. Some parameters use R12=0 and R12=100, including F2['hm'] (if
+    hmF2_coeff in ['AMTB2013', 'BSE1979']), F2['M3000'], F2['B0'], F2['B1'], and
+    the Es dictionary.
 
     References
     ----------
@@ -207,16 +216,25 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat,
     B0 = Params[1, :, :, :]
     B1 = Params[2, :, :, :]
     M3000 = Params[3, :, :, :]
+    foEs = Params[4, :, :, :]
     if hmF2_model != 'BSE1979':
-        hmF2 = Params[4, :, :, :]
+        hmF2 = Params[5, :, :, :]
 
-    NmF2 = ml.freq2den(foF2)  # Previously: * 1e11
+    NmF2 = ml.freq2den(foF2)
+
+    # Es layer
+    NmEs = ml.freq2den(foEs)
+
+    hmEs = 110. + np.zeros(NmEs.shape)
+
+    B_Es_top = 1. + np.zeros((hmEs.shape))
+    B_Es_bot = 1. + np.zeros((hmEs.shape))
 
     # Solar driven E region and locations of subsolar points
     foE, solzen, solzen_eff, slon, slat = gammaE_dynamic(year, month, aUT,
                                                          aglon, aglat,
                                                          aIG, coord)
-    NmE = ml.freq2den(foE)  # Previously: * 1e11
+    NmE = ml.freq2den(foE)
 
     # Probability of F1 layer appearance based on solar zenith angle
     P_F1 = Probability_F1_with_solzen(solzen)
@@ -276,6 +294,12 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat,
          'solzen': solzen,
          'solzen_eff': solzen_eff}
 
+    Es = {'Nm': NmEs,
+          'fo': foEs,
+          'hm': hmEs,
+          'B_top': B_Es_top,
+          'B_bot': B_Es_bot}
+
     sun = {'lon': slon,
            'lat': slat}
 
@@ -283,7 +307,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat,
            'modip': modip,
            'mag_dip_lat': mag_dip_lat}
 
-    return F2, F1, E, sun, mag
+    return F2, F1, E, Es, sun, mag
 
 
 def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
@@ -357,6 +381,13 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
         'B_top' : Bottom thickness of the E region [km].
         'B_bot' : Bottom thickness of the E region [km].
         Shape (N_T, N_G)
+    Es : dict
+        'Nm' : Peak density of Es region [m-3].
+        'fo' : Critical frequency of Es region [MHz].
+        'hm' : Height of the Es peak [km].
+        'B_top' : Bottom thickness of the Es region [km].
+        'B_bot' : Bottom thickness of the Es region [km].
+        Shape (N_T, N_G)
     sun : dict
         'lon' : Subsolar point longitude (geographic or quasi-dipole) [deg] or
         magnetic local time [hour].
@@ -396,45 +427,50 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     # Calculate required monhtly means and associated weights
     t_before, t_after, fr1, fr2 = ml.day_of_the_month_corr(year, month, day)
 
-    F2_1, F1_1, E_1, sun_1, mag_1 = IRI_monthly_mean_par(t_before.year,
-                                                         t_before.month,
-                                                         aUT,
-                                                         alon,
-                                                         alat,
-                                                         coeff_dir,
-                                                         foF2_coeff,
-                                                         hmF2_model,
-                                                         coord)
-    F2_2, F1_2, E_2, sun_2, mag_2 = IRI_monthly_mean_par(t_after.year,
-                                                         t_after.month,
-                                                         aUT,
-                                                         alon,
-                                                         alat,
-                                                         coeff_dir,
-                                                         foF2_coeff,
-                                                         hmF2_model,
-                                                         coord)
+    F2_1, F1_1, E_1, Es_1, sun_1, mag_1 = IRI_monthly_mean_par(t_before.year,
+                                                               t_before.month,
+                                                               aUT,
+                                                               alon,
+                                                               alat,
+                                                               coeff_dir,
+                                                               foF2_coeff,
+                                                               hmF2_model,
+                                                               coord)
+    F2_2, F1_2, E_2, Es_2, sun_2, mag_2 = IRI_monthly_mean_par(t_after.year,
+                                                               t_before.month,
+                                                               aUT,
+                                                               alon,
+                                                               alat,
+                                                               coeff_dir,
+                                                               foF2_coeff,
+                                                               hmF2_model,
+                                                               coord)
 
     F2 = ml.fractional_correction_of_dictionary(fr1, fr2, F2_1, F2_2)
     F1 = ml.fractional_correction_of_dictionary(fr1, fr2, F1_1, F1_2)
     E = ml.fractional_correction_of_dictionary(fr1, fr2, E_1, E_2)
+    Es = ml.fractional_correction_of_dictionary(fr1, fr2, Es_1, Es_2)
     sun = ml.fractional_correction_of_dictionary(fr1, fr2, sun_1, sun_2)
     mag = ml.fractional_correction_of_dictionary(fr1, fr2, mag_1, mag_2)
 
     # Interpolate parameters in solar activity
-    F2 = ml.solar_interpolation_of_dictionary(F2, F107)
+    F2 = ml.solar_interpolation_of_dictionary_F2(F2, F107, hmF2_model)
     F1 = ml.solar_interpolation_of_dictionary(F1, F107)
     E = ml.solar_interpolation_of_dictionary(E, F107)
+    Es = ml.solar_interpolation_of_dictionary(Es, F107, solidx='R12',
+                                              solmin=0, solmax=100)
 
     # Correct for linear interpolation
     # fo is interpolated linearly, and Nm is then found from fo
     F2['Nm'] = ml.freq2den(F2['fo'])
     E['Nm'] = ml.freq2den(E['fo'])
+    Es['Nm'] = ml.freq2den(Es['fo'])
 
     # Introduce a minimum limit for the peaks to avoid negative density (for
     # high F10.7, extrapolation can cause NmF2 to go negative)
     F2['Nm'] = ml.limit_Nm(F2['Nm'])
     E['Nm'] = ml.limit_Nm(E['Nm'])
+    Es['Nm'] = ml.limit_Nm(Es['Nm'])
 
     # Derive dependent F1 parameters after the interpolation so that the F1
     # location does not carry the little errors caused by the interpolation
@@ -455,221 +491,7 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     # Construct density
     EDP = EDP_builder_continuous(F2, F1, E, aalt)
 
-    return F2, F1, E, sun, mag, EDP
-
-
-def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
-                            coord='GEO'):
-    """Output monthly mean sporadic E layer using spherical harmonics.
-
-    Parameters
-    ----------
-    year : int
-        Year.
-    month : int
-        Month of the year.
-    aUT : float, int, or array-like of float or int
-        UT time [hour]. Scalar inputs will be converted to a Numpy array.
-        Shape (N_T,)
-    alon : float, list, or array-like
-        Flattened array of longitude (geographic or quasi-dipole) [deg] or
-        magnetic local time [hour]. Scalar inputs will be converted to a Numpy
-        array.
-        Shape (N_G,)
-    alat : float, list, or array-like
-        Flattened array of latitude (geographic or quasi-dipole) [deg]. Scalar
-        inputs will be converted to a Numpy array.
-        Shape (N_G,)
-    coeff_dir: str
-        Directory where the coefficient files are stored. If None, uses the
-        default coefficient files stored in PyIRI.coeff_dir. (default=None)
-    coord : str
-        Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
-        dipole, and 'MLT' for magnetic local time. (default='GEO')
-
-    Returns
-    -------
-    Es : dict
-        'Nm' : Peak density of Es region [m-3].
-        'fo' : Critical frequency of Es region [MHz].
-        'hm' : Height of the Es peak [km].
-        'B_top' : Bottom thickness of the Es region [km].
-        'B_bot' : Bottom thickness of the Es region [km].
-        Shape (N_T, N_G, 2)
-
-    Notes
-    -----
-    This function returns monthly mean ionospheric parameters for min and max
-    levels of solar activity, i.e., 12-month running mean of the Global
-    Ionosonde Index IG12 of value 0 and 100.
-
-    References
-    ----------
-    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-
-    """
-    # Set coefficient file path if none given
-    if coeff_dir is None:
-        coeff_dir = PyIRI.coeff_dir
-
-    # Convert inputs to Numpy arrays
-    aUT = ml.to_numpy_array(aUT)
-    alon = ml.to_numpy_array(alon)
-    alat = ml.to_numpy_array(alat)
-    apdtime = (pd.to_datetime(dt.datetime(year, month, 15))
-               + pd.to_timedelta(aUT, 'hours'))
-
-    # Coordinate system conversion to geographic, quasi-dipole, and magnetic
-    # local time
-    if coord == 'GEO':
-        aglat, aglon = alat, alon
-        aqdlat, amlt = np.zeros((2, aUT.size, alat.size))
-        for iUT in range(len(aUT)):
-            pdtime = apdtime[iUT]
-            aqdlat[iUT, :], amlt[iUT, :] = Apex(aglat, aglon, pdtime,
-                                                'GEO_2_MLT')
-
-    elif coord == 'MLT':
-        aqdlat, amlt = alat, alon
-        aglat, aglon = np.zeros((2, aUT.size, alat.size))
-        for iUT in range(len(aUT)):
-            pdtime = apdtime[iUT]
-            aglat[iUT, :], aglon[iUT, :] = Apex(aqdlat, amlt, pdtime,
-                                                'MLT_2_GEO')
-
-    elif coord == 'QD':
-        aqdlat, aqdlon = alat, alon
-        aglat, aglon = Apex(aqdlat, aqdlon, apdtime[0], 'QD_2_GEO')
-        amlt = np.zeros((aUT.size, alat.size))
-        for iUT in range(len(aUT)):
-            pdtime = apdtime[iUT]
-            _, amlt[iUT, :] = Apex(aqdlat, aqdlon, pdtime, 'QD_2_MLT')
-        aqdlat = np.broadcast_to(aqdlat, (aUT.size, aqdlat.size))
-
-    else:
-        raise ValueError("Coordinate system must be 'GEO', 'QD', or 'MLT'.")
-
-    # Extract coefficient matrices and resonstruct ionospheric parameters
-    C = load_Es_coeff_matrix(month, coeff_dir)
-
-    n_FS_r = C.shape[1]
-    n_FS_c = n_FS_r // 2 + 1
-    F_FS = real_FS_func(aUT, n_FS_c)
-
-    n_SH = C.shape[2]
-    lmax = int(np.sqrt(n_SH)) - 1
-    atheta = np.deg2rad(-(aqdlat - 90))
-    aphi = np.deg2rad(amlt * 15)
-
-    F_SH = real_SH_func(atheta, aphi, lmax=lmax)
-    if coord == 'MLT':
-        foEs = oe.contract('ij,pjk,kl->ilp', F_FS, C, F_SH)
-    else:
-        foEs = oe.contract('ij,pjk,kil->ilp', F_FS, C, F_SH)
-
-    NmEs = ml.freq2den(foEs)
-
-    hmEs = 110. + np.zeros(NmEs.shape)
-
-    B_Es_top = 1. + np.zeros((hmEs.shape))
-    B_Es_bot = 1. + np.zeros((hmEs.shape))
-
-    Es = {'Nm': NmEs,
-          'fo': foEs,
-          'hm': hmEs,
-          'B_top': B_Es_top,
-          'B_bot': B_Es_bot}
-
-    return Es
-
-
-def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
-                    coord='GEO'):
-    """Output sporadic E layer parameters for a particular day.
-
-    Parameters
-    ----------
-    year : int
-        Year.
-    month : int
-        Month of the year.
-    day : int
-        Day of the month.
-    aUT : float, int, or array-like of float or int
-        UT time [hour]. Scalar inputs will be converted to a Numpy array.
-        Shape (N_T,)
-    alon : float, list, or array-like
-        Flattened array of longitude (geographic or quasi-dipole) [deg] or
-        magnetic local time [hour]. Scalar inputs will be converted to a Numpy
-        array.
-        Shape (N_G,)
-    alat : float, list, or array-like
-        Flattened array of latitude (geographic or quasi-dipole) [deg]. Scalar
-        inputs will be converted to a Numpy array.
-        Shape (N_G,)
-    F107 : int or float
-        User provided F10.7 solar flux index [SFU].
-    coeff_dir: str
-        Directory where the coefficient files are stored. If None, uses the
-        default coefficient files stored in PyIRI.coeff_dir. (default=None)
-    coord : str
-        Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
-        dipole, and 'MLT' for magnetic local time. (default='GEO')
-
-    Returns
-    -------
-    Es : dict
-        'Nm' : Peak density of Es region [m-3].
-        'fo' : Critical frequency of Es region [MHz].
-        'hm' : Height of the Es peak [km].
-        'B_top' : Bottom thickness of the Es region [km].
-        'B_bot' : Bottom thickness of the Es region [km].
-        Shape (N_T, N_G)
-
-    Notes
-    -----
-    This function returns ionospheric parameters of the sporadic E layer for a
-    given day and solar activity input.
-
-    References
-    ----------
-    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-
-    """
-    # Set coefficient file path if none given
-    if coeff_dir is None:
-        coeff_dir = PyIRI.coeff_dir
-
-    # Convert inputs to Numpy arrays
-    aUT = ml.to_numpy_array(aUT)
-    alon = ml.to_numpy_array(alon)
-    alat = ml.to_numpy_array(alat)
-
-    # Calculate required monhtly means and associated weights
-    t_before, t_after, fr1, fr2 = ml.day_of_the_month_corr(year, month, day)
-
-    Es_1 = sporadic_E_monthly_mean(t_before.year, t_before.month, aUT, alon,
-                                   alat, coeff_dir, coord)
-    Es_2 = sporadic_E_monthly_mean(t_after.year, t_after.month, aUT, alon,
-                                   alat, coeff_dir, coord)
-
-    Es = ml.fractional_correction_of_dictionary(fr1, fr2, Es_1, Es_2)
-
-    # Interpolate parameters in solar activity
-    Es = ml.solar_interpolation_of_dictionary(Es, F107)
-
-    # Correct for linear interpolation for foEs
-    Es['Nm'] = ml.freq2den(Es['fo'])
-
-    # Introduce a minimum limit for the peaks to avoid negative density (for
-    # high F10.7, extrapolation can cause NmF2 to go negative)
-    Es['Nm'] = ml.limit_Nm(Es['Nm'])
-
-    return Es
+    return F2, F1, E, Es, sun, mag, EDP
 
 
 def create_reg_grid_geo_or_mag(hr_res=1, lat_res=1, lon_res=1, alt_res=10,
@@ -852,6 +674,13 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
         'B_top' : Bottom thickness of the E region [km].
         'B_bot' : Bottom thickness of the E region [km].
         Shape (N_T, N_G)
+    Es : dict
+        'Nm' : Peak density of Es region [m-3].
+        'fo' : Critical frequency of Es region [MHz].
+        'hm' : Height of the Es peak [km].
+        'B_top' : Bottom thickness of the Es region [km].
+        'B_bot' : Bottom thickness of the Es region [km].
+        Shape (N_T, N_G)
     sun : dict
         'lon' : Longitude of subsolar point [deg].
         'lat' : Latitude of subsolar point [deg].
@@ -880,11 +709,11 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
         alt_min=alt_min, alt_max=alt_max, coord=coord)
 
     # Run IRI for one day
-    F2, F1, E, sun, mag, EDP = IRI_density_1day(
+    F2, F1, E, Es, sun, mag, EDP = IRI_density_1day(
         year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
         foF2_coeff, hmF2_model, coord)
 
-    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun, mag, EDP
+    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, Es, sun, mag, EDP
 
 
 def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
@@ -973,6 +802,13 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
         'B_top' : Bottom thickness of the E region [km].
         'B_bot' : Bottom thickness of the E region [km].
         Shape (N_T, N_G, 2)
+    Es : dict
+        'Nm' : Peak density of Es region [m-3].
+        'fo' : Critical frequency of Es region [MHz].
+        'hm' : Height of the Es peak [km].
+        'B_top' : Bottom thickness of the Es region [km].
+        'B_bot' : Bottom thickness of the Es region [km].
+        Shape (N_T, N_G, 2)
     sun : dict
         'lon' : Longitude of subsolar point [deg].
         'lat' : Latitude of subsolar point [deg].
@@ -998,11 +834,11 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
         alt_min=alt_min, alt_max=alt_max, coord=coord)
 
     # Run IRI for monthly mean parameters
-    F2, F1, E, sun, mag = IRI_monthly_mean_par(year, month, aUT, alon, alat,
-                                               coeff_dir, foF2_coeff,
-                                               hmF2_model, coord)
+    F2, F1, E, Es, sun, mag = IRI_monthly_mean_par(year, month, aUT, alon, alat,
+                                                   coeff_dir, foF2_coeff,
+                                                   hmF2_model, coord)
 
-    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun, mag
+    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, Es, sun, mag
 
 
 def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
@@ -1026,12 +862,12 @@ def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
     Returns
     -------
     C : numpy.ndarray
-        Coefficient matrix. N_P is the number of parameters (N_P=4 if
-        hmF2_model == 'BSE1979' else N_P=5), N_IG=2 is the number of IG12
-        values stored (IG12=0 and IG12=100), N_FS=9 is the number of real FS
-        coefficients used, and N_SH=900 is the number of real SH coefficients
-        used.
-        Shape (N_P, N_IG, N_FS, N_SH)
+        Coefficient matrix. N_P is the number of parameters (N_P=5 if
+        hmF2_model == 'BSE1979' else N_P=6), N_sol=2 is the number of solar
+        index values stored (IG12/R12=0 and IG12/R12=100), N_FS=9 is the number
+        of real FS coefficients used, and N_SH=900 is the number of real SH
+        coefficients used.
+        Shape (N_P, N_sol, N_FS, N_SH)
 
     """
     # Set coefficient file path if none given
@@ -1039,15 +875,16 @@ def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
         coeff_dir = PyIRI.coeff_dir
 
     # Load foF2, B0, B1, and M3000F2 coefficients
-    filenames = [f'foF2_{foF2_coeff}.nc', 'B0.nc', 'B1.nc', 'M3000F2.nc']
+    filenames = [f'foF2_{foF2_coeff}.nc', 'B0.nc', 'B1.nc', 'M3000F2.nc',
+                 'foEs.nc']
 
     path = os.path.join(coeff_dir, 'SH', filenames[0])
     with nc.Dataset(path) as ds:
         C_month = ds['Coefficients'][:, month - 1, :, :]
-        N_IG = C_month.shape[0]
+        N_sol = C_month.shape[0]
         N_FS = C_month.shape[1]
         N_SH = C_month.shape[2]
-        C = np.zeros((len(filenames), N_IG, N_FS, N_SH))
+        C = np.zeros((len(filenames), N_sol, N_FS, N_SH))
 
     for ids in range(len(filenames)):
         fname = filenames[ids]
@@ -1063,40 +900,6 @@ def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
             C_month = ds['Coefficients'][:, month - 1, :, :]
             C_month = C_month[np.newaxis, :, :, :]
             C = np.concatenate([C, C_month], axis=0)
-
-    return C
-
-
-def load_Es_coeff_matrix(month, coeff_dir=None):
-    """Load sporadic E layer coefficient matrix from its NetCDF file.
-
-    Parameters
-    ----------
-    month : int
-        Month of the year.
-    coeff_dir: str
-        Directory where the coefficient files are stored. If None, uses the
-        default coefficient files stored in PyIRI.coeff_dir. (default=None)
-
-    Returns
-    -------
-    C : numpy.ndarray
-        Coefficient matrix. N_IG=2 is the number of IG12 values stored (IG12=0
-        and IG12=100), N_FS=9 is the number of real FS coefficients used, and
-        N_SH=8100 is the number of real SH coefficients used.
-        Shape (N_IG, N_FS, N_SH)
-
-    """
-    # Set coefficient file path if none given
-    if coeff_dir is None:
-        coeff_dir = PyIRI.coeff_dir
-
-    # Load Es coefficients
-    filename = 'foEs.nc'
-
-    path = os.path.join(coeff_dir, 'SH', filename)
-    with nc.Dataset(path) as ds:
-        C = ds['Coefficients'][:, month - 1, :, :]
 
     return C
 
