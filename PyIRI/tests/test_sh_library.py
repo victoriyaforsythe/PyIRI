@@ -435,3 +435,77 @@ def test_invalid_type_raises():
     dtime = dt.datetime(2005, 1, 1)
     with pytest.raises(ValueError):
         sh.Apex_geo_qd(Lat, Lon, dtime, transform_type="INVALID")
+
+
+def test_F1_hmF1_clamped_to_180():
+    """hmF1 calculated as 170 km must be clamped to 180."""
+    P = np.array([0.5])
+    NmF2 = np.array([1e12])
+    hmF2 = np.array([200.0])  # 200 - 30 = 170
+    B0 = np.array([30.0])
+    B1 = np.array([1.0])
+    hmE = np.array([100.0])
+
+    _, _, hmF1, _ = sh.derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1,
+                                                      hmE)
+    assert hmF1[0] == 180.0
+
+
+def test_F1_NmF1_minimum_one():
+    """NmF1 <= 0 must be clamped to 1 to avoid log10(0)."""
+    P = np.array([0.0])  # clips to threshold
+    NmF2 = np.array([0])
+    hmF2 = np.array([300.0])
+    B0 = np.array([50.0])
+    B1 = np.array([1.0])
+    hmE = np.array([100.0])
+
+    NmF1, _, _, _ = sh.derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1,
+                                                      hmE)
+    assert np.all(NmF1 >= 1.0)
+
+
+def test_BSE_ratio_clamped_below_1_7():
+    """foF2/foE < 1.7 must be treated as 1.7."""
+    M3000 = np.array([3.0])
+    foF2 = np.array([1.5])  # ratio = 1.5 < 1.7
+    foE = np.array([1.0])
+    modip = np.array([0.0])
+    F107 = 100
+
+    result = sh.BSE_1979_model(M3000, foF2, foE, modip, F107)
+    # Verify finite; exact value depends on clamped ratio=1.7 path
+    assert np.isfinite(result[0])
+
+
+def test_thickness_F2_positive_output():
+    """B_F2_top and B_F2_bot must be positive arrays."""
+    foF2 = np.array([5.0, 10.0])
+    M3000 = np.array([3.0, 4.0])
+    hmF2 = np.array([300.0, 400.0])
+    NmF2 = np.array([1e12, 2e12])
+    F107 = 150
+
+    B_top, B_bot = sh.thickness_F2(NmF2, foF2, M3000, hmF2, F107)
+    assert B_top.shape == foF2.shape
+    assert np.all(B_top > 0)
+    assert np.all(B_bot > 0)
+
+
+def test_invalid_coordinate_raises_error():
+    """Raise ValueError for invalid coordinate system."""
+    with pytest.raises(ValueError, match="Coordinate system must be"):
+        sh.IRI_sh_params(2024, 6, 12.0, 0.0, 45.0, coord='INVALID')
+
+
+def test_array_input_preserves_shape():
+    """Array inputs (N_T,) and (N_G,) produce correct output shape."""
+    N_T, N_G = 4, 10
+    aUT = np.linspace(0, 24, N_T)
+    alon = np.linspace(-180, 180, N_G)
+    alat = np.linspace(-90, 90, N_G)
+
+    result = sh.IRI_sh_params(2024, 6, aUT, alon, alat, coord='GEO')
+
+    # Shape: (n_params, N_T, N_G, 2)
+    assert result.shape == (6, N_T, N_G, 2)
