@@ -234,6 +234,51 @@ def test_run_iri_reg_grid():
                                              f" got {EDP.shape}")
 
 
+# run_iri_reg_grid
+def test_run_seas_iri_reg_grid():
+    """Exercise run_seas_iri_reg_grid."""
+    hr_res = 4
+    lat_res = 90
+    lon_res = 90
+    alt_res = 10
+    alt_min = 90
+    alt_max = 100
+    coeff_dir = PyIRI.coeff_dir
+    year = 2023
+    month = 11
+    foF2_coeff = 'URSI'
+    hmF2_model = 'SHU2015'
+    coord = 'MLT'
+
+    (alon, alat, alon_2d, alat_2d, aalt,
+        aUT, F2, F1, E, Es, sun, mag) = sh.run_seas_iri_reg_grid(
+            year, month, solidx='IG12',
+            hr_res=hr_res, lat_res=lat_res, lon_res=lon_res, alt_res=alt_res,
+            alt_min=alt_min, alt_max=alt_max, coord=coord, coeff_dir=coeff_dir,
+            foF2_coeff=foF2_coeff, hmF2_model=hmF2_model)
+
+    N_lat = int(180 / lat_res + 1)
+    N_lon = int(360 / lon_res + 1)
+    N_hr = int(24 / hr_res)
+    N_alt = int((alt_max - alt_min) / alt_res + 1)
+    N_G = N_lat * N_lon
+
+    assert alon.shape == (N_G,), ("alon shape mismatch:"
+                                  f" expected {(N_G,)}, got {alon.shape}")
+    assert alat.shape == (N_G,), ("alat shape mismatch:"
+                                  f" expected {(N_G,)}, got {alat.shape}")
+    assert aalt.shape == (N_alt,), ("aalt shape mismatch:"
+                                    f" expected {(N_alt,)}, got {aalt.shape}")
+    assert aUT.shape == (N_hr,), ("aUT shape mismatch:"
+                                  f" expected {(N_hr,)}, got {aUT.shape}")
+    assert alon_2d.shape == (N_lat, N_lon), ("alon_2d shape mismatch:"
+                                             f" expected {(N_lat, N_lon)}, "
+                                             f"got {alon_2d.shape}")
+    assert F2['fo'].shape == (N_hr, N_G, 2), ("foF2 shape mismatch:"
+                                              f" expected {(N_hr, N_G, 2)},"
+                                              f" got {F2['fo'].shape}")
+
+
 # create_reg_grid_geo_or_mag
 @pytest.mark.parametrize("coord", ['GEO', 'QD', 'MLT'])
 def test_create_reg_grid_geo_or_mag(coord):
@@ -268,7 +313,8 @@ def test_create_reg_grid_geo_or_mag(coord):
 
 
 # IRI_density_1day
-def test_IRI_density_1day_runs():
+@pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
+def test_IRI_density_1day_runs_GEO(hmF2_model):
     """Exercise IRI_density_1day with supported foF2 and hmF2 options."""
     year = 2024
     mth = 6
@@ -280,7 +326,44 @@ def test_IRI_density_1day_runs():
     F107 = 125
     aalt = np.arange(90, 100, 10)
     foF2_coeff = 'URSI'
-    hmF2_model = 'SHU2015'
+    coord = 'GEO'
+
+    F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, F107,
+        coeff_dir=coeff_dir,
+        foF2_coeff=foF2_coeff,
+        hmF2_model=hmF2_model,
+        coord=coord
+    )
+
+    expected_shape = (len(aUT), len(alon))
+    actual_shape = F2['fo'].shape
+
+    assert actual_shape == expected_shape, (
+        f"foF2 shape mismatch: expected {expected_shape}, got {actual_shape}"
+    )
+
+    expected_shape = (len(aUT), len(aalt), len(alon))
+    actual_shape = EDP.shape
+
+    assert actual_shape == expected_shape, (
+        f"EDP shape mismatch: expected {expected_shape}, got {actual_shape}"
+    )
+
+
+@pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
+def test_IRI_density_1day_runs_MLT(hmF2_model):
+    """Exercise IRI_density_1day with supported foF2 and hmF2 options."""
+    year = 2024
+    mth = 6
+    day = 21
+    aUT = np.array([12.0, 13.0, 14.0])
+    alon = [0]
+    alat = 0
+    coeff_dir = PyIRI.coeff_dir
+    F107 = 125
+    aalt = np.arange(90, 100, 10)
+    foF2_coeff = 'URSI'
     coord = 'MLT'
 
     F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
@@ -509,3 +592,84 @@ def test_array_input_preserves_shape():
 
     # Shape: (n_params, N_T, N_G, 2)
     assert result.shape == (6, N_T, N_G, 2)
+
+
+def test_IRI_sh_params_coord_mlt():
+    """MLT coordinate path executes and returns correct shape."""
+    result = sh.IRI_sh_params(2024, 6, [0.0, 12.0], [0.0], [60.0], coord='MLT')
+    assert result.shape == (6, 2, 1, 2)
+
+
+def test_IRI_sh_params_coord_qd():
+    """QD coordinate path executes and returns correct shape."""
+    result = sh.IRI_sh_params(2024, 6, [12.0], [120.0], [-30.0], coord='QD')
+    assert result.shape == (6, 1, 1, 2)
+
+
+def test_IRI_sh_params_coord_geo():
+    """QD coordinate path executes and returns correct shape."""
+    result = sh.IRI_sh_params(2024, 6, [12.0], [120.0], [-30.0], coord='GEO')
+    assert result.shape == (6, 1, 1, 2)
+
+
+def test_IRI_sh_params_empty_hmF2():
+    """Returns NaN array for hmF2 if BSE1979."""
+    result = sh.IRI_sh_params(2024, 6, [12.0], [120.0], [-30.0],
+                              hmF2_model='BSE1979')
+    assert np.all(np.isnan(result[1]))
+
+
+def test_IRI_monthly_mean_par_dimensions_geo():
+    """Verify output dimensions for GEO coordinate system."""
+    N_T, N_G = 2, 3
+
+    F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
+        year=2024,
+        month=6,
+        aUT=np.linspace(0, 12, N_T),
+        alon=np.linspace(-180, 180, N_G),
+        alat=np.linspace(-60, 60, N_G),
+        solidx='R12',
+        solmin=10,
+        solmax=100,
+        coord='GEO'
+    )
+
+    # Ionospheric parameters stacked: (N_T, N_G, 2)
+    assert F2['fo'].shape == (N_T, N_G, 2)
+    assert F2['hm'].shape == (N_T, N_G, 2)
+    assert F1['fo'].shape == (N_T, N_G, 2)
+    assert E['fo'].shape == (N_T, N_G, 2)
+    assert Es['fo'].shape == (N_T, N_G, 2)
+
+    # Sun position: (N_T,)
+    assert sun['lon'].shape == (N_T,)
+    assert sun['lat'].shape == (N_T,)
+
+    # Magnetic field: (N_G,) for GEO
+    assert mag['modip'].shape == (N_G,)
+    assert mag['inc'].shape == (N_G,)
+
+
+def test_IRI_monthly_mean_par_dimensions_mlt():
+    """Verify output dimensions for MLT coordinate system."""
+    N_T, N_G = 2, 3
+
+    F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
+        year=2024,
+        month=6,
+        aUT=np.linspace(0, 12, N_T),
+        alon=np.array([12.0, 13.0, 14.0]),  # MLT hours
+        alat=np.linspace(-60, 60, N_G),
+        solidx='IG12',
+        solmin=0,
+        solmax=100,
+        coord='MLT'
+    )
+
+    # Magnetic field expands to (N_T, N_G) for MLT
+    assert mag['modip'].shape == (N_T, N_G)
+    assert mag['inc'].shape == (N_T, N_G)
+
+    # Sun still (N_T,)
+    assert sun['lat'].shape == (N_T,)

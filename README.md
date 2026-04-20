@@ -41,9 +41,81 @@ For more details and usage examples, see the Jupyter [tutorials](https://github.
 
 ---
 
+## Example: Monthly Mean Ionospheric Parameters
+
+PyIRI computes monthly mean ionospheric parameters for a user‑defined grid.
+The evaluation occurs simultaneously across all grid points and for all desired Universal Time (UT) frames.
+
+```python
+import numpy as np
+import PyIRI
+import PyIRI.edp_update as ml
+import PyIRI.sh_library as sh
+```
+
+Define year and month of interest:
+
+```python
+year = 2020
+month = 4
+```
+
+Create any horizontal grid (regular or irregular, global or regional).
+Grid arrays must be flattened into 1‑D NumPy arrays:
+
+```python
+dlon = 5
+dlat = 5
+alon_2d, alat_2d = np.mgrid[-180:180 + dlon:dlon, -90:90 + dlat:dlat]
+alon = alon_2d.ravel()
+alat = alat_2d.ravel()
+```
+
+Create a time array in decimal hours:
+
+```python
+hr_res = 1
+aUT = np.arange(0, 24, hr_res)
+```
+
+Compute F2, F1, and E‑region parameters using the **new spherical harmonics coefficients**:
+
+```python
+hmF2_model = 'SHU2015'   # Also available: 'AMTB2013', 'BSE1979'
+foF2_coeff = 'URSI'      # Also available: 'CCIR'
+coord = 'GEO'            # Also available: 'QD' for Quasi-Dipole Lon and Quasi-Dipole Lat inputs
+                         #                 'MLT' for MLT and Quasi-Dipole Lat inputs
+
+f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
+    year, month, aUT, alon, alat,
+    coeff_dir=None,
+    foF2_coeff=foF2_coeff,
+    hmF2_model=hmF2_model,
+    coord=coord)
+```
+
+<div align="center">
+  <img src="docs/figures/PyIRI_sh_foF2_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_hmF2_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_B0_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_B1_min_max.png" width="80%">
+  <img src="docs/figures/PyIRI_sh_B_top_min_max.png" width="80%">
+</div>
+
+Alternatively, the original URSI or CCIR climatological coefficients can be used:
+
+```python
+ccir_or_ursi = 0  # 0 = CCIR, 1 = URSI
+f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
+    year, month, aUT, alon, alat,
+    PyIRI.coeff_dir, ccir_or_ursi)
+```
+
+---
+
 ## Example: Daily Ionospheric Parameters (F10.7 Driven)
 
-PyIRI computes daily ionospheric parameters, interpolated in both time and solar activity.
+PyIRI also computes daily ionospheric parameters, interpolated in both time and solar activity.
 The user provides the F10.7 index for the day of interest.
 
 Define the F10.7 index in solar flux units (sfu):
