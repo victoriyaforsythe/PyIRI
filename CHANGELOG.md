@@ -2,6 +2,16 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.1.7 (04-19-2026)
+* Updated the SH coefficient files of parameters hmF2 AMTB2013, B0, B1, M(3000)F2, and foEs to use R12=0-100 instead of IG12=0-100.
+* Updated the SH coefficient file for foEs to use 900 instead of 8100 SH coefficients.
+* Re-integrated Es layer calculation with other parameters (deleted: sporadic_E_monthly_mean, sporadic_E_1day, load_Es_coeff_matrix).
+* Replaced IRI_monthly_mean_par with subroutine IRI_sh_params in sh_library.py, now used in IRI_density_1day to avoid cross-contamination between IG12 and R12 interpolation.
+* Deleted IRI_monthly_mean_par dependent functions in sh_library.py and associated figures, tutorials, and tests (deleted in sh_library: IRI_monthly_mean_par, run_seas_iri_reg_grid; deleted tutorial: Mean_monthly_parameters.ipynb).
+* Added some sh_library functions to reflect above changes; modified solar activity inteprolation functions in main_library in a non-breaking way.
+* Corrected solar conversion functions in main_library to be consistent with IRI-2020 fortran source code.
+* Added a notebook tutorial to show the SH coefficient extraction routine from original IRI grids.
+
 ## 0.1.6 (04-9-2026)
 * Updated Apex.nc file in coefficients directory through 2030.
 * Fixed bug in documentation compilation.
