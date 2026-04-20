@@ -129,28 +129,29 @@ def test_gammaE_dynamic(coord):
     """Exercise gammaE_dynamic."""
     year = 2009
     month = 11
+    day = 1
     aUT = [0, 1, 3]
     alon = np.array([0])
     alat = np.array([0])
-    aIG = [0, 100]
+    F107 = 100
 
     gamma_E, solzen_out, solzen_eff_out, slon, slat = sh.gammaE_dynamic(
-        year, month, aUT, alon, alat, aIG, coord=coord)
+        year, month, day, aUT, alon, alat, F107, coord=coord)
 
     N_T = len(aUT)
     N_G = len(alon)
 
-    assert gamma_E.shape == (N_T, N_G, 2), ("gamma_E shape mismatch: expected "
-                                            f"{(N_T, N_G, 2)},"
-                                            f" got {gamma_E.shape}")
-    assert solzen_out.shape == (N_T, N_G, 2), ("solzen_out shape mismatch:"
-                                               "expected "
-                                               f"{(N_T, N_G, 2)}, got "
-                                               f"{solzen_out.shape}")
-    assert solzen_eff_out.shape == (N_T, N_G, 2), ("solzen_eff_out shape "
-                                                   "mismatch: expected "
-                                                   f"{(N_T, N_G, 2)}, got "
-                                                   f"{solzen_eff_out.shape}")
+    assert gamma_E.shape == (N_T, N_G), ("gamma_E shape mismatch: expected "
+                                         f"{(N_T, N_G)},"
+                                         f" got {gamma_E.shape}")
+    assert solzen_out.shape == (N_T, N_G), ("solzen_out shape mismatch:"
+                                            "expected "
+                                            f"{(N_T, N_G)}, got "
+                                            f"{solzen_out.shape}")
+    assert solzen_eff_out.shape == (N_T, N_G), ("solzen_eff_out shape "
+                                                "mismatch: expected "
+                                                f"{(N_T, N_G)}, got "
+                                                f"{solzen_eff_out.shape}")
     assert slon.shape == (N_T,), ("slon shape mismatch: expected "
                                   f"{(N_T,)},"
                                   f" got {slon.shape}")
@@ -181,51 +182,6 @@ def test_load_coeff_matrices(foF2_coeff, hmF2_model):
     assert C.shape == (N_P, N_IG, N_FS, N_SH), ("C shape mismatch: expected "
                                                 f"{(N_P, N_IG, N_FS, N_SH)},"
                                                 f" got {C.shape}")
-
-
-# run_seas_iri_reg_grid
-def test_run_seas_iri_reg_grid():
-    """Exercise run_seas_iri_reg_grid."""
-    hr_res = 4
-    lat_res = 90
-    lon_res = 90
-    alt_res = 10
-    alt_min = 80
-    alt_max = 100
-    coeff_dir = PyIRI.coeff_dir
-    year = 2023
-    month = 11
-    foF2_coeff = 'URSI'
-    hmF2_model = 'SHU2015'
-    coord = 'MLT'
-
-    (alon, alat, alon_2d, alat_2d, aalt,
-        aUT, F2, F1, E, Es, sun, mag) = sh.run_seas_iri_reg_grid(
-            year, month, hr_res=hr_res, lat_res=lat_res, lon_res=lon_res,
-            alt_res=alt_res, alt_min=alt_min, alt_max=alt_max,
-            coord=coord, coeff_dir=coeff_dir,
-            foF2_coeff=foF2_coeff, hmF2_model=hmF2_model)
-
-    N_lat = int(180 / lat_res + 1)
-    N_lon = int(360 / lon_res + 1)
-    N_hr = int(24 / hr_res)
-    N_alt = int((alt_max - alt_min) / alt_res + 1)
-    N_G = N_lat * N_lon
-
-    assert alon.shape == (N_G,), ("alon shape mismatch:"
-                                  f" expected {(N_G,)}, got {alon.shape}")
-    assert alat.shape == (N_G,), ("alat shape mismatch:"
-                                  f" expected {(N_G,)}, got {alat.shape}")
-    assert aalt.shape == (N_alt,), ("aalt shape mismatch:"
-                                    f" expected {(N_alt,)}, got {aalt.shape}")
-    assert aUT.shape == (N_hr,), ("aUT shape mismatch:"
-                                  f" expected {(N_hr,)}, got {aUT.shape}")
-    assert alon_2d.shape == (N_lat, N_lon), ("alon_2d shape mismatch:"
-                                             f" expected {(N_lat, N_lon)}, "
-                                             f"got {alon_2d.shape}")
-    assert F2['fo'].shape == (N_hr, N_G, 2), ("foF2 shape mismatch:"
-                                              f" expected {(N_hr, N_G, 2)},"
-                                              f" got {F2['fo'].shape}")
 
 
 # run_iri_reg_grid
@@ -309,35 +265,6 @@ def test_create_reg_grid_geo_or_mag(coord):
     assert alon_2d.shape == (N_lat, N_lon), ("alon_2d shape mismatch:"
                                              f" expected {(N_lat, N_lon)}, "
                                              f"got {alon_2d.shape}")
-
-
-# IRI_monthly_mean_par
-@pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
-@pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
-@pytest.mark.parametrize("coord", ['GEO', 'QD', 'MLT'])
-def test_IRI_monthly_mean_par_runs(foF2_coeff, hmF2_model, coord):
-    """Exercise IRI_monthly_mean_par with supported foF2 and hmF2 options."""
-    year = 2024
-    mth = 6
-    aUT = np.array([12.0, 13.0, 14.0])
-    alon = [0]
-    alat = 0
-    coeff_dir = PyIRI.coeff_dir
-
-    F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
-        year, mth, aUT, alon, alat,
-        coeff_dir=coeff_dir,
-        foF2_coeff=foF2_coeff,
-        hmF2_model=hmF2_model,
-        coord=coord
-    )
-
-    expected_shape = (len(aUT), len(alon), 2)
-    actual_shape = F2['fo'].shape
-
-    assert actual_shape == expected_shape, (
-        f"foF2 shape mismatch: expected {expected_shape}, got {actual_shape}"
-    )
 
 
 # IRI_density_1day
