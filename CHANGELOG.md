@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## 0.1.6 (04-9-2026)
+## 0.1.6 (04-22-2026)
 * Updated Apex.nc file in coefficients directory through 2030.
 * Fixed bug in documentation compilation.
 * Fixed zenodo link in README.
