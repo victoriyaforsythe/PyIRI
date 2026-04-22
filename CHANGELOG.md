@@ -2,6 +2,12 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.1.6 (04-22-2026)
+* Updated Apex.nc file in coefficients directory through 2030.
+* Fixed bug in documentation compilation.
+* Fixed zenodo link in README.
+* Removed .zenodo.json (now managed with CITATION.cff) and updated docs.
+
 ## 0.1.5 (11-25-2025)
 * Fixed bug in F1 layer formula.
 
@@ -10,7 +16,7 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.1.3 (11-06-2025)
 * Order of linear interpolation changed. Parameters are now interpolated in fo, and converted to Nm.
-  
+
 ## 0.1.1 (11-05-2025)
 * Added conversion to numpy array in Apex function
 * Corrected for linear interpolation of foF2

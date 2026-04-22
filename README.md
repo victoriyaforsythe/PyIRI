@@ -4,7 +4,7 @@
 [![PyPI Package latest release](https://img.shields.io/pypi/v/PyIRI.svg)](https://pypi.org/project/PyIRI/)
 [![Build Status](https://github.com/victoriyaforsythe/PyIRI/actions/workflows/main.yml/badge.svg)](https://github.com/victoriyaforsythe/PyIRI/actions/workflows/main.yml)
 [![Documentation Status](https://readthedocs.org/projects/pyiri/badge/?version=latest)](https://pyiri.readthedocs.io/en/latest/?badge=latest)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8235173.svg)](https://doi.org/10.5281/zenodo.8235173)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17715914.svg)](https://doi.org/10.5281/zenodo.8235172)
 [![Coverage Status](https://coveralls.io/repos/github/victoriyaforsythe/PyIRI/badge.svg?branch=main)](https://coveralls.io/github/victoriyaforsythe/PyIRI?branch=main)
 
 **PyIRI** is a modern Python implementation of the International Reference Ionosphere (IRI) model.  
@@ -257,6 +257,13 @@ Comprehensive Jupyter notebooks are available in [`docs/tutorials`](https://gith
 - `Coordinate_Transformation.ipynb`
 - `PyIRI_year_run.ipynb`
 - `Generate_Apex_Coefficients.ipynb`
+
+---
+
+## Routine Package Maintenance: IGRF Updates
+
+The PyIRI model relies on an accurate representation of the Earth's magnetic field for the spherical harmonics library. PyIRI uses the quasi-dipole (QD) magnetic coordinate system.  These coordinates, which ultimately derive from the International Geomagnetic Reference Field (IGRF) coefficients, are computed by apexpy and then fit via Spherical Harmonics (SH) for easy reference. When a new IGRF definition is released, the previous set of IGRF coefficient files (especially the last five years, which are an extrapolation) become obsolete.
+To maintain PyIRI when a new IGRF definition comes out, maintainers must first ensure that apexpy has been updated to incorporate the latest IGRF coefficients. Once apexpy is current, it must be rerun to generate a new apex.nc coefficient file via SH fits. This process synchronizes PyIRI's magnetic coordinate grids with the updated IGRF and ensures the model remains accurate in MLT–QDLat space for the new epoch.
 
 ---
 
