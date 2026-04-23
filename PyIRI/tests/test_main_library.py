@@ -150,7 +150,7 @@ def test_R12_F107_roundtrip():
 def test_F107_2_R12_known_value():
     """Known conversion: R12=0 -> F107=63.75."""
     result = main.R12_2_F107(0)
-    assert result == 63.75
+    np.testing.assert_array_almost_equal(result, 63.75)
 
 
 def test_IG12_R12_v2_vs_v1():
