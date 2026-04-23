@@ -66,7 +66,7 @@ def test_solar_interpolate_ig12_midpoint():
     F_max = np.array([100., 200.])
     F107 = main.IG12_2_F107(50)
     result = main.solar_interpolate(F_min, F_max, F107, solidx='IG12')
-    np.testing.assert_array_almost_equal(result, [50., 150.], decimal=1)
+    np.testing.assert_array_almost_equal(result, [50., 150.], decimal=4)
 
 
 def test_solar_interpolate_r12_branch():
