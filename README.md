@@ -78,7 +78,7 @@ hr_res = 1
 aUT = np.arange(0, 24, hr_res)
 ```
 
-Compute F2, F1, and E‑region parameters using the **new spherical harmonics coefficients**:
+Compute F2, F1, E‑region, and sporadic E layer parameters using the **new spherical harmonics coefficients**:
 
 ```python
 hmF2_model = 'SHU2015'   # Also available: 'AMTB2013', 'BSE1979'
@@ -86,7 +86,7 @@ foF2_coeff = 'URSI'      # Also available: 'CCIR'
 coord = 'GEO'            # Also available: 'QD' for Quasi-Dipole Lon and Quasi-Dipole Lat inputs
                          #                 'MLT' for MLT and Quasi-Dipole Lat inputs
 
-f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
+F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
     year, month, aUT, alon, alat,
     coeff_dir=None,
     foF2_coeff=foF2_coeff,
@@ -106,7 +106,7 @@ Alternatively, the original URSI or CCIR climatological coefficients can be used
 
 ```python
 ccir_or_ursi = 0  # 0 = CCIR, 1 = URSI
-f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
+F2, F1, E, Es, sun, mag = ml.IRI_monthly_mean_par(
     year, month, aUT, alon, alat,
     PyIRI.coeff_dir, ccir_or_ursi)
 ```
@@ -156,7 +156,7 @@ F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
 Or, use the original CCIR/URSI version for compatibility:
 
 ```python
-f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
+F2, F1, E, Es, sun, mag, EDP = ml.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     PyIRI.coeff_dir, ccir_or_ursi)
 ```
