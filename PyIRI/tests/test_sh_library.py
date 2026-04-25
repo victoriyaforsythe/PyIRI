@@ -10,8 +10,6 @@ from PyIRI.main_library import den2freq
 from PyIRI.main_library import IG12_2_F107
 import PyIRI.sh_library as sh
 
-print(PyIRI.__file__)
-
 
 def test_fo_1day_interpolation():
     """Test linear interpolation of foF2."""
@@ -35,7 +33,74 @@ def test_fo_1day_interpolation():
                                 f"{fo_1day}, should be {true_fo}")
 
 
-# EDP_builder_continuous
+def test_IRI_density_1day_runs():
+    """Test that IRI_density_1day runs and returns expected shape."""
+    year = 2024
+    mth = 6
+    day = 21
+    aUT = 12
+    alon = 30
+    alat = 20
+    aalt = [100, 120]
+    F107 = 100
+
+    F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, F107)
+    assert EDP.shape[1] == len(aalt)
+    assert np.ndim(F2['Nm']) == 2
+
+
+def test_IRI_monthly_mean_par_runs():
+    """Test that IRI_monthly_mean_par runs and returns expected shape."""
+    year = 2024
+    mth = 6
+    aUT = 12
+    alon = 30
+    alat = 20
+
+    F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
+        year, mth, aUT, alon, alat)
+    assert np.ndim(F2['Nm']) == 3
+
+
+def test_IRI_density_1day_for_monthly_mean_values():
+    """Test that IRI_density_1day returns expected values for IG12=0/100."""
+    year = 2024
+    mth = 6
+    day = 15
+    aUT = 12
+    alon = 30
+    alat = 20
+    aalt = 100
+
+    F2min, F1min, Emin, Esmin, sunmin, magmin, _ = sh.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(0))
+
+    F2m, F1m, Em, Esm, sunm, magm = sh.IRI_monthly_mean_par(
+        year, mth, aUT, alon, alat)
+
+    F2max, F1max, Emax, Esmax, sunmax, magmax, _ = sh.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(100))
+
+    groups = [
+        (F2m, F2min, F2max, 'F2'), (F1m, F1min, F1max, 'F1'),
+        (Em, Emin, Emax, 'E'), (Esm, Esmin, Esmax, 'Es')
+    ]
+
+    for monthly, dmin, dmax, name in groups:
+        for key in monthly:
+            arr = monthly[key]
+
+            np.testing.assert_array_almost_equal(
+                arr[..., 0], dmin[key], decimal=3,
+                err_msg=f"{name}.{key} min mismatch (IG12=0)"
+            )
+            np.testing.assert_array_almost_equal(
+                arr[..., 1], dmax[key], decimal=3,
+                err_msg=f"{name}.{key} max mismatch (IG12=100)"
+            )
+
+
 def test_EDP_builder_continuous():
     """Exercise EDP_builder_continuous."""
     N_T = 3
@@ -64,7 +129,6 @@ def test_EDP_builder_continuous():
                                           f" got {EDP.shape}")
 
 
-# Ramakrishnan_Rawer_function
 def test_Ramakrishnan_Rawer_function():
     """Exercise Ramakrishnan_Rawer_function."""
     NmF2 = np.ones((2, 3, 4)) * 1.2e12
@@ -80,7 +144,6 @@ def test_Ramakrishnan_Rawer_function():
                                     f" got {den.shape}")
 
 
-# find_subsolar
 def test_find_subsolar():
     """Exercise find_subsolar."""
     dtime = dt.datetime(2003, 4, 5)
@@ -91,7 +154,6 @@ def test_find_subsolar():
     assert (slat >= -90) and (slat <= 90), (f"slat value error: {slat}")
 
 
-# Apex
 @pytest.mark.parametrize("transform_type",
                          ['GEO_2_QD',
                           'QD_2_GEO',
@@ -111,7 +173,6 @@ def test_Apex(transform_type, alon):
                                      f" got {Lat.shape}")
 
 
-# Probability_F1_with_solzen
 def test_Probability_F1_with_solzen():
     """Exercise Probability_F1_with_solzen."""
     solzen = np.ones((1, 3, 2))
@@ -123,7 +184,6 @@ def test_Probability_F1_with_solzen():
                                        f" got {a_P.shape}")
 
 
-# gammaE_dynamic
 @pytest.mark.parametrize("coord", ['GEO', 'QD', 'MLT'])
 def test_gammaE_dynamic(coord):
     """Exercise gammaE_dynamic."""
@@ -160,7 +220,6 @@ def test_gammaE_dynamic(coord):
                                   f" got {slat.shape}")
 
 
-# load_coeff_matrices
 @pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
 @pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
 def test_load_coeff_matrices(foF2_coeff, hmF2_model):
@@ -184,7 +243,6 @@ def test_load_coeff_matrices(foF2_coeff, hmF2_model):
                                                 f" got {C.shape}")
 
 
-# run_iri_reg_grid
 def test_run_iri_reg_grid():
     """Exercise run_iri_reg_grid."""
     hr_res = 4
@@ -234,7 +292,6 @@ def test_run_iri_reg_grid():
                                              f" got {EDP.shape}")
 
 
-# run_iri_reg_grid
 def test_run_seas_iri_reg_grid():
     """Exercise run_seas_iri_reg_grid."""
     hr_res = 4
@@ -279,7 +336,6 @@ def test_run_seas_iri_reg_grid():
                                               f" got {F2['fo'].shape}")
 
 
-# create_reg_grid_geo_or_mag
 @pytest.mark.parametrize("coord", ['GEO', 'QD', 'MLT'])
 def test_create_reg_grid_geo_or_mag(coord):
     """Exercise create_reg_grid_geo_or_mag."""
@@ -312,7 +368,6 @@ def test_create_reg_grid_geo_or_mag(coord):
                                              f"got {alon_2d.shape}")
 
 
-# IRI_density_1day
 @pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
 def test_IRI_density_1day_runs_GEO(hmF2_model):
     """Exercise IRI_density_1day with supported foF2 and hmF2 options."""
@@ -389,7 +444,6 @@ def test_IRI_density_1day_runs_MLT(hmF2_model):
     )
 
 
-# real_FS_func
 @pytest.mark.parametrize(
     "inp, c, exp_shape",
     [
@@ -446,7 +500,6 @@ def test_known_small_case_FS(UT):
     np.testing.assert_allclose(F[0, 2], np.sin(2 * np.pi / 24 * UT), atol=1e-10)
 
 
-# real_SH_func
 def test_shape_and_type_SH():
     """Check output shape and dtype for simple 1D input for SH function."""
     theta = np.linspace(0, np.pi, 5)
@@ -486,7 +539,6 @@ def test_large_lmax_runs_fast_SH():
     assert F.shape == ((10 + 1) ** 2, theta.size)
 
 
-# Apex_geo_qd
 def test_geo_to_qd():
     """Test GEO_2_QD transformation returns arrays of correct shape."""
     Lat = np.array([[10, 20], [30, 40]])
@@ -521,7 +573,7 @@ def test_invalid_type_raises():
 
 
 def test_F1_hmF1_clamped_to_180():
-    """hmF1 calculated as 170 km must be clamped to 180."""
+    """hmF1 calculated as <180 km must be clamped to 180."""
     P = np.array([0.5])
     NmF2 = np.array([1e12])
     hmF2 = np.array([200.0])  # 200 - 30 = 170
@@ -550,6 +602,9 @@ def test_F1_NmF1_minimum_one():
 
 def test_BSE_ratio_clamped_below_1_7():
     """foF2/foE < 1.7 must be treated as 1.7."""
+    # Clamping to 1.7 is to avoid unreasonably low hmF2 values. Refer to Bilitza
+    # et al. (2022), The International Reference Ionosphere model: A review and
+    # description of an ionospheric benchmark, Reviews of Geophysics, 60.
     M3000 = np.array([3.0])
     foF2 = np.array([1.5])  # ratio = 1.5 < 1.7
     foE = np.array([1.0])

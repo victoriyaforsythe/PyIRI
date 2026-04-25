@@ -173,7 +173,7 @@ def IRI_sh_params(year, month, aUT, alon, alat,
     if hmF2_model != 'BSE1979':
         hmF2 = Params[5, :, :, :]
     else:
-        hmF2 = np.zeros(foEs.shape) * np.nan
+        hmF2 = np.full(shape=foEs.shape, fill_value=np.nan)
 
     num_maps = np.array([foF2, hmF2, B0, B1, M3000, foEs])
 
