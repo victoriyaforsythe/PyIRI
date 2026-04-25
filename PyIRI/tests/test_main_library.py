@@ -190,6 +190,7 @@ def test_IRI_density_1day_for_monthly_mean_values_Es():
     ]
 )
 def test_solar_interpolate_args(solidx, F107):
+    """Test all solidx arguments for solar_interpolate."""
     F_min = np.array([0., 100.])
     F_max = np.array([100., 200.])
     result = main.solar_interpolate(F_min, F_max, F107, solidx=solidx)
@@ -197,22 +198,26 @@ def test_solar_interpolate_args(solidx, F107):
 
 
 def test_solar_interpolate_invalid_solidx_raises():
+    """Test invalid argument for solar_interpolate."""
     with pytest.raises(ValueError):
         main.solar_interpolate([1, 2], [3, 4], 100, solidx='INVALID')
 
 
 def test_solar_interpolate_list_input():
+    """Test list input for solar_interpolate."""
     list_input = main.solar_interpolate([1], [3], 100.0)
     arr_input = main.solar_interpolate(np.array([1]), np.array([3]), 100.0)
     np.testing.assert_array_almost_equal(list_input, arr_input, decimal=4)
 
 
 def test_deprecated_function_warns():
+    """Test deprecated solar_interpolate_R12."""
     with pytest.warns(DeprecationWarning):
         main.solar_interpolate_R12([1, 2], [3, 4], 50.0)
 
 
 def test_deprecated_argument_warns():
+    """Test deprecation in solar_interpolation_of_dictionary."""
     F = {'a': np.ones((3, 1, 2))}
     with pytest.warns(DeprecationWarning):
         main.solar_interpolation_of_dictionary(F, 100, use_R12=True)
