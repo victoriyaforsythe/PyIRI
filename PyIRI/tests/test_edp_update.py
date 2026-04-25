@@ -1,26 +1,25 @@
 """Unit tests for PyIRI's edp_update module."""
 
 import numpy as np
-import pytest
 
 import PyIRI
 from PyIRI import edp_update
-from PyIRI import edp_update as ml
 from PyIRI.main_library import den2freq
 from PyIRI.main_library import IG12_2_F107
+from PyIRI.main_library import R12_2_F107
 
 
 def test_fo_1day_interpolation():
     """Test linear interpolation of foF2."""
-    F2, F1, E, Es, *_ = ml.IRI_density_1day(2024,
-                                            3,
-                                            8,
-                                            np.array([0]),
-                                            np.array([20]),
-                                            np.array([40]),
-                                            np.array([0]),
-                                            IG12_2_F107(40),
-                                            PyIRI.coeff_dir)
+    F2, F1, E, Es, *_ = edp_update.IRI_density_1day(2024,
+                                                    3,
+                                                    8,
+                                                    np.array([0]),
+                                                    np.array([20]),
+                                                    np.array([40]),
+                                                    np.array([0]),
+                                                    IG12_2_F107(40),
+                                                    PyIRI.coeff_dir)
 
     fo_1day = []
     true_fo = []
@@ -45,12 +44,116 @@ def test_IRI_density_1day_runs():
     F107 = 100.0
     coeff_dir = PyIRI.coeff_dir
 
-    try:
-        F2, F1, E, Es, sun, mag, EDP = edp_update.IRI_density_1day(
-            year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir)
-        assert EDP.shape[1] == len(aalt)
-    except Exception as e:
-        pytest.fail(f"Function raised an exception: {e}")
+    F2, F1, E, Es, sun, mag, EDP = edp_update.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir)
+    assert EDP.shape[1] == len(aalt)
+    assert np.ndim(F2['Nm']) == 2
+
+
+def test_IRI_monthly_mean_par_runs():
+    """Test that IRI_monthly_mean_par runs and returns expected shape."""
+    year = 2024
+    mth = 6
+    aUT = np.array([12.0])
+    alon = np.array([0.0])
+    alat = np.array([0.0])
+    coeff_dir = PyIRI.coeff_dir
+
+    F2, F1, E, Es, sun, mag = edp_update.IRI_monthly_mean_par(
+        year, mth, aUT, alon, alat, coeff_dir)
+    assert np.ndim(F2['Nm']) == 3
+
+
+def test_IRI_density_1day_for_monthly_mean_values():
+    """Test that IRI_density_1day returns expected values for IG12=0/100."""
+    year = 2024
+    mth = 6
+    day = 15
+    aUT = np.array([12.0])
+    alon = np.array([0.0])
+    alat = np.array([0.0])
+    aalt = np.array([100])
+    coeff_dir = PyIRI.coeff_dir
+
+    F2min, F1min, Emin, _, sunmin, magmin, _ = edp_update.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(0),
+        coeff_dir)
+
+    F2m, F1m, Em, _, sunm, magm = edp_update.IRI_monthly_mean_par(
+        year, mth, aUT, alon, alat, coeff_dir)
+
+    F2max, F1max, Emax, _, sunmax, magmax, _ = edp_update.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(100),
+        coeff_dir)
+
+    groups = [
+        (F2m, F2min, F2max, 'F2'), (F1m, F1min, F1max, 'F1'),
+        (Em, Emin, Emax, 'E'),
+    ]  # Skip Es because interpolated for R12=10-180
+
+    for monthly, dmin, dmax, name in groups:
+        for key in monthly:
+            arr = monthly[key]
+
+            np.testing.assert_array_almost_equal(
+                arr[..., 0], dmin[key], decimal=3,
+                err_msg=f"{name}.{key} min mismatch (IG12=0)"
+            )
+            np.testing.assert_array_almost_equal(
+                arr[..., 1], dmax[key], decimal=3,
+                err_msg=f"{name}.{key} max mismatch (IG12=100)"
+            )
+
+    groups = [
+        (sunm, sunmin, sunmax, 'sun'), (magm, magmin, magmax, 'mag')
+    ]  # Check that sun and mag are the same regardless of solar activity
+
+    for monthly, dmin, dmax, name in groups:
+        for key in monthly:
+
+            np.testing.assert_array_almost_equal(
+                monthly[key], dmin[key], decimal=3,
+                err_msg=f"{name}.{key} min mismatch (IG12=0)"
+            )
+            np.testing.assert_array_almost_equal(
+                monthly[key], dmax[key], decimal=3,
+                err_msg=f"{name}.{key} max mismatch (IG12=100)"
+            )
+
+
+def test_IRI_density_1day_for_monthly_mean_values_Es():
+    """Test that IRI_density_1day returns expected Es values for IG12=0/100."""
+    year = 2024
+    mth = 6
+    day = 15
+    aUT = np.array([12.0])
+    alon = np.array([0.0])
+    alat = np.array([0.0])
+    aalt = np.array([100])
+    coeff_dir = PyIRI.coeff_dir
+
+    _, _, _, Esmin, _, _, _ = edp_update.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, R12_2_F107(10),
+        coeff_dir)
+
+    _, _, _, Esm, _, _ = edp_update.IRI_monthly_mean_par(
+        year, mth, aUT, alon, alat, coeff_dir)
+
+    _, _, _, Esmax, _, _, _ = edp_update.IRI_density_1day(
+        year, mth, day, aUT, alon, alat, aalt, R12_2_F107(180),
+        coeff_dir)
+
+    for key in Esm:
+        arr = Esm[key]
+
+        np.testing.assert_array_almost_equal(
+            arr[..., 0], Esmin[key], decimal=3,
+            err_msg=f"{key} min mismatch (R12=10)"
+        )
+        np.testing.assert_array_almost_equal(
+            arr[..., 1], Esmax[key], decimal=3,
+            err_msg=f"{key} max mismatch (R12=180)"
+        )
 
 
 def test_Probability_F1_output():
@@ -62,7 +165,7 @@ def test_Probability_F1_output():
     alat = np.array([20.])
     expected = np.array([[[0.00210238, 0.00210238]]])
 
-    result = ml.Probability_F1(year, month, aUT, alon, alat)
+    result = edp_update.Probability_F1(year, month, aUT, alon, alat)
     assert result.shape == expected.shape, (
         "Shape mismatch in Probability_F1 output")
     assert np.allclose(result, expected, atol=1e-8), (
@@ -76,7 +179,7 @@ def test_drop_up_output():
     z_top = 250.0
     expected = 0.2245381938521092
 
-    result = ml.drop_up(z_E, z_F, z_top, drop_fraction=0.2)
+    result = edp_update.drop_up(z_E, z_F, z_top, drop_fraction=0.2)
     assert abs(result - expected) < 1e-8, "drop_up output mismatch"
 
 
@@ -87,7 +190,7 @@ def test_logistic_curve_output():
     scale = 50.0
     expected = 0.6899744811276125
 
-    result = ml.logistic_curve(z, z0, scale)
+    result = edp_update.logistic_curve(z, z0, scale)
     assert abs(result - expected) < 1e-8, "logistic_curve output mismatch"
 
 
@@ -103,7 +206,7 @@ def test_derive_dependent_F1_parameters_output():
     expected_hmF1 = np.array([254.])
     expected_thickness = np.array([72.])
 
-    NmF1, B_F1_bot, hmF1, thickness = ml.derive_dependent_F1_parameters(
+    NmF1, B_F1_bot, hmF1, thickness = edp_update.derive_dependent_F1_parameters(
         p_F1, NmF2, hmF2, B_F2_bot, z_E)
 
     assert np.allclose(NmF1, expected_NmF1, atol=1e-6), "NmF1 mismatch"
