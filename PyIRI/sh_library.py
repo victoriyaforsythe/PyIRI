@@ -285,7 +285,6 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
     Weather.
 
     """
-
     # Set coefficient file path if none given
     if coeff_dir is None:
         coeff_dir = PyIRI.coeff_dir
@@ -1908,7 +1907,6 @@ def thickness_F2(NmF2, foF2, M3000, hmF2, F107):
     Space Weather.
 
     """
-
     # In the actual NeQuick_2 code there is a typo, missing 0.01 which makes
     # the B 100 times smaller. It took me a long time to find this mistake,
     # while comparing with my results. The printed guide doesn't have this
