@@ -389,7 +389,7 @@ def test_solar_interpolate_bounds():
     """
     F_min = np.array([10.])
     F_max = np.array([20.])
-    low = main.solar_interpolate(F_min, F_max, F107=0, solidx='F017',
+    low = main.solar_interpolate(F_min, F_max, F107=0, solidx='F107',
                                  solmin=0, solmax=100)
     high = main.solar_interpolate(F_min, F_max, F107=100, solidx='F107',
                                   solmin=0, solmax=100)
