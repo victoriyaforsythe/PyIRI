@@ -87,7 +87,7 @@ def IRI_sh_params(year, month, aUT, alon, alat,
     num_maps : np.ndarray
         Array containing numerical maps for foF2, hmF2, B0, B1, M3000, and foEs
         at each UT timestamp, grid location, and for min and max solar activity.
-        Shape (N_T, N_G, 2)
+        Shape (6, N_T, N_G, 2)
 
     Notes
     -----
@@ -1226,6 +1226,10 @@ def Apex_geo_qd(Lat, Lon, dtime, transform_type):
     pyshtools).
 
     """
+    # Check validity of transform type
+    if transform_type not in ['GEO_2_QD', 'QD_2_GEO']:
+        raise ValueError('Transform type must be either GEO_2_QD or QD_2_GEO.')
+
     # Convert Lat and Lon to numpy arrays
     Lat = ml.to_numpy_array(Lat)
     Lon = ml.to_numpy_array(Lon)
@@ -1521,6 +1525,13 @@ def real_FS_func(aUT, N_FS_c=5):
         Shape (N_T, N_FS_r)
 
     """
+    # Check validity of coefficient number requested
+    if not isinstance(N_FS_c, int):
+        raise TypeError("Number of complex Fourier coefficients must be an"
+                        " integer.")
+    if N_FS_c <= 0:
+        raise ValueError("Number of complex Fourier coefficients must be >0.")
+
     # Convert inputs to Numpy arrays
     aUT = ml.to_numpy_array(aUT)
 

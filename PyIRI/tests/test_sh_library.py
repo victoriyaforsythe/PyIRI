@@ -6,65 +6,107 @@ import numpy as np
 import pytest
 
 import PyIRI
-from PyIRI.main_library import den2freq
+from PyIRI.main_library import freq2den
 from PyIRI.main_library import IG12_2_F107
 import PyIRI.sh_library as sh
 
 
 def test_fo_1day_interpolation():
-    """Test linear interpolation of foF2."""
+    """Test linear interpolation of fo.
+
+    Tests whether IRI_density_1day handles the linear interpolation of fo
+    correctly. In the IRI_density_1day function, Nm should be computed directly
+    from the interpolated value of fo. Nm should NOT be linearly interpolated.
+    If Nm is linearly interpolated, this test will fail.
+    """
     F2, F1, E, Es, *_ = sh.IRI_density_1day(2024,
                                             3,
                                             8,
-                                            np.array([0]),
-                                            np.array([20]),
-                                            np.array([40]),
-                                            np.array([0]),
+                                            0,
+                                            20,
+                                            40,
+                                            0,
                                             IG12_2_F107(40))
 
-    fo_1day = []
-    true_fo = []
+    Nm_fn_output = []
+    Nm_from_fo = []
     for layer in [F2, F1, E, Es]:
-        fo_1day.append(layer['fo'][0, 0])
-        Nm_1day = layer['Nm'][0, 0]
-        true_fo.append(den2freq(Nm_1day))
+        Nm_fn_output.append(layer['Nm'][0, 0])
+        fo_fn_output = layer['fo'][0, 0]
+        Nm_from_fo.append(freq2den(fo_fn_output))
 
-    assert fo_1day == true_fo, ("fo 1day interpolation error: fo = "
-                                f"{fo_1day}, should be {true_fo}")
+    np.testing.assert_array_almost_equal(
+        Nm_fn_output, Nm_from_fo, decimal=4,
+        err_msg=("Nm/fo interpolation error: Nm from function is "
+                 + f"{Nm_fn_output}, should be {Nm_from_fo}. Verify that fo is "
+                 + "linearly interpolated, not Nm.")
+    )
 
 
 def test_IRI_density_1day_runs():
-    """Test that IRI_density_1day runs and returns expected shape."""
+    """Test that IRI_density_1day runs and returns expected shape.
+
+    IRI_density_1day must return dictionaries of shape (N_T, N_G) for
+    ionospheric parameters, shape (N_T,) for solar and magnetic parameters, and
+    shape (N_T, N_G, N_V) for the EDP array.
+    """
     year = 2024
     mth = 6
     day = 21
-    aUT = 12
-    alon = 30
-    alat = 20
-    aalt = [100, 120]
-    F107 = 100
+    aUT = [12.0, 13.0]                # N_T = 2
+    alon = [0.0]                      # N_G = 1
+    alat = [0.0]
+    aalt = np.linspace(100, 600, 10)  # N_V = 10
+    F107 = 100.0
+
+    N_T = len(aUT)
+    N_G = len(alon)
+    N_V = len(aalt)
 
     F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
         year, mth, day, aUT, alon, alat, aalt, F107)
-    assert EDP.shape[1] == len(aalt)
-    assert np.ndim(F2['Nm']) == 2
+
+    assert EDP.shape == (N_T, N_V, N_G)
+    assert F2['Nm'].shape == (N_T, N_G)
+    assert sun['lat'].shape == (N_T,)
 
 
 def test_IRI_monthly_mean_par_runs():
-    """Test that IRI_monthly_mean_par runs and returns expected shape."""
+    """Test that IRI_monthly_mean_par runs and returns expected shape.
+
+    IRI_monthly_mean_par must return dictionaries of shape (N_T, N_G, 2) for
+    ionospheric parameters, and shape (N_T,) for solar and magnetic parameters.
+    """
     year = 2024
     mth = 6
-    aUT = 12
-    alon = 30
-    alat = 20
+    aUT = [12.0, 13.0]                # N_T = 2
+    alon = [0.0]                      # N_G = 1
+    alat = [0.0]
+
+    N_T = len(aUT)
+    N_G = len(alon)
 
     F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
         year, mth, aUT, alon, alat)
-    assert np.ndim(F2['Nm']) == 3
+
+    assert F2['Nm'].shape == (N_T, N_G, 2)
+    assert sun['lat'].shape == (N_T,)
 
 
 def test_IRI_density_1day_for_monthly_mean_values():
-    """Test that IRI_density_1day returns expected values for IG12=0/100."""
+    """Test that IRI_density_1day returns expected values for IG12=0/100.
+
+    Unlike in main_library or edp_update, IRI_density_1day in sh_library
+    calculates iono paramaters to the desired solar activity directly without
+    calling IRI_monthly_mean_par. IRI_monthly_mean_par then calls
+    IRI_density_1day twice to generate iono parameters for one solar min and one
+    solar max. This is because not all parameters use the same solar index and
+    solar min/max values in implementation of IRI_density_1day.
+
+    Still, given IG12=0 or 100 as input, IRI_density_1day should return the same
+    parameter values as IRI_monthly_mean_par using solidx='IG12', solmin=0, and
+    solmax=100.
+    """
     year = 2024
     mth = 6
     day = 15
@@ -73,19 +115,24 @@ def test_IRI_density_1day_for_monthly_mean_values():
     alat = 20
     aalt = 100
 
-    F2min, F1min, Emin, Esmin, sunmin, magmin, _ = sh.IRI_density_1day(
+    # Giving IG12=0 as input to IRI_density_1day
+    F2min, F1min, Emin, _, sunmin, magmin, _ = sh.IRI_density_1day(
         year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(0))
 
-    F2m, F1m, Em, Esm, sunm, magm = sh.IRI_monthly_mean_par(
-        year, mth, aUT, alon, alat)
-
-    F2max, F1max, Emax, Esmax, sunmax, magmax, _ = sh.IRI_density_1day(
+    # Giving IG12=100 as input to IRI_density_1day
+    F2max, F1max, Emax, _, sunmax, magmax, _ = sh.IRI_density_1day(
         year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(100))
 
+    # Reference values for IG12=0/100 obtained from IRI_monthly_mean_par
+    F2m, F1m, Em, _, sunm, magm = sh.IRI_monthly_mean_par(
+        year, mth, aUT, alon, alat)
+
+    # Check that IRI_density_1day with IG12=0/100 as input returns the same
+    # parameter values as IRI_monthly_mean_par
     groups = [
         (F2m, F2min, F2max, 'F2'), (F1m, F1min, F1max, 'F1'),
-        (Em, Emin, Emax, 'E'), (Esm, Esmin, Esmax, 'Es')
-    ]
+        (Em, Emin, Emax, 'E'),
+    ]  # Skip Es because interpolated for R12=10-180
 
     for monthly, dmin, dmax, name in groups:
         for key in monthly:
@@ -100,25 +147,48 @@ def test_IRI_density_1day_for_monthly_mean_values():
                 err_msg=f"{name}.{key} max mismatch (IG12=100)"
             )
 
+    # Check that sun and mag are the same regardless of solar activity
+    groups = [
+        (sunm, sunmin, sunmax, 'sun'), (magm, magmin, magmax, 'mag')
+    ]
+
+    # Check that IRI_density_1day with IG12=0/100 as input returns the same
+    # parameter values as IRI_monthly_mean_par
+    for monthly, dmin, dmax, name in groups:
+        for key in monthly:
+
+            np.testing.assert_array_almost_equal(
+                monthly[key], dmin[key], decimal=3,
+                err_msg=f"{name}.{key} min mismatch (IG12=0)"
+            )
+            np.testing.assert_array_almost_equal(
+                monthly[key], dmax[key], decimal=3,
+                err_msg=f"{name}.{key} max mismatch (IG12=100)"
+            )
+
 
 def test_EDP_builder_continuous():
-    """Exercise EDP_builder_continuous."""
+    """Test EDP_builder_continuous output shape.
+
+    Checks that the EDP_builder_continuous function outputs the correct shape.
+    """
     N_T = 3
     N_G = 2
     N_V = 4
+    shape = (N_T, N_G)
 
-    F2 = {'Nm': np.ones((N_T, N_G)) * 1.2e12,
-          'hm': np.ones((N_T, N_G)) * 350,
-          'B0': np.ones((N_T, N_G)) * 120,
-          'B1': np.ones((N_T, N_G)) * 2,
-          'B_top': np.ones((N_T, N_G)) * 38}
-    F1 = {'Nm': np.ones((N_T, N_G)) * 2e11,
-          'hm': np.ones((N_T, N_G)) * 200,
-          'B_bot': np.ones((N_T, N_G)) * 17}
-    E = {'Nm': np.ones((N_T, N_G)) * 5e10,
-         'hm': np.ones((N_T, N_G)) * 110,
-         'B_top': np.ones((N_T, N_G)) * 5,
-         'B_bot': np.ones((N_T, N_G)) * 7}
+    F2 = {'Nm': np.full(shape, 1.2e12),
+          'hm': np.full(shape, 350),
+          'B0': np.full(shape, 120),
+          'B1': np.full(shape, 2),
+          'B_top': np.full(shape, 38)}
+    F1 = {'Nm': np.full(shape, 2e11),
+          'hm': np.full(shape, 200),
+          'B_bot': np.full(shape, 17)}
+    E = {'Nm': np.full(shape, 5e10),
+         'hm': np.full(shape, 110),
+         'B_top': np.full(shape, 5),
+         'B_bot': np.full(shape, 7)}
 
     aalt = np.linspace(600, 700, N_V)
 
@@ -130,22 +200,32 @@ def test_EDP_builder_continuous():
 
 
 def test_Ramakrishnan_Rawer_function():
-    """Exercise Ramakrishnan_Rawer_function."""
-    NmF2 = np.ones((2, 3, 4)) * 1.2e12
-    hmF2 = np.ones((2, 3, 4)) * 350
-    B0 = np.ones((2, 3, 4)) * 120
-    B1 = np.ones((2, 3, 4)) * 2
-    h = np.ones((2, 3, 4)) * 100
+    """Tests Ramakrishnan_Rawer_function output shape.
+
+    Checks that the Ramakrishnan_Rawer_function outputs the correct shape.
+    """
+    N_T = 3
+    N_G = 2
+    N_V = 4
+    shape = (N_V, N_T, N_G)
+
+    NmF2 = np.full(shape, 1.2e12)
+    hmF2 = np.full(shape, 350)
+    B0 = np.full(shape, 120)
+    B1 = np.full(shape, 2)
+    h = np.full(shape, 200)
 
     den = sh.Ramakrishnan_Rawer_function(NmF2, hmF2, B0, B1, h)
 
-    assert den.shape == (2, 3, 4), ("Density shape mismatch:"
-                                    f" expected (2, 3, 4),"
-                                    f" got {den.shape}")
+    assert den.shape == shape, (f"Density shape mismatch: expected {shape},"
+                                f" got {den.shape}")
 
 
 def test_find_subsolar():
-    """Exercise find_subsolar."""
+    """Tests find_subsolar.
+
+    Checks that the find_subsolar function returns valid lat/lon outputs.
+    """
     dtime = dt.datetime(2003, 4, 5)
 
     slon, slat = sh.find_subsolar(dtime, adjust_type='to360')
@@ -161,20 +241,33 @@ def test_find_subsolar():
                           'QD_2_MLT',
                           'GEO_2_MLT',
                           'MLT_2_GEO'])
-@pytest.mark.parametrize("alon", [np.array([0]), np.array([[0], [0]])])
-def test_Apex(transform_type, alon):
-    """Exercise Apex."""
+@pytest.mark.parametrize("ll", [np.array([0]), np.array([[0], [0]])])
+def test_Apex(transform_type, ll):
+    """Test Apex output shape.
+
+    Checks that the Apex function returns outputs of the correct shape.
+
+    Parameters
+    ------------
+    transform_type : str
+        Coordinate transform type between GEO, QD, and MLT.
+    ll : array-like
+        Argument used as latitude and longitude placeholders.
+    """
     dtime = dt.datetime(2018, 1, 3)
 
-    Lat, Lon = sh.Apex(alon, alon, dtime, transform_type=transform_type)
+    Lat, Lon = sh.Apex(ll, ll, dtime, transform_type=transform_type)
 
-    assert Lat.shape == alon.shape, ("Lat shape mismatch: expected "
-                                     f"{alon.shape},"
-                                     f" got {Lat.shape}")
+    assert Lat.shape == ll.shape, (f"Lat shape mismatch: expected {ll.shape},"
+                                   f" got {Lat.shape}")
 
 
 def test_Probability_F1_with_solzen():
-    """Exercise Probability_F1_with_solzen."""
+    """Tests Probability_F1_with_solzen output shape.
+
+    Checks that the Probability_F1_with_solzen function returns outputs of the
+    correct shape.
+    """
     solzen = np.ones((1, 3, 2))
 
     a_P = sh.Probability_F1_with_solzen(solzen)
@@ -186,7 +279,16 @@ def test_Probability_F1_with_solzen():
 
 @pytest.mark.parametrize("coord", ['GEO', 'QD', 'MLT'])
 def test_gammaE_dynamic(coord):
-    """Exercise gammaE_dynamic."""
+    """Tests gammaE_dynamic output shape.
+
+    Checks that the gammaE_dynamic function returns outputs of the correct
+    shape.
+
+    Parameters
+    ------------
+    coord : str
+        Coordinate system used.
+    """
     year = 2009
     month = 11
     day = 1
@@ -223,7 +325,18 @@ def test_gammaE_dynamic(coord):
 @pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
 @pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
 def test_load_coeff_matrices(foF2_coeff, hmF2_model):
-    """Exercise load_coeff_matrices."""
+    """Test load_coeff_matrices output shape.
+
+    Checks that the load_coeff_matrices function returns outputs of the correct
+    shape.
+
+    Parameters
+    ------------
+    foF2_coeff : str
+        foF2 coefficients to use between URSI and CCIR.
+    hmF2_model : str
+        hmF2 model to use between Shu-2015, AMTB-2013, and BSE-1979.
+    """
     coeff_dir = PyIRI.coeff_dir
     month = 11
 
@@ -244,7 +357,11 @@ def test_load_coeff_matrices(foF2_coeff, hmF2_model):
 
 
 def test_run_iri_reg_grid():
-    """Exercise run_iri_reg_grid."""
+    """Tests run_iri_reg_grid output shape.
+
+    Checks that the run_iri_reg_grid function returns outputs of the correct
+    shape.
+    """
     hr_res = 4
     lat_res = 90
     lon_res = 90
@@ -293,7 +410,11 @@ def test_run_iri_reg_grid():
 
 
 def test_run_seas_iri_reg_grid():
-    """Exercise run_seas_iri_reg_grid."""
+    """Tests run_seas_iri_reg_grid output shape.
+
+    Checks that the run_seas_iri_reg_grid function returns outputs of the
+    correct shape.
+    """
     hr_res = 4
     lat_res = 90
     lon_res = 90
@@ -338,7 +459,16 @@ def test_run_seas_iri_reg_grid():
 
 @pytest.mark.parametrize("coord", ['GEO', 'QD', 'MLT'])
 def test_create_reg_grid_geo_or_mag(coord):
-    """Exercise create_reg_grid_geo_or_mag."""
+    """Tests create_reg_grid_geo_or_mag output shape.
+
+    Checks that the create_reg_grid_geo_or_mag function returns outputs of the
+    correct shape.
+
+    Parameters
+    ------------
+    coord : str
+        Coordinate system to use between GEO, QD, and MLT.
+    """
     hr_res = 4
     lat_res = 90
     lon_res = 90
@@ -368,9 +498,21 @@ def test_create_reg_grid_geo_or_mag(coord):
                                              f"got {alon_2d.shape}")
 
 
+@pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
 @pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
-def test_IRI_density_1day_runs_GEO(hmF2_model):
-    """Exercise IRI_density_1day with supported foF2 and hmF2 options."""
+def test_IRI_density_1day_runs_GEO(foF2_coeff, hmF2_model):
+    """Tests IRI_density_1day output shape with GEO coordinate input.
+
+    Checks that the IRI_density_1day function returns outputs of the correct
+    shape given GEO coordinate input.
+
+    Parameters
+    ------------
+    foF2_coeff : str
+        foF2 coefficients to use between URSI and CCIR.
+    hmF2_model : str
+        hmF2 model to use between Shu-2015, AMTB-2013, and BSE-1979.
+    """
     year = 2024
     mth = 6
     day = 21
@@ -380,7 +522,6 @@ def test_IRI_density_1day_runs_GEO(hmF2_model):
     coeff_dir = PyIRI.coeff_dir
     F107 = 125
     aalt = np.arange(90, 100, 10)
-    foF2_coeff = 'URSI'
     coord = 'GEO'
 
     F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
@@ -406,9 +547,21 @@ def test_IRI_density_1day_runs_GEO(hmF2_model):
     )
 
 
+@pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
 @pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
-def test_IRI_density_1day_runs_MLT(hmF2_model):
-    """Exercise IRI_density_1day with supported foF2 and hmF2 options."""
+def test_IRI_density_1day_runs_MLT(foF2_coeff, hmF2_model):
+    """Tests IRI_density_1day output shape with MLT coordinate input.
+
+    Checks that the IRI_density_1day function returns outputs of the correct
+    shape given MLT coordinate input.
+
+    Parameters
+    ------------
+    foF2_coeff : str
+        foF2 coefficients to use between URSI and CCIR.
+    hmF2_model : str
+        hmF2 model to use between Shu-2015, AMTB-2013, and BSE-1979.
+    """
     year = 2024
     mth = 6
     day = 21
@@ -418,7 +571,6 @@ def test_IRI_density_1day_runs_MLT(hmF2_model):
     coeff_dir = PyIRI.coeff_dir
     F107 = 125
     aalt = np.arange(90, 100, 10)
-    foF2_coeff = 'URSI'
     coord = 'MLT'
 
     F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
@@ -455,7 +607,20 @@ def test_IRI_density_1day_runs_MLT(hmF2_model):
     ids=["array", "list", "tuple", "scalar"]
 )
 def test_shape_dtype_FS(inp, c, exp_shape):
-    """Check the shape and dtype of output of function FS."""
+    """Tests real_FS_func output shape.
+
+    Checks that the real_FS_func function returns outputs of the correct shape
+    given different input types and shapes.
+
+    Parameters
+    ------------
+    inp : array-like
+        Input values.
+    c : int
+        Number of complex Fourier coefficients to use as a truncation level.
+    exp_shape : tuple
+        Expected output shape.
+    """
     out = sh.real_FS_func(inp, N_FS_c=c)
     assert isinstance(out, np.ndarray)
     assert np.issubdtype(out.dtype, np.floating)
@@ -463,7 +628,11 @@ def test_shape_dtype_FS(inp, c, exp_shape):
 
 
 def test_empty_FS():
-    """Check the shape and dtype of output of function FS given empty input."""
+    """Tests real_FS_func output shape for empty input.
+
+    Checks that the real_FS_func function returns empty outputs given empty
+    inputs.
+    """
     out = sh.real_FS_func(np.array([]), N_FS_c=3)
     assert out.shape == (0, 5)
     assert out.size == 0
@@ -471,20 +640,31 @@ def test_empty_FS():
 
 @pytest.mark.parametrize("c", [0, -2])
 def test_Nc_negative_FS(c):
-    """Check that an error is raised for negative/null coeff number in FS."""
-    with pytest.raises(ValueError):
+    """Tests real_FS_func error for negative/null coefficient number input.
+
+    Checks that the real_FS_func function returns a value error for negative or
+    null coefficient input.
+    """
+    with pytest.raises(ValueError, match='must be >0'):
         sh.real_FS_func([0, 1], N_FS_c=c)
 
 
 @pytest.mark.parametrize("c", [1.5, "3", None])
 def test_Nc_type_FS(c):
-    """Check that an error is raised for inavlid input types in FS."""
-    with pytest.raises(TypeError):
+    """Tests real_FS_func error for invalid dtype coefficient number input.
+
+    Checks that the real_FS_func function returns a type error for invalid dtype
+    input.
+    """
+    with pytest.raises(TypeError, match='must be an integer'):
         sh.real_FS_func([0, 1], N_FS_c=c)
 
 
 def test_periodic_FS():
-    """Check periodicity of function FS."""
+    """Tests periodicity of real_FS_func.
+
+    Checks that the real_FS_func function is 24-hour periodic.
+    """
     a = np.array([0.5, 5.2, 13.7])
     np.testing.assert_allclose(sh.real_FS_func(a, 4),
                                sh.real_FS_func(a + 24, 4),
@@ -493,7 +673,16 @@ def test_periodic_FS():
 
 @pytest.mark.parametrize("UT", [1, 12.3, 23.9999])
 def test_known_small_case_FS(UT):
-    """For small N_FS_c, compare against analytical Fourier series."""
+    """Tests real_FS_func validity against known cases.
+
+    Checks that the real_FS_func function returns accurate output values for
+    small coefficient numbers as compared to analytical Fourier series.
+
+    Parameters
+    ------------
+    UT : array-like
+        Input time values in hours.
+    """
     F = sh.real_FS_func(UT, N_FS_c=2)
     np.testing.assert_allclose(F[0, 0], 1.0, rtol=1e-6)
     np.testing.assert_allclose(F[0, 1], np.cos(2 * np.pi / 24 * UT), atol=1e-10)
@@ -501,7 +690,11 @@ def test_known_small_case_FS(UT):
 
 
 def test_shape_and_type_SH():
-    """Check output shape and dtype for simple 1D input for SH function."""
+    """Tests real_SH_func output shape and type for 1D input.
+
+    Checks that the real_SH_func function returns accurate output type and
+    shape for a 1D input.
+    """
     theta = np.linspace(0, np.pi, 5)
     phi = np.linspace(0, 2 * np.pi, 5)
     lmax = 3
@@ -513,7 +706,11 @@ def test_shape_and_type_SH():
 
 
 def test_shape_for_2d_input_SH():
-    """Check shape when theta and phi are 2D arrays for SH function."""
+    """Tests real_SH_func output shape for 2D input.
+
+    Checks that the real_SH_func function returns accurate output shape for a 2D
+    input.
+    """
     lon = np.linspace(0, 2 * np.pi, 10)
     lat = np.linspace(0, np.pi, 8)
     theta, phi = np.meshgrid(lat, lon, indexing="ij")
@@ -522,7 +719,11 @@ def test_shape_for_2d_input_SH():
 
 
 def test_known_small_case_SH():
-    """For lmax=1, compare against analytical spherical harmonics."""
+    """Tests real_SH_func validity against known cases.
+
+    Checks that the real_SH_func function returns accurate output values for
+    small coefficient numbers as compared to analytical spherical harmonics.
+    """
     theta = np.array([np.pi / 2])
     phi = np.array([0.0])
     F = sh.real_SH_func(theta, phi, lmax=1)
@@ -531,49 +732,46 @@ def test_known_small_case_SH():
     np.testing.assert_allclose(F[2], 0.0, atol=1e-10)
 
 
-def test_large_lmax_runs_fast_SH():
-    """Sanity check performance for moderate lmax."""
-    theta = np.linspace(0, np.pi, 10)
-    phi = np.linspace(0, 2 * np.pi, 10)
-    F = sh.real_SH_func(theta, phi, lmax=10)
-    assert F.shape == ((10 + 1) ** 2, theta.size)
+@pytest.mark.parametrize("transform_type", ['GEO_2_QD', 'QD_2_GEO'])
+def test_geo_to_qd(transform_type):
+    """Tests Apex_geo_qd output shape and finiteness.
 
+    Checks that the Apex_geo_qd outputs the correct shape and is finite.
 
-def test_geo_to_qd():
-    """Test GEO_2_QD transformation returns arrays of correct shape."""
-    Lat = np.array([[10, 20], [30, 40]])
-    Lon = np.array([[100, 120], [140, 160]])
+    Parameters
+    ------------
+    trnasform_type : str
+        Coord transform type between GEO and QD.
+    """
+    inLat = np.array([[10, 20], [30, 40]])
+    inLon = np.array([[100, 120], [140, 160]])
     dtime = dt.datetime(2005, 1, 1)
-    QDLat, QDLon = sh.Apex_geo_qd(Lat, Lon, dtime, transform_type="GEO_2_QD")
-    assert QDLat.shape == Lat.shape
-    assert QDLon.shape == Lon.shape
-    assert np.all(np.isfinite(QDLat))
-    assert np.all(np.isfinite(QDLon))
+    outLat, outLon = sh.Apex_geo_qd(inLat, inLon, dtime,
+                                    transform_type=transform_type)
+    assert inLat.shape == outLat.shape
+    assert inLon.shape == outLon.shape
+    assert np.all(np.isfinite(outLat))
+    assert np.all(np.isfinite(outLon))
 
 
-def test_qd_to_geo():
-    """Test QD_2_GEO transformation returns arrays of correct shape."""
-    Lat = np.array([10, 20, 30])
-    Lon = np.array([100, 150, 200])
-    dtime = dt.datetime(2010, 6, 1)
-    GeoLat, GeoLon = sh.Apex_geo_qd(Lat, Lon, dtime, transform_type="QD_2_GEO")
-    assert GeoLat.shape == Lat.shape
-    assert GeoLon.shape == Lon.shape
-    assert np.all(np.isfinite(GeoLat))
-    assert np.all(np.isfinite(GeoLon))
+def test_invalid_transform_raises():
+    """Tests Apex_geo_qd value error for invalid trnasform type.
 
-
-def test_invalid_type_raises():
-    """Ensure invalid 'type' argument raises ValueError."""
+    Checks that an invalid transform type input raises a value error.
+    """
     Lat = np.array([0])
     Lon = np.array([0])
     dtime = dt.datetime(2005, 1, 1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='Transform type must be'):
         sh.Apex_geo_qd(Lat, Lon, dtime, transform_type="INVALID")
 
 
 def test_F1_hmF1_clamped_to_180():
-    """hmF1 calculated as <180 km must be clamped to 180."""
+    """Tests derive_dependent_F1_parameters function for hmF1 clamping.
+
+    The derive_dependent_F1_parameters function clamps any output hmF1 <180 km
+    to 180 km.
+    """
     P = np.array([0.5])
     NmF2 = np.array([1e12])
     hmF2 = np.array([200.0])  # 200 - 30 = 170
@@ -587,8 +785,12 @@ def test_F1_hmF1_clamped_to_180():
 
 
 def test_F1_NmF1_minimum_one():
-    """NmF1 <= 0 must be clamped to 1 to avoid log10(0)."""
-    P = np.array([0.0])  # clips to threshold
+    """Tests derive_dependent_F1_parameters function for NmF1 clamping.
+
+    The derive_dependent_F1_parameters function clamps any output NmF1 <=0 m-3
+    to 1 m-3 to avoid log10(0).
+    """
+    P = np.array([0.0])
     NmF2 = np.array([0])
     hmF2 = np.array([300.0])
     B0 = np.array([50.0])
@@ -601,23 +803,30 @@ def test_F1_NmF1_minimum_one():
 
 
 def test_BSE_ratio_clamped_below_1_7():
-    """foF2/foE < 1.7 must be treated as 1.7."""
-    # Clamping to 1.7 is to avoid unreasonably low hmF2 values. Refer to Bilitza
-    # et al. (2022), The International Reference Ionosphere model: A review and
-    # description of an ionospheric benchmark, Reviews of Geophysics, 60.
+    """Tests BSE_1979_model function for foF2/foE clamping.
+
+    The BSE_1979_model function clamps any output foF2/foE ratio < 1.7 to 1.7.
+    Clamping to 1.7 is to avoid unreasonably low hmF2 values. Refer to Bilitza
+    et al. (2022), The International Reference Ionosphere model: A review and
+    description of an ionospheric benchmark, Reviews of Geophysics, 60.
+    """
     M3000 = np.array([3.0])
-    foF2 = np.array([1.5])  # ratio = 1.5 < 1.7
-    foE = np.array([1.0])
+    foF2 = np.array([1.5])
+    foE = np.array([1.0])  # ratio = 1.5 < 1.7
     modip = np.array([0.0])
     F107 = 100
 
-    result = sh.BSE_1979_model(M3000, foF2, foE, modip, F107)
+    hmF2 = sh.BSE_1979_model(M3000, foF2, foE, modip, F107)
     # Verify finite; exact value depends on clamped ratio=1.7 path
-    assert np.isfinite(result[0])
+    assert np.isfinite(hmF2[0])
 
 
 def test_thickness_F2_positive_output():
-    """B_F2_top and B_F2_bot must be positive arrays."""
+    """Tests thickness_F2 function for valid output values and shape.
+
+    The thickness_F2 function must output positive values for B_F2_bot and
+    B_F2_top.
+    """
     foF2 = np.array([5.0, 10.0])
     M3000 = np.array([3.0, 4.0])
     hmF2 = np.array([300.0, 400.0])
@@ -631,51 +840,99 @@ def test_thickness_F2_positive_output():
 
 
 def test_invalid_coordinate_raises_error():
-    """Raise ValueError for invalid coordinate system."""
+    """Tests IRI_sh_params function for coord system input value error.
+
+    The IRI_sh_params function is the core behind IRI_density_1day and
+    IRI_monthly_mean_par. Any invalid coordinate system input to this function
+    will result in the same value error raised as when input in higher level
+    functions.
+    """
     with pytest.raises(ValueError, match="Coordinate system must be"):
         sh.IRI_sh_params(2024, 6, 12.0, 0.0, 45.0, coord='INVALID')
 
 
-def test_array_input_preserves_shape():
-    """Array inputs (N_T,) and (N_G,) produce correct output shape."""
+@pytest.mark.parametrize("hmF2_model", ['SHU2015', 'AMTB2013', 'BSE1979'])
+def test_array_input_preserves_shape(hmF2_model):
+    """Tests IRI_sh_params function for output shape.
+
+    The IRI_sh_params function is the core behind IRI_density_1day and
+    IRI_monthly_mean_par. It must output numerical maps of shape
+    (n_params, N_T, N_G, 2), from which IRI_density_1day interpolates in solar
+    activity. If option BSE1979 is chosen, a nan map is returned for hmF2.
+
+    Parameters
+    ------------
+    hmF2_model : str
+        hmF2 model to use.
+    """
     N_T, N_G = 4, 10
     aUT = np.linspace(0, 24, N_T)
     alon = np.linspace(-180, 180, N_G)
     alat = np.linspace(-90, 90, N_G)
 
-    result = sh.IRI_sh_params(2024, 6, aUT, alon, alat, coord='GEO')
+    result = sh.IRI_sh_params(2024, 6, aUT, alon, alat, hmF2_model=hmF2_model,
+                              coord='GEO')
 
     # Shape: (n_params, N_T, N_G, 2)
     assert result.shape == (6, N_T, N_G, 2)
 
 
-def test_IRI_sh_params_coord_mlt():
-    """MLT coordinate path executes and returns correct shape."""
-    result = sh.IRI_sh_params(2024, 6, [0.0, 12.0], [0.0], [60.0], coord='MLT')
-    assert result.shape == (6, 2, 1, 2)
+@pytest.mark.parametrize("coord", ['MLT', 'QD', 'GEO'])
+def test_IRI_sh_params_coord_shape(coord):
+    """Tests IRI_sh_params function for output shape depending on coord system.
 
+    The IRI_sh_params function is the core behind IRI_density_1day and
+    IRI_monthly_mean_par. It must output numerical maps of shape
+    (n_params, N_T, N_G, 2).
 
-def test_IRI_sh_params_coord_qd():
-    """QD coordinate path executes and returns correct shape."""
-    result = sh.IRI_sh_params(2024, 6, [12.0], [120.0], [-30.0], coord='QD')
-    assert result.shape == (6, 1, 1, 2)
-
-
-def test_IRI_sh_params_coord_geo():
-    """QD coordinate path executes and returns correct shape."""
-    result = sh.IRI_sh_params(2024, 6, [12.0], [120.0], [-30.0], coord='GEO')
-    assert result.shape == (6, 1, 1, 2)
+    Parameters
+    ------------
+    coord : str
+        Coordinate system to use.
+    """
+    result = sh.IRI_sh_params(2024, 6, [0.0, 12.0, 13.0], [0.0], [60.0],
+                              coord=coord)
+    assert result.shape == (6, 3, 1, 2)
 
 
 def test_IRI_sh_params_empty_hmF2():
-    """Returns NaN array for hmF2 if BSE1979."""
+    """Tests IRI_sh_params function for output shape.
+
+    The IRI_sh_params function is the core behind IRI_density_1day and
+    IRI_monthly_mean_par. It must output numerical maps of shape
+    (n_params, N_T, N_G, 2), from which IRI_density_1day interpolates in solar
+    activity. If option BSE1979 is chosen, a nan map is returned for hmF2.
+    """
     result = sh.IRI_sh_params(2024, 6, [12.0], [120.0], [-30.0],
                               hmF2_model='BSE1979')
     assert np.all(np.isnan(result[1]))
 
 
-def test_IRI_monthly_mean_par_dimensions_geo():
-    """Verify output dimensions for GEO coordinate system."""
+@pytest.mark.parametrize(
+    "coord, exp_shape",
+    [
+        ('MLT', (2, 3)),
+        ('QD', (3,)),
+        ('GEO', (3,)),
+    ]
+)
+def test_IRI_monthly_mean_par_dimensions(coord, exp_shape):
+    """Tests IRI_monthly_mean_par function for output shape depending on coord.
+
+    The IRI_monthly_mean_par calls on the IRI_density_1day function twice to
+    generate ionospheric parameters for two solar activity levels requested,
+    for the 15th of the month requested. For all coordinate systems, it should
+    output shape (N_T, N_G, 2) for iono parameters and (N_G,) for sun
+    parameters. For mag parameters, it outputs (N_T, N_G) if coordinate system
+    is MLT, (N_G,) otherwise.
+
+    Parameters
+    ------------
+    coord : str
+        Coordinate system to use.
+    exp_shape : tuple
+        Expected output shape.
+    """
     N_T, N_G = 2, 3
 
     F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
@@ -687,7 +944,7 @@ def test_IRI_monthly_mean_par_dimensions_geo():
         solidx='R12',
         solmin=10,
         solmax=100,
-        coord='GEO'
+        coord=coord
     )
 
     # Ionospheric parameters stacked: (N_T, N_G, 2)
@@ -701,30 +958,6 @@ def test_IRI_monthly_mean_par_dimensions_geo():
     assert sun['lon'].shape == (N_T,)
     assert sun['lat'].shape == (N_T,)
 
-    # Magnetic field: (N_G,) for GEO
-    assert mag['modip'].shape == (N_G,)
-    assert mag['inc'].shape == (N_G,)
-
-
-def test_IRI_monthly_mean_par_dimensions_mlt():
-    """Verify output dimensions for MLT coordinate system."""
-    N_T, N_G = 2, 3
-
-    F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
-        year=2024,
-        month=6,
-        aUT=np.linspace(0, 12, N_T),
-        alon=np.array([12.0, 13.0, 14.0]),  # MLT hours
-        alat=np.linspace(-60, 60, N_G),
-        solidx='IG12',
-        solmin=0,
-        solmax=100,
-        coord='MLT'
-    )
-
-    # Magnetic field expands to (N_T, N_G) for MLT
-    assert mag['modip'].shape == (N_T, N_G)
-    assert mag['inc'].shape == (N_T, N_G)
-
-    # Sun still (N_T,)
-    assert sun['lat'].shape == (N_T,)
+    # Magnetic field: (N_G,) for GEO and QD, (N_T, N_G) for MLT
+    assert mag['modip'].shape == exp_shape
+    assert mag['inc'].shape == exp_shape
