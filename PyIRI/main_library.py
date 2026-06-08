@@ -1978,9 +1978,9 @@ def R12_2_F107(R12):
 
     Notes
     -----
-    This function converts R12 to F10.7 based on the IRI-2020 source code (cf.
-    irisub.for). PyIRI does not differentiate between F10.7_d (daily value),
-    F10.7_81 (81-day average), and F10.7_365 (365-day average).
+    This function converts R12 to F10.7 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
     F107 = 63.75 + 0.728 * R12 + 8.9E-4 * R12**2
@@ -2003,9 +2003,9 @@ def F107_2_R12(F107):
 
     Notes
     -----
-    This function converts F10.7 to R12 based on the IRI-2020 source code (cf.
-    irisub.for). PyIRI does not differentiate between F10.7_d (daily value),
-    F10.7_81 (81-day average), and F10.7_365 (365-day average).
+    This function converts F10.7 to R12 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
     a = 8.9E-4
@@ -2025,7 +2025,8 @@ def R12_2_IG12(R12, version=2):
         12-month running mean of the sunspot number R.
 
     version : int
-        Sunspot number series version (v2.0 assumes the post-2015 correction).
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
@@ -2034,8 +2035,8 @@ def R12_2_IG12(R12, version=2):
 
     Notes
     -----
-    This function converts R12 to IG12 based on the IRI-2020 source code (cf.
-    irisub.for).
+    This function converts R12 to IG12 based on the IRI-2020 source code, cf.
+    irisub.for.
 
     """
     if version not in [1, 2]:
@@ -2059,7 +2060,8 @@ def IG12_2_R12(IG12, version=2):
         12-month running mean of the Ionosonde Global index IG.
 
     version : int
-        Sunspot number series version (v2.0 assumes the post-2015 correction).
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
@@ -2068,8 +2070,8 @@ def IG12_2_R12(IG12, version=2):
 
     Notes
     -----
-    This function converts IG12 to R12 based on the IRI-2020 source code (cf.
-    irisub.for).
+    This function converts IG12 to R12 based on the IRI-2020 source code, cf.
+    irisub.for.
 
     """
     if version not in [1, 2]:
@@ -2099,7 +2101,8 @@ def F107_2_IG12(F107, version=2):
         Solar radio flux at 10.7 cm (2800 MHz) in SFU.
 
     version : int
-        Sunspot number series version (v2.0 assumes the post-2015 correction).
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
@@ -2108,9 +2111,9 @@ def F107_2_IG12(F107, version=2):
 
     Notes
     -----
-    This function converts F10.7 to IG12 based on the IRI-2020 source code (cf.
-    irisub.for). PyIRI does not differentiate between F10.7_d (daily value),
-    F10.7_81 (81-day average), and F10.7_365 (365-day average).
+    This function converts F10.7 to IG12 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
     R12 = F107_2_R12(F107)
@@ -2128,7 +2131,8 @@ def IG12_2_F107(IG12, version=2):
         12-month running mean of the Ionosonde Global index IG.
 
     version : int
-        Sunspot number series version (v2.0 assumes the post-2015 correction).
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
@@ -2137,9 +2141,9 @@ def IG12_2_F107(IG12, version=2):
 
     Notes
     -----
-    This function converts IG12 to F10.7 based on the IRI-2020 source code (cf.
-    irisub.for). PyIRI does not differentiate between F10.7_d (daily value),
-    F10.7_81 (81-day average), and F10.7_365 (365-day average).
+    This function converts IG12 to F10.7 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
     R12 = IG12_2_R12(IG12, version=version)
@@ -2182,7 +2186,7 @@ def quadratic(coeff):
 
 
 def epstein_function_array(A1, hm, B, x):
-    """Construct density Epstein profile for any layer (except topside of F2).
+    """Construct density Epstein profile for any layer, except topside of F2.
 
     Parameters
     ----------
@@ -2717,13 +2721,15 @@ def solar_interpolate(F_min, F_max, F107, solidx='IG12', solmin=0, solmax=100,
     F107 : float
         Solar radio flux at 10.7 cm (2800 MHz) to interpolate to [sfu].
     solidx : str
-        User choice of solar index (F107, IG12, or R12).
+        User choice of solar index. Choices are F107, IG12, and R12.
+        (default='IG12')
     solmin : int or float
-        User choice of solar minimum.
+        User choice of solar minimum. (default=0)
     solmax : int or float
-        User choice of solar maximum.
+        User choice of solar maximum. (default=100)
     version : int
-        Sunspot number series version (v2.0 assumes the post-2015 correction).
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
@@ -2771,9 +2777,9 @@ def solar_interpolate_R12(F_min, F_max, R12):
     """Interpolate given array to provided R12 level.
 
     .. deprecated:: 0.1.7
-        This function is deprecated. Use solar_interpolate() with args
-        solidx='R12', solmin=10, solmax=180 instead. Will be removed in
-        subsequent versions.
+        This function is deprecated and will be removed in version 0.2+. Use
+        solar_interpolate() with args solidx='R12', solmin=10, and solmax=180
+        instead.
 
     Parameters
     ----------
@@ -2803,9 +2809,10 @@ def solar_interpolate_R12(F_min, F_max, R12):
     US GPO, Washington, DC.
 
     """
-    warnings.warn("solar_interpolate_R12() is deprecated, use "
-                  + "solar_interpolate() with solidx='R12', solmin=10, "
-                  + "solmax=180 instead.", DeprecationWarning, stacklevel=2)
+    warnings.warn("This function is deprecated and will be removed in version "
+                  + "0.2+. Use solar_interpolate() with args solidx='R12', "
+                  + "solmin=10, solmax=180 instead.",
+                  DeprecationWarning, stacklevel=2)
 
     F = solar_interpolate(F_min, F_max, R12_2_F107(R12), solidx='R12',
                           solmin=10, solmax=180)
@@ -2814,7 +2821,7 @@ def solar_interpolate_R12(F_min, F_max, R12):
 
 
 def solar_interpolation_of_dictionary(F, F107, solidx='IG12', solmin=0,
-                                      solmax=100, version=2, use_R12=None):
+                                      solmax=100, version=2, use_R12=False):
     """Interpolate given dictionary to provided F10.7.
 
     Parameters
@@ -2825,19 +2832,20 @@ def solar_interpolation_of_dictionary(F, F107, solidx='IG12', solmin=0,
     F107 : float
         Solar radio flux at 10.7 cm (2800 MHz) to interpolate to [sfu].
     solidx : str
-        User choice of solar index (F107, IG12, or R12).
+        User choice of solar index. Choices are F107, IG12, and R12.
+        (default='IG12')
     solmin : int or float
-        User choice of solar minimum.
+        User choice of solar minimum. (default=0)
     solmax : int or float
-        User choice of solar maximum.
+        User choice of solar maximum. (default=100)
     version : int
-        Sunspot number series version (v2.0 assumes the post-2015 correction).
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
     use_R12 : bool
         .. deprecated:: 0.1.7
-            If set to True, invokes the Es interpolation behavior in R12 with
-            solmin=10 and solmax=180 (Leftin et al., 1968). Please use the
-            solidx/solmin/solmax arguments directly from now on. Will be removed
-            in subsequent versions.
+            This argument is deprecated and will be removed in version 0.2+. To
+            invoke the same behavior, use solidx='R12', solmin=10, and
+            solmax=180. (default=False)
 
     Returns
     -------
@@ -2864,16 +2872,16 @@ def solar_interpolation_of_dictionary(F, F107, solidx='IG12', solmin=0,
     US GPO, Washington, DC.
 
     """
-    if use_R12 is not None:
-        warnings.warn("use_R12 is deprecated, use solidx/solmin/solmax directly"
-                      + " instead. To replicate use_R12=True behavior, use "
+    if use_R12 is True:
+        warnings.warn("use_R12 is deprecated and will be removed in version "
+                      + "0.2+. To replicate use_R12=True behavior, use "
                       + "solidx='R12', solmin=10, solmax=180. use_R12=False "
-                      + "behavior is the default solidx='IG12', solmin=0, "
-                      + "solmax=100.", DeprecationWarning, stacklevel=2)
-        if use_R12 is True:
-            solidx = 'R12'
-            solmin = 10
-            solmax = 180
+                      + "behavior corresponds to the default solidx='IG12', "
+                      + "solmin=0, solmax=100.",
+                      DeprecationWarning, stacklevel=2)
+        solidx = 'R12'
+        solmin = 10
+        solmax = 180
 
     # Make dictionary with same elements as initial array
     F_new = F.copy()
@@ -2902,9 +2910,10 @@ def solar_interpolation_of_dictionary_F2(F, F107, hmF2_model, version=2):
     F107 : float
         Solar radio flux at 10.7 cm (2800 MHz) to interpolate to [sfu].
     hmF2_model : str
-        Model used for hmF2 (SHU2015, AMTB2013, BSE1979).
+        Model used for hmF2. Choices are SHU2015, AMTB2013, and BSE1979.
     version : int
-        Sunspot number series version (v2.0 assumes the post-2015 correction).
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
@@ -2995,7 +3004,7 @@ def adjust_longitude(lon, type):
             lon[indb] = lon[indb] - 360.
 
         if type == 'to180':
-            # check that values in the array don't go over 360
+            # check that values in the array don't go over 180
             multiple = np.floor_divide(np.abs(lon), 360)
             lon = lon - multiple * 360 * np.sign(lon)
 

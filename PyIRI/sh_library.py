@@ -25,8 +25,8 @@ International Reference Ionosphere Modeling Implemented in Python,
 Space Weather, ESS Open Archive, September 28, 2023,
 doi:10.22541/essoar.169592556.61105365/v1.
 
-Servan-Schreiber et al. (2026), A Major Updateto the PyIRI Model,
-Space Weather.
+Servan-Schreiber et al. (2026), A major update to the PyIRI model, Space
+Weather, 24, e2025SW004853. doi:10.1029/2025SW004853
 
 """
 
@@ -36,6 +36,7 @@ import numpy as np
 import opt_einsum as oe
 import os
 import pandas as pd
+import warnings
 
 import PyIRI
 import PyIRI.edp_update as edpup
@@ -61,12 +62,12 @@ def IRI_sh_params(year, month, aUT, alon, alat,
         UT time [hour]. Scalar inputs will be converted to a Numpy array.
         Shape (N_T,)
     alon : float, list, or array-like
-        Flattened array of longitude (geographic or quasi-dipole) [deg] or
+        Flattened array of longitude in geographic, quasi-dipole [deg] or
         magnetic local time [hour]. Scalar inputs will be converted to a Numpy
         array.
         Shape (N_G,)
     alat : float, list, or array-like
-        Flattened array of latitude (geographic or quasi-dipole) [deg]. Scalar
+        Flattened array of latitude in geographic or quasi-dipole [deg]. Scalar
         inputs will be converted to a Numpy array.
         Shape (N_G,)
     coeff_dir: str
@@ -102,8 +103,8 @@ def IRI_sh_params(year, month, aUT, alon, alat,
 
     References
     ----------
-    Servan-Schreiber et al. (2026), A Major Update to the PyIRI Model, Space
-    Weather.
+    Servan-Schreiber et al. (2026), A major update to the PyIRI model, Space
+    Weather, 24, e2025SW004853. doi:10.1029/2025SW004853
 
     """
     # Set coefficient file path if none given
@@ -182,7 +183,8 @@ def IRI_sh_params(year, month, aUT, alon, alat,
 
 def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
                          solmin=0, solmax=100, coeff_dir=None,
-                         foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO'):
+                         foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO',
+                         no_Es_old_output=False):
     """Output ionospheric parameters for a particular day.
 
     Parameters
@@ -197,20 +199,21 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
         UT time in [hour]. Scalar inputs will be converted to a Numpy array.
         Shape (N_T,)
     alon : float, list, or array-like
-        Flattened array of longitude (geographic or quasi-dipole) [deg] or
+        Flattened array of longitude in geographic, quasi-dipole [deg] or
         magnetic local time [hour]. Scalar inputs will be converted to a Numpy
         array.
         Shape (N_G,)
     alat : float, list, or array-like
-        Flattened array of latitude (geographic or quasi-dipole) [deg]. Scalar
+        Flattened array of latitude in geographic or quasi-dipole [deg]. Scalar
         inputs will be converted to a Numpy array.
         Shape (N_G,)
     solidx : str
-        User choice of solar index (F107, IG12, or R12).
+        User choice of solar index. Options are F107, IG12, and R12.
+        (default='IG12')
     solmin : int or float
-        User choice of solar minimum.
+        User choice of solar minimum. (default=0)
     solmax : int or float
-        User choice of solar maximum.
+        User choice of solar maximum. (default=100)
     coeff_dir: str
         Directory where the coefficient files are stored. If None, uses the
         default coefficient files stored in PyIRI.coeff_dir. (default=None)
@@ -223,6 +226,11 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
     coord : str
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
+    no_Es_old_output : bool
+        .. deprecated:: 0.1.7
+                This argument is deprecated and will be removed in version 0.2+.
+                If set to True, removes the Es dictionary from the list of
+                outputs to conform with version 0.1.6 scripts. (default=False)
 
     Returns
     -------
@@ -253,6 +261,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
         'B_bot' : Bottom thickness of the E region [km].
         Shape (N_T, N_G, 2)
     Es : dict
+        If Es_new_output=False, Es will not be included as output.
         'Nm' : Peak density of Es region [m-3].
         'fo' : Critical frequency of Es region [MHz].
         'hm' : Height of the Es peak [km].
@@ -281,8 +290,8 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
-    Servan-Schreiber et al. (2026), A Major Update to the PyIRI Model, Space
-    Weather.
+    Servan-Schreiber et al. (2026), A major update to the PyIRI model, Space
+    Weather, 24, e2025SW004853. doi:10.1029/2025SW004853
 
     """
     # Set coefficient file path if none given
@@ -325,12 +334,19 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
     E = {k: np.stack([Emin[k], Emax[k]], axis=-1) for k in Emin}
     Es = {k: np.stack([Esmin[k], Esmax[k]], axis=-1) for k in Esmin}
 
-    return F2, F1, E, Es, sun, mag
+    if no_Es_old_output:
+        warnings.warn("no_Es_old_output is deprecated and will be removed in "
+                      + "version 0.2+. Add the Es dict to your list of outputs"
+                      + " to avoid errors in the future.",
+                      DeprecationWarning, stacklevel=2)
+        return F2, F1, E, sun, mag
+    else:
+        return F2, F1, E, Es, sun, mag
 
 
 def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
                      coeff_dir=None, foF2_coeff='URSI',
-                     hmF2_model='SHU2015', coord='GEO'):
+                     hmF2_model='SHU2015', coord='GEO', no_Es_old_output=False):
     """Output ionospheric parameters for a particular day.
 
     Parameters
@@ -345,12 +361,12 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
         UT time in [hour]. Scalar inputs will be converted to a Numpy array.
         Shape (N_T,)
     alon : float, list, or array-like
-        Flattened array of longitude (geographic or quasi-dipole) [deg] or
+        Flattened array of longitude in geographic, quasi-dipole) [deg] or
         magnetic local time [hour]. Scalar inputs will be converted to a Numpy
         array.
         Shape (N_G,)
     alat : float, list, or array-like
-        Flattened array of latitude (geographic or quasi-dipole) [deg]. Scalar
+        Flattened array of latitude in geographic or quasi-dipole [deg]. Scalar
         inputs will be converted to a Numpy array.
         Shape (N_G,)
     aalt : array-like
@@ -370,6 +386,11 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     coord : str
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
+    no_Es_old_output : bool
+        .. deprecated:: 0.1.7
+                This argument is deprecated and will be removed in version 0.2+.
+                If set to True, removes the Es dictionary from the list of
+                outputs to conform with version 0.1.6 scripts. (default=False)
 
     Returns
     -------
@@ -400,6 +421,7 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
         'B_bot' : Bottom thickness of the E region [km].
         Shape (N_T, N_G)
     Es : dict
+        If Es_new_output=False, Es will not be included as output.
         'Nm' : Peak density of Es region [m-3].
         'fo' : Critical frequency of Es region [MHz].
         'hm' : Height of the Es peak [km].
@@ -431,8 +453,8 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     International Reference Ionosphere Modeling Implemented in Python,
     Space Weather.
 
-    Servan-Schreiber et al. (2026), A Major Update to the PyIRI Model, Space
-    Weather.
+    Servan-Schreiber et al. (2026), A major update to the PyIRI model, Space
+    Weather, 24, e2025SW004853. doi:10.1029/2025SW004853
 
     """
     # Set coefficient file path if none given
@@ -600,7 +622,247 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     # Construct density
     EDP = EDP_builder_continuous(F2, F1, E, aalt)
 
-    return F2, F1, E, Es, sun, mag, EDP
+    if no_Es_old_output:
+        warnings.warn("no_Es_old_output is deprecated and will be removed in "
+                      + "version 0.2+. Add the Es dict to your list of outputs"
+                      + " to avoid errors in the future.",
+                      DeprecationWarning, stacklevel=2)
+        return F2, F1, E, sun, mag, EDP
+    else:
+        return F2, F1, E, Es, sun, mag, EDP
+
+
+def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
+                            coord='GEO'):
+    """Output monthly mean sporadic E layer using spherical harmonics.
+
+    .. deprecated:: 0.1.7
+        This function is deprecated and will be removed in version 0.2+. Es is
+        now included as output to the function IRI_monthly_mean_par.
+
+    Parameters
+    ----------
+    year : int
+        Year.
+    month : int
+        Month of the year.
+    aUT : float, int, or array-like of float or int
+        UT time [hour]. Scalar inputs will be converted to a Numpy array.
+        Shape (N_T,)
+    alon : float, list, or array-like
+        Flattened array of longitude (geographic or quasi-dipole) [deg] or
+        magnetic local time [hour]. Scalar inputs will be converted to a Numpy
+        array.
+        Shape (N_G,)
+    alat : float, list, or array-like
+        Flattened array of latitude (geographic or quasi-dipole) [deg]. Scalar
+        inputs will be converted to a Numpy array.
+        Shape (N_G,)
+    coeff_dir: str
+        Directory where the coefficient files are stored. If None, uses the
+        default coefficient files stored in PyIRI.coeff_dir. (default=None)
+    coord : str
+        Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
+        dipole, and 'MLT' for magnetic local time. (default='GEO')
+
+    Returns
+    -------
+    Es : dict
+        'Nm' : Peak density of Es region [m-3].
+        'fo' : Critical frequency of Es region [MHz].
+        'hm' : Height of the Es peak [km].
+        'B_top' : Bottom thickness of the Es region [km].
+        'B_bot' : Bottom thickness of the Es region [km].
+        Shape (N_T, N_G, 2)
+
+    Notes
+    -----
+    This function returns monthly mean ionospheric parameters for min and max
+    levels of solar activity, i.e., 12-month running mean of the Global
+    Ionosonde Index IG12 of value 0 and 100.
+
+    References
+    ----------
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    International Reference Ionosphere Modeling Implemented in Python,
+    Space Weather.
+
+    """
+    warnings.warn("This function is deprecated and will be removed in version "
+                  + "0.2+. The sporadic E layer is now inluded in the list of "
+                  + "outputs of the function IRI_monthly_mean_par.",
+                  DeprecationWarning, stacklevel=2)
+
+    # Set coefficient file path if none given
+    if coeff_dir is None:
+        coeff_dir = PyIRI.coeff_dir
+
+    # Convert inputs to Numpy arrays
+    aUT = ml.to_numpy_array(aUT)
+    alon = ml.to_numpy_array(alon)
+    alat = ml.to_numpy_array(alat)
+    apdtime = (pd.to_datetime(dt.datetime(year, month, 15))
+               + pd.to_timedelta(aUT, 'hours'))
+
+    # Coordinate system conversion to geographic, quasi-dipole, and magnetic
+    # local time
+    if coord == 'GEO':
+        aglat, aglon = alat, alon
+        aqdlat, amlt = np.zeros((2, aUT.size, alat.size))
+        for iUT in range(len(aUT)):
+            pdtime = apdtime[iUT]
+            aqdlat[iUT, :], amlt[iUT, :] = Apex(aglat, aglon, pdtime,
+                                                'GEO_2_MLT')
+
+    elif coord == 'MLT':
+        aqdlat, amlt = alat, alon
+        aglat, aglon = np.zeros((2, aUT.size, alat.size))
+        for iUT in range(len(aUT)):
+            pdtime = apdtime[iUT]
+            aglat[iUT, :], aglon[iUT, :] = Apex(aqdlat, amlt, pdtime,
+                                                'MLT_2_GEO')
+
+    elif coord == 'QD':
+        aqdlat, aqdlon = alat, alon
+        aglat, aglon = Apex(aqdlat, aqdlon, apdtime[0], 'QD_2_GEO')
+        amlt = np.zeros((aUT.size, alat.size))
+        for iUT in range(len(aUT)):
+            pdtime = apdtime[iUT]
+            _, amlt[iUT, :] = Apex(aqdlat, aqdlon, pdtime, 'QD_2_MLT')
+        aqdlat = np.broadcast_to(aqdlat, (aUT.size, aqdlat.size))
+
+    else:
+        raise ValueError("Coordinate system must be 'GEO', 'QD', or 'MLT'.")
+
+    # Extract coefficient matrices and resonstruct ionospheric parameters
+    C = load_Es_coeff_matrix(month, coeff_dir)
+
+    n_FS_r = C.shape[1]
+    n_FS_c = n_FS_r // 2 + 1
+    F_FS = real_FS_func(aUT, n_FS_c)
+
+    n_SH = C.shape[2]
+    lmax = int(np.sqrt(n_SH)) - 1
+    atheta = np.deg2rad(-(aqdlat - 90))
+    aphi = np.deg2rad(amlt * 15)
+
+    F_SH = real_SH_func(atheta, aphi, lmax=lmax)
+    if coord == 'MLT':
+        foEs = oe.contract('ij,pjk,kl->ilp', F_FS, C, F_SH)
+    else:
+        foEs = oe.contract('ij,pjk,kil->ilp', F_FS, C, F_SH)
+
+    NmEs = ml.freq2den(foEs)
+
+    hmEs = 110. + np.zeros(NmEs.shape)
+
+    B_Es_top = 1. + np.zeros((hmEs.shape))
+    B_Es_bot = 1. + np.zeros((hmEs.shape))
+
+    Es = {'Nm': NmEs,
+          'fo': foEs,
+          'hm': hmEs,
+          'B_top': B_Es_top,
+          'B_bot': B_Es_bot}
+
+    return Es
+
+
+def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
+                    coord='GEO'):
+    """Output sporadic E layer parameters for a particular day.
+
+    .. deprecated:: 0.1.7
+        This function is deprecated and will be removed in version 0.2+. Es is
+        now included as output to the function IRI_density_1day.
+
+    Parameters
+    ----------
+    year : int
+        Year.
+    month : int
+        Month of the year.
+    day : int
+        Day of the month.
+    aUT : float, int, or array-like of float or int
+        UT time [hour]. Scalar inputs will be converted to a Numpy array.
+        Shape (N_T,)
+    alon : float, list, or array-like
+        Flattened array of longitude (geographic or quasi-dipole) [deg] or
+        magnetic local time [hour]. Scalar inputs will be converted to a Numpy
+        array.
+        Shape (N_G,)
+    alat : float, list, or array-like
+        Flattened array of latitude (geographic or quasi-dipole) [deg]. Scalar
+        inputs will be converted to a Numpy array.
+        Shape (N_G,)
+    F107 : int or float
+        User provided F10.7 solar flux index [SFU].
+    coeff_dir: str
+        Directory where the coefficient files are stored. If None, uses the
+        default coefficient files stored in PyIRI.coeff_dir. (default=None)
+    coord : str
+        Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
+        dipole, and 'MLT' for magnetic local time. (default='GEO')
+
+    Returns
+    -------
+    Es : dict
+        'Nm' : Peak density of Es region [m-3].
+        'fo' : Critical frequency of Es region [MHz].
+        'hm' : Height of the Es peak [km].
+        'B_top' : Bottom thickness of the Es region [km].
+        'B_bot' : Bottom thickness of the Es region [km].
+        Shape (N_T, N_G)
+
+    Notes
+    -----
+    This function returns ionospheric parameters of the sporadic E layer for a
+    given day and solar activity input.
+
+    References
+    ----------
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    International Reference Ionosphere Modeling Implemented in Python,
+    Space Weather.
+
+    """
+    warnings.warn("This function is deprecated and will be removed in version "
+                  + "0.2+. The sporadic E layer is now inluded in the list of "
+                  + "outputs of the function IRI_density_1day.",
+                  DeprecationWarning, stacklevel=2)
+
+    # Set coefficient file path if none given
+    if coeff_dir is None:
+        coeff_dir = PyIRI.coeff_dir
+
+    # Convert inputs to Numpy arrays
+    aUT = ml.to_numpy_array(aUT)
+    alon = ml.to_numpy_array(alon)
+    alat = ml.to_numpy_array(alat)
+
+    # Calculate required monhtly means and associated weights
+    t_before, t_after, fr1, fr2 = ml.day_of_the_month_corr(year, month, day)
+
+    Es_1 = sporadic_E_monthly_mean(t_before.year, t_before.month, aUT, alon,
+                                   alat, coeff_dir, coord)
+    Es_2 = sporadic_E_monthly_mean(t_after.year, t_after.month, aUT, alon,
+                                   alat, coeff_dir, coord)
+
+    Es = ml.fractional_correction_of_dictionary(fr1, fr2, Es_1, Es_2)
+
+    # Interpolate parameters in solar activity
+    Es = ml.solar_interpolation_of_dictionary(Es, F107, solidx='R12', solmin=10,
+                                              solmax=180)
+
+    # Correct for linear interpolation for foEs
+    Es['Nm'] = ml.freq2den(Es['fo'])
+
+    # Introduce a minimum limit for the peaks to avoid negative density (for
+    # high F10.7, extrapolation can cause NmF2 to go negative)
+    Es['Nm'] = ml.limit_Nm(Es['Nm'])
+
+    return Es
 
 
 def create_reg_grid_geo_or_mag(hr_res=1, lat_res=1, lon_res=1, alt_res=10,
@@ -612,9 +874,9 @@ def create_reg_grid_geo_or_mag(hr_res=1, lat_res=1, lon_res=1, alt_res=10,
     hr_res : int or float
         Time resolution [hour]. (default=1)
     lat_res : int or float
-        Latitude resolution (geographic or quasi-dipole) [deg]. (default=1)
+        Latitude resolution in geographic or quasi-dipole [deg]. (default=1)
     lon_res : int or float
-        Longitude (geographic or quasi-dipole) [deg] or magnetic
+        Longitude in geographic, quasi-dipole [deg] or magnetic
         local time [1/15 hour] resolution. (default=1)
     alt_res : int or float
         Altitude resolution [km]. (default=10)
@@ -696,7 +958,8 @@ def create_reg_grid_geo_or_mag(hr_res=1, lat_res=1, lon_res=1, alt_res=10,
 
 def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
                      lat_res=1, lon_res=1, alt_res=10, alt_min=0, alt_max=700,
-                     foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO'):
+                     foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO',
+                     no_Es_old_output=False):
     """Run IRI for a single day on a regular grid.
 
     Parameters
@@ -734,6 +997,11 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
     coord : str
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
+    no_Es_old_output : bool
+        .. deprecated:: 0.1.7
+                This argument is deprecated and will be removed in version 0.2+.
+                If set to True, removes the Es dictionary from the list of
+                outputs to conform with version 0.1.6 scripts. (default=False)
 
     Returns
     -------
@@ -822,13 +1090,23 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
         year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
         foF2_coeff, hmF2_model, coord)
 
-    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, Es, sun, mag, EDP
+    if no_Es_old_output:
+        warnings.warn("no_Es_old_output is deprecated and will be removed in "
+                      + "version 0.2+. Add the Es dict to your list of outputs"
+                      + " to avoid errors in the future.",
+                      DeprecationWarning, stacklevel=2)
+        return (alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun,
+                mag, EDP)
+    else:
+        return (alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, Es, sun,
+                mag, EDP)
 
 
 def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
                           lon_res=1, alt_res=10, alt_min=0, alt_max=700,
                           foF2_coeff='URSI', hmF2_model='SHU2015',
-                          coord='GEO', solidx='IG12', solmin=0, solmax=100):
+                          coord='GEO', solidx='IG12', solmin=0, solmax=100,
+                          no_Es_old_output=False):
     """Run IRI for monthly mean parameters on a regular grid.
 
     Parameters
@@ -863,11 +1141,17 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
     solidx : str
-        User selected solar index (F107, IG12 or R12).
+        User selected solar index. Options are F107, IG12 and R12.
+        (default='IG12')
     solmin : int or float
-        User selected solar min.
+        User selected solar min. (default=0)
     solmax : int or float
-        User selected solar max.
+        User selected solar max. (default=100)
+    no_Es_old_output : bool
+        .. deprecated:: 0.1.7
+                This argument is deprecated and will be removed in version 0.2+.
+                If set to True, removes the Es dictionary from the list of
+                outputs to conform with version 0.1.6 scripts. (default=False)
 
     Returns
     -------
@@ -958,7 +1242,14 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
                                                    solmin=solmin,
                                                    solmax=solmax)
 
-    return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, Es, sun, mag
+    if no_Es_old_output:
+        warnings.warn("no_Es_old_output is deprecated and will be removed in "
+                      + "version 0.2+. Add the Es dict to your list of outputs"
+                      + " to avoid errors in the future.",
+                      DeprecationWarning, stacklevel=2)
+        return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun, mag
+    else:
+        return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, Es, sun, mag
 
 
 def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
@@ -1024,6 +1315,51 @@ def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
     return C
 
 
+def load_Es_coeff_matrix(month, coeff_dir=None):
+    """Load sporadic E layer coefficient matrix from its NetCDF file.
+
+    .. deprecated:: 0.1.7
+        This function is deprecated and will be removed in version 0.2+. The
+        coefficients for the sporadic E layer are now loaded using
+        load_coeff_matrices alongside other parameter coefficients.
+
+    Parameters
+    ----------
+    month : int
+        Month of the year.
+    coeff_dir: str
+        Directory where the coefficient files are stored. If None, uses the
+        default coefficient files stored in PyIRI.coeff_dir. (default=None)
+
+    Returns
+    -------
+    C : numpy.ndarray
+        Coefficient matrix. N_IG=2 is the number of IG12 values stored (IG12=0
+        and IG12=100), N_FS=9 is the number of real FS coefficients used, and
+        N_SH=900 is the number of real SH coefficients used.
+        Shape (N_IG, N_FS, N_SH)
+
+    """
+    warnings.warn("This function is deprecated and will be removed in version "
+                  + "0.2+. The sporadic E layer coefficients are now loaded "
+                  + "alongside other parameter coefficients in "
+                  + "load_coeff_matrices.",
+                  DeprecationWarning, stacklevel=2)
+
+    # Set coefficient file path if none given
+    if coeff_dir is None:
+        coeff_dir = PyIRI.coeff_dir
+
+    # Load Es coefficients
+    filename = 'foEs.nc'
+
+    path = os.path.join(coeff_dir, 'SH', filename)
+    with nc.Dataset(path) as ds:
+        C = ds['Coefficients'][:, month - 1, :, :]
+
+    return C
+
+
 def gammaE_dynamic(year, month, day, aUT, alon, alat, F107, coord='GEO'):
     """Calculate numerical maps for critical frequency of E region.
 
@@ -1048,6 +1384,9 @@ def gammaE_dynamic(year, month, day, aUT, alon, alat, F107, coord='GEO'):
         Shape (N_G,) if coord='GEO', else (N_T, N_G)
     F107 : int or float
         F10.7 solar input [sfu].
+    coord : str
+        Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
+        dipole, and 'MLT' for magnetic local time. (default='GEO')
 
     Returns
     -------
@@ -1086,7 +1425,7 @@ def gammaE_dynamic(year, month, day, aUT, alon, alat, F107, coord='GEO'):
     alat = ml.to_numpy_array(alat)
 
     # Determine which coordinates are used as inputs
-    # (N_G, N_G) = geographic coordinates
+    # (N_G,) = geographic coordinates
     # (N_T, N_G) = MLT or quasi-dipole coordinates
     if len(alon.shape) > 1:
         N_G = alon.shape[1]
@@ -1376,6 +1715,8 @@ def find_subsolar(dtime, adjust_type='to360'):
     ----------
     dtime: datetime object
         UT time at which to calculate the coordinates.
+    adjust_type : str
+        Adjusting to [0:360], [-180:180], or [0:24] format. (default='to360')
 
     Returns
     ----------
@@ -1768,11 +2109,9 @@ def derive_dependent_F1_parameters(P, NmF2, hmF2, B0, B1, hmE, threshold=0.1,
     hmE : array-like
         hmE parameter height of E layer [km].
     threshold : flt
-        Cuts the probability P at this threshhold.
-        Default is 0.1.
+        Cuts the probability P at this threshhold. (default=0.1)
     thickness_fraction : flt
-        F1 thickness as a fraction of hmF1 - hmE.
-        Default is 0.75.
+        F1 thickness as a fraction of hmF1 - hmE. (default=0.75)
 
     Returns
     -------
