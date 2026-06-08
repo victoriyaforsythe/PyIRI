@@ -35,14 +35,18 @@ from datetime import timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from pathlib import Path
 import PyIRI.main_library as ml
 import PyIRI.sh_library as sh  # Updated PyIRI using spherical harmonics
 from tqdm import tqdm
 
+plot_dir = Path(__file__).parent.parent / "figures"
+file_dir = Path(__file__).parent.parent / "tutorials"
+
 # ------------------------------
 # Load daily F10.7 time series
 # ------------------------------
-solar_par = pd.read_pickle('GFZ_geo_solar_2000-2023.pkl')  # Contains F107 index
+solar_par = pd.read_pickle(file_dir / 'GFZ_geo_solar_2000-2023.pkl')
 F107 = solar_par['F107'].copy()
 timearray = solar_par.index
 
@@ -174,6 +178,5 @@ ax_plot.plot(timearray[t1:t2], NmF2_solar[t1:t2, iloc], c='green',
 ax_plot.legend(loc='upper left', prop={'size': 10})
 
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_Continuous_Time_Series.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_Continuous_Time_Series.png', format='png',
             bbox_inches='tight')

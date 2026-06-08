@@ -39,7 +39,10 @@ All output maps have the shape (N_T, N_G, 2), where:
 # Import libraries
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 import PyIRI.sh_library as sh  # Updated PyIRI using spherical harmonics
+
+plot_dir = Path(__file__).parent.parent / "figures"
 
 # Specify date
 year = 2020
@@ -110,8 +113,7 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$fo$F2 (MHz)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_foF2_min_max.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_foF2_min_max.png', format='png',
             bbox_inches='tight')
 
 
@@ -139,8 +141,7 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$hm$F2 (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_hmF2_min_max.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_hmF2_min_max.png', format='png',
             bbox_inches='tight')
 
 
@@ -168,8 +169,7 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$B0$ (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_B0_min_max.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_B0_min_max.png', format='png',
             bbox_inches='tight')
 
 
@@ -197,8 +197,7 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$B1$ (unitless)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_B1_min_max.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_B1_min_max.png', format='png',
             bbox_inches='tight')
 
 
@@ -226,8 +225,7 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$B_{top}$ (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_B_top_min_max.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_B_top_min_max.png', format='png',
             bbox_inches='tight')
 
 # Plot foE min and max
@@ -254,8 +252,7 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$fo$E (MHz)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_foE_min_max.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_foE_min_max.png', format='png',
             bbox_inches='tight')
 
 # Plot foEs min and max
@@ -282,6 +279,5 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$fo$Es (MHz)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_foEs_min_max.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_foEs_min_max.png', format='png',
             bbox_inches='tight')

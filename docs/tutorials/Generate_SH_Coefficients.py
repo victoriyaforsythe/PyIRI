@@ -83,8 +83,18 @@ from tqdm import tqdm
 # Create parameter grids using iricore
 
 # ------------------------------------
-# Set home folder path
-path = ''
+# Set dir path to save IRI grids and dir path to save coeff files
+# Set to None as default, will not run unless given proper paths by user
+iri_grids_save_dir = None
+coeffs_save_dir = None
+if iri_grids_save_dir is None or coeffs_save_dir is None:
+    raise ValueError("This script is not a typical tutorial. It is provided "
+                     + "as a reference to extract SH coefficients from IRI "
+                     + "grids, which is a lengthy process. To run it, please "
+                     + "provide proper paths for the iri_grids_save_dir "
+                     + "directory (wherein IRI grids will be stored) and for "
+                     + "the coeffs_save_dir directory (wherein coefficient"
+                     + "files will be saved).")
 
 # ------------------------------------
 # Create a regular QDLat-MLT grid
@@ -139,7 +149,6 @@ for it in tqdm(range(0, apdtime_12mo.size)):
 # hmF2_BSE1979 is calculated from M3000F2 and therefore not evaluated
 # for foEs, replace iricore with PyIRI.edp_update.IRI_density_1day()
 param = 'foF2_CCIR'
-save_dir = ''
 
 # ------------------------------------
 # Get correct solar index based on selected parameter
@@ -185,7 +194,7 @@ for iut in range(iut_start, apdtime_12mo.size):
     # ------------------------------------
     # Save at the end of each month
     if dtime.month > mo:
-        np.save(f'{save_dir}/{param}_{mo:02d}.npy', aParam)
+        np.save(f'{coeffs_save_dir}/{param}_{mo:02d}.npy', aParam)
         print(f'Saved {param}_{mo:02d}.npy')
         mo += 1
         iut_mo = 0
@@ -239,7 +248,7 @@ for iut in range(iut_start, apdtime_12mo.size):
 
 # ------------------------------------
 # Save the last month
-np.save(f'{save_dir}/{param}_{mo:02d}.npy', aParam)
+np.save(f'{iri_grids_save_dir}/{param}_{mo:02d}.npy', aParam)
 
 
 def flatten_SH_coeff(P, N):
@@ -315,11 +324,6 @@ n_FS_r = n_FS_c * 2 - 1
 # Initialize the coefficient matrix
 C = np.empty((2, 12, n_FS_r, n_SH))
 
-# ------------------------------------
-# Choose parameter
-param = 'foF2'
-path = ''
-
 if param in ['foF2_CCIR', 'foF2_URSI', 'hmF2_SHU2015']:
     solar = solars[0]
     solar_verbose = solars_verbose[0]
@@ -333,8 +337,7 @@ for imo in tqdm(range(12)):
 
     mo = imo + 1
 
-    aParam = np.load(f'{path}/iricore_grids_for_coeffs_r12_and_ig12/'
-                     + f'{param}_{mo:02d}_mlt_3deg.npy')
+    aParam = np.load(f'{iri_grids_save_dir}/{param}_{mo:02d}.npy')
 
     # ------------------------------------
     # Loop over IG12 = 0 and IG12 = 100
@@ -388,12 +391,8 @@ for imo in tqdm(range(12)):
 # Save coefficients into NetCDF files
 
 # ------------------------------------
-# Set up coefficient file directory
-save_dir_coeffs = ''
-
-# ------------------------------------
 # Open the output netcdf file
-data = nc.Dataset(f'{save_dir_coeffs}/{param}.nc', 'w')
+data = nc.Dataset(f'{coeffs_save_dir}/{param}.nc', 'w')
 
 # ------------------------------------
 # Set the dimensions
@@ -461,4 +460,4 @@ data.Title = f'{param_name} FS/SH coefficients'
 # ------------------------------------
 # Close the file
 data.close()
-print(f'File {save_dir_coeffs}/{param}.nc was written.')
+print(f'File {coeffs_save_dir}/{param}.nc was written.')

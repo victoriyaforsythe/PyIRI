@@ -1,6 +1,6 @@
 """PyIRI Tutorial: Daily Ionospheric Electron Density Profile Generation.
 
-This tutorial demonstrates how to use **PyIRI**, a modern, Python-native
+This tutorial demonstrates how to use PyIRI, a modern, Python-native
 reformulation of the International Reference Ionosphere (IRI), to:
 - Generate ionospheric electron density profile (EDP) parameters at a single
   location and for an entire day
@@ -16,16 +16,19 @@ Key Features:
 
 Requirements:
 Make sure you have the following PyIRI modules:
-- `PyIRI.sh_library`
-- `PyIRI.edp_update`
+- PyIRI.sh_library
+- PyIRI.edp_update
 """
 
 # Import libraries
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 import PyIRI
 import PyIRI.edp_update as ml  # Legacy PyIRI formalism (Fourier + empirical)
 import PyIRI.sh_library as sh  # Updated PyIRI using spherical harmonics
+
+out_dir = Path(__file__).parent.parent / "figures"
 
 # Specify date
 year = 2020
@@ -134,8 +137,7 @@ ax_plot.plot(aUT, Es['B_top'][:, ind_grid], label='$B_{bot}^{Es}$', c='blue')
 ax_plot.legend(loc='upper left', prop={'size': 7})
 
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_diurnal.png', format='png',
+plt.savefig(out_dir / 'PyIRI_sh_diurnal.png', format='png',
             bbox_inches='tight')
 
 # Plot electron density as a function of time
@@ -153,8 +155,7 @@ cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Electron Density (m$^{-3}$)')
 
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_EDP_diurnal.png', format='png',
+plt.savefig(out_dir / 'PyIRI_sh_EDP_diurnal.png', format='png',
             bbox_inches='tight')
 
 # ----------------------------------------
@@ -224,8 +225,7 @@ ax_plot.plot(aUT, Es['B_top'][:, ind_grid], label='$B_{bot}^{Es}$', c='blue')
 ax_plot.legend(loc='upper left', prop={'size': 7})
 
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_legacy_diurnal.png', format='png',
+plt.savefig(out_dir / 'PyIRI_legacy_diurnal.png', format='png',
             bbox_inches='tight')
 
 # Plot electron density as a function of time
@@ -243,6 +243,5 @@ cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Electron Density (m$^{-3}$)')
 
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_legacy_EDP_diurnal.png', format='png',
+plt.savefig(out_dir / 'PyIRI_legacy_EDP_diurnal.png', format='png',
             bbox_inches='tight')

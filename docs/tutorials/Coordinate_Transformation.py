@@ -66,7 +66,10 @@ acceptable tolerance for climatological studies.
 import datetime as dt
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 from PyIRI.sh_library import Apex
+
+plot_dir = Path(__file__).parent.parent / "figures"
 
 # Define datetime object
 dtime = dt.datetime(year=2020, month=1, day=1)
@@ -125,5 +128,4 @@ ax_plot.set_xlabel('QD Lon (°)')
 ax_plot.set_ylabel('QD Lat (°)')
 
 # Save to file
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'Apex_Coordinate_Transformation.png')
+plt.savefig(plot_dir / 'Apex_Coordinate_Transformation.png')

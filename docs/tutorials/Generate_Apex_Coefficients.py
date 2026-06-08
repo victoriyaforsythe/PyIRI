@@ -68,7 +68,14 @@ from tqdm import tqdm
 # ---------------------------------------------------------------------
 # Parameters
 # ---------------------------------------------------------------------
-save_dir = os.getcwd()
+save_dir = None
+if save_dir is None:
+    raise ValueError("This script is not a typical tutorial. It is provided "
+                     + "as a reference to extract Apex coefficients using "
+                     + "ApexPy, which is a lengthy process. To run it, please "
+                     + "provide proper paths for the save_dir directory "
+                     + "wherein Apex coefficients will be saved.")
+
 ddeg = 1  # grid resolution in degrees
 ayear = np.arange(1900, 2026)
 

@@ -41,8 +41,11 @@ The EDP output has the shape (N_T, N_V, N_G), where:
 # Import libraries
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 import PyIRI
 import PyIRI.sh_library as sh  # Updated PyIRI using spherical harmonics
+
+plot_dir = Path(__file__).parent.parent / "figures"
 
 # Specify date
 year = 2020
@@ -114,8 +117,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$F2 (MHz)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_foF2.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_foF2.png', format='png', bbox_inches='tight')
 
 
 # Plot hmF2
@@ -135,8 +137,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$hm$F2 (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_hmF2.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_hmF2.png', format='png', bbox_inches='tight')
 
 
 # Plot B0
@@ -156,8 +157,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$B0$ (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_B0.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_B0.png', format='png', bbox_inches='tight')
 
 
 # Plot B1
@@ -177,8 +177,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$B1$ (unitless)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_B1.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_B1.png', format='png', bbox_inches='tight')
 
 
 # Plot B_top
@@ -198,8 +197,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$B_{top}$ (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_B_top.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_B_top.png', format='png', bbox_inches='tight')
 
 # Plot probability of F1 to occurre
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -218,8 +216,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Probability of F1')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_P.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_P.png', format='png', bbox_inches='tight')
 
 
 # Plot thickness of F1
@@ -239,8 +236,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('B$_{bot}^{F1}$ (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_B_F1_bot.png', format='png',
+plt.savefig(plot_dir / 'PyIRI_sh_B_F1_bot.png', format='png',
             bbox_inches='tight')
 
 
@@ -261,8 +257,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$F1 (MHz)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_foF1.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_foF1.png', format='png', bbox_inches='tight')
 
 
 # Plot hmF1
@@ -282,8 +277,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$hm$F1 (km)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_hmF1.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_hmF1.png', format='png', bbox_inches='tight')
 
 # Plot foE
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -302,8 +296,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$E (MHz)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_foE.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_foE.png', format='png', bbox_inches='tight')
 
 # Plot foEs
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -322,8 +315,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$Es (MHz)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_foEs.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_foEs.png', format='png', bbox_inches='tight')
 
 # Calculate vTEC from EDP array
 TEC = PyIRI.main_library.edp_to_vtec(EDP, aalt, min_alt=0.0, max_alt=202000.0)
@@ -345,8 +337,7 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('vTEC (TECU)')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_vTEC.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_vTEC.png', format='png', bbox_inches='tight')
 
 # Select location to plot EDP
 lon_plot = 10
@@ -368,5 +359,4 @@ x = np.reshape(EDP[ind], aalt.shape)
 ax.plot(x, aalt, c='black', linewidth=1)
 plt.title(f'{lon_plot}° Lon, {lat_plot}° Lat, {UT_plot} UT')
 # Save figure
-plot_dir = '../figures/'
-plt.savefig(plot_dir + 'PyIRI_sh_EDP.png', format='png', bbox_inches='tight')
+plt.savefig(plot_dir / 'PyIRI_sh_EDP.png', format='png', bbox_inches='tight')
