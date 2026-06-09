@@ -34,10 +34,13 @@ def test_fo_1day_interpolation():
         fo_fn_output = layer['fo'][0, 0]
         Nm_from_fo.append(freq2den(fo_fn_output))
 
-    assert Nm_fn_output == Nm_from_fo, ("Nm/fo interpolation error: Nm from "
-                                        + f"function is {Nm_fn_output}, should "
-                                        + f"be {Nm_from_fo}. Verify that fo is "
-                                        + "linearly interpolated, not Nm.")
+    np.testing.assert_array_almost_equal(Nm_fn_output, Nm_from_fo, decimal=4,
+                                         err_msg=("Nm/fo interpolation error: "
+                                                  "Nm from function is "
+                                                  f"{Nm_fn_output}, should be "
+                                                  f"{Nm_from_fo}. Verify that "
+                                                  "fo is linearly interpolated,"
+                                                  " not Nm."))
 
 
 def test_IRI_density_1day_runs():
