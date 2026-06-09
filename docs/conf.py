@@ -41,6 +41,7 @@ extensions = ['sphinxcontrib.extras_require',
 templates_path = ['.templates']
 
 # linkcheck_ignore = [r'http://localhost:\d+/']
+# linkcheck_ignore = ["https://www.contributor-covenant.org/.*",]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
