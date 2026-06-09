@@ -110,8 +110,17 @@ for imonth in range(12):
         coeff_dir=coeff_dir,
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
-        coord=coord
+        coord=coord,
+        no_Es_old_output=False
     )
+
+# In version 0.1.6, the sh.IRI_monthly_mean_par function did not return the
+# sporadic E layer dict
+# To return the Es dict along with the others, make sure to toggle
+# no_Es_old_output=False
+# This argument is deprecated in version 0.1.7 and will be removed in
+# version 0.2+)
+
     NmF2[imonth] = f2['Nm']
     hmF2[imonth] = f2['hm']
 

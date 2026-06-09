@@ -184,7 +184,7 @@ def IRI_sh_params(year, month, aUT, alon, alat,
 def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
                          solmin=0, solmax=100, coeff_dir=None,
                          foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO',
-                         no_Es_old_output=False):
+                         no_Es_old_output=True):
     """Output ionospheric parameters for a particular day.
 
     Parameters
@@ -230,7 +230,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
         .. deprecated:: 0.1.7
                 This argument is deprecated and will be removed in version 0.2+.
                 If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=False)
+                outputs to conform with version 0.1.6 scripts. (default=True)
 
     Returns
     -------
@@ -317,7 +317,8 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
         coeff_dir=coeff_dir,
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
-        coord=coord
+        coord=coord,
+        no_Es_old_output=False
     )
 
     F2max, F1max, Emax, Esmax, sun, mag, _ = IRI_density_1day(
@@ -326,7 +327,8 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
         coeff_dir=coeff_dir,
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
-        coord=coord
+        coord=coord,
+        no_Es_old_output=False
     )
 
     F2 = {k: np.stack([F2min[k], F2max[k]], axis=-1) for k in F2min}
@@ -346,7 +348,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
 
 def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
                      coeff_dir=None, foF2_coeff='URSI',
-                     hmF2_model='SHU2015', coord='GEO', no_Es_old_output=False):
+                     hmF2_model='SHU2015', coord='GEO', no_Es_old_output=True):
     """Output ionospheric parameters for a particular day.
 
     Parameters
@@ -390,7 +392,7 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
         .. deprecated:: 0.1.7
                 This argument is deprecated and will be removed in version 0.2+.
                 If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=False)
+                outputs to conform with version 0.1.6 scripts. (default=True)
 
     Returns
     -------
@@ -532,12 +534,12 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
                                 solidx='R12', solmin=0, solmax=100)
 
     # Define constant parameters
-    hmEs = 100. + np.zeros(foEs.shape)
-    hmE = 110. + np.zeros(foEs.shape)
-    B_E_top = 7. + np.zeros((foEs.shape))
-    B_E_bot = 5. + np.zeros((foEs.shape))
-    B_Es_top = 1. + np.zeros((foEs.shape))
-    B_Es_bot = 1. + np.zeros((foEs.shape))
+    hmEs = np.full(shape=foEs.shape, fill_value=100.)
+    hmE = np.full(shape=foEs.shape, fill_value=110.)
+    B_E_top = np.full(shape=foEs.shape, fill_value=7.)
+    B_E_bot = np.full(shape=foEs.shape, fill_value=5.)
+    B_Es_top = np.full(shape=foEs.shape, fill_value=1.)
+    B_Es_bot = np.full(shape=foEs.shape, fill_value=1.)
 
     # Find magnetic inclination
     decimal_year = ml.decimal_year(apdtime[0])
@@ -754,10 +756,10 @@ def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
 
     NmEs = ml.freq2den(foEs)
 
-    hmEs = 110. + np.zeros(NmEs.shape)
+    hmEs = np.full(shape=NmEs.shape, fill_value=110.)
 
-    B_Es_top = 1. + np.zeros((hmEs.shape))
-    B_Es_bot = 1. + np.zeros((hmEs.shape))
+    B_Es_top = np.full(shape=hmEs.shape, fill_value=1.)
+    B_Es_bot = np.full(shape=hmEs.shape, fill_value=1.)
 
     Es = {'Nm': NmEs,
           'fo': foEs,
@@ -959,7 +961,7 @@ def create_reg_grid_geo_or_mag(hr_res=1, lat_res=1, lon_res=1, alt_res=10,
 def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
                      lat_res=1, lon_res=1, alt_res=10, alt_min=0, alt_max=700,
                      foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO',
-                     no_Es_old_output=False):
+                     no_Es_old_output=True):
     """Run IRI for a single day on a regular grid.
 
     Parameters
@@ -1001,7 +1003,7 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
         .. deprecated:: 0.1.7
                 This argument is deprecated and will be removed in version 0.2+.
                 If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=False)
+                outputs to conform with version 0.1.6 scripts. (default=True)
 
     Returns
     -------
@@ -1088,7 +1090,7 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
     # Run IRI for one day
     F2, F1, E, Es, sun, mag, EDP = IRI_density_1day(
         year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
-        foF2_coeff, hmF2_model, coord)
+        foF2_coeff, hmF2_model, coord, no_Es_old_output=False)
 
     if no_Es_old_output:
         warnings.warn("no_Es_old_output is deprecated and will be removed in "
@@ -1106,7 +1108,7 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
                           lon_res=1, alt_res=10, alt_min=0, alt_max=700,
                           foF2_coeff='URSI', hmF2_model='SHU2015',
                           coord='GEO', solidx='IG12', solmin=0, solmax=100,
-                          no_Es_old_output=False):
+                          no_Es_old_output=True):
     """Run IRI for monthly mean parameters on a regular grid.
 
     Parameters
@@ -1151,7 +1153,7 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
         .. deprecated:: 0.1.7
                 This argument is deprecated and will be removed in version 0.2+.
                 If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=False)
+                outputs to conform with version 0.1.6 scripts. (default=True)
 
     Returns
     -------
@@ -1240,7 +1242,8 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
                                                    coord=coord,
                                                    solidx=solidx,
                                                    solmin=solmin,
-                                                   solmax=solmax)
+                                                   solmax=solmax,
+                                                   no_Es_old_output=False)
 
     if no_Es_old_output:
         warnings.warn("no_Es_old_output is deprecated and will be removed in "

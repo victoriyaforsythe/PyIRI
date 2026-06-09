@@ -1667,7 +1667,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
     R12_min_max = np.array([IG12_2_R12(aIG[0]), IG12_2_R12(aIG[1])])
 
     # E
-    hmE = 110. + np.zeros((M3000.shape))
+    hmE = np.full(shape=M3000.shape, fill_value=110.)
 
     # F2
     # based on BSE-1979 IRI Option developed by Bilitza et al. (1979)
@@ -1700,7 +1700,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
     hmF2 = 1490.0 / (M3000 + DM) - 176.0
 
     # Es
-    hmEs = 100. + np.zeros((M3000.shape))
+    hmEs = np.full(shape=M3000.shape, fill_value=100.)
 
     return hmF2, hmE, hmEs
 
@@ -1780,16 +1780,16 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
     B_F2_top = (100. * x + 150.) / (0.041163 * x**2 - 0.183981 * x + 1.424472)
 
     # B_E_top..................................................................
-    B_E_top = 7. + np.zeros((NmF2.shape))
+    B_E_top = np.full(shape=NmF2.shape, fill_value=7.)
 
     # B_E_bot..................................................................
-    B_E_bot = 5. + np.zeros((NmF2.shape))
+    B_E_bot = np.full(shape=NmF2.shape, fill_value=5.)
 
     # B_Es_top.................................................................
-    B_Es_top = 1. + np.zeros((NmF2.shape))
+    B_Es_top = np.full(shape=NmF2.shape, fill_value=1.)
 
     # B_Es_bot.................................................................
-    B_Es_bot = 1. + np.zeros((NmF2.shape))
+    B_Es_bot = np.full(shape=NmF2.shape, fill_value=1.)
 
     return B_F2_bot, B_F2_top, B_E_bot, B_E_top, B_Es_bot, B_Es_top
 
@@ -2311,7 +2311,7 @@ def drop_function(x):
     if nelem > 1:
         y = 1. - (x / (nelem - 1.))**n
     else:
-        y = np.zeros((x.size)) + 1.
+        y = np.full(shape=x.size, fill_value=1.)
 
     return y
 
@@ -2952,8 +2952,8 @@ def solar_interpolation_of_dictionary_F2(F, F107, hmF2_model, version=2):
         F_key = F[key]
         F_key = np.swapaxes(F_key, 0, 2)
 
-        if (key in ['fo', 'B_top', 'B_bot']
-                or (key == 'hm' and hmF2_model == 'SHU2015')):
+        if (key in ['fo', 'B_top', 'B_bot'] or (
+                key == 'hm' and hmF2_model == 'SHU2015')):
             F_new[key] = solar_interpolate(F_key[0, :], F_key[1, :], F107,
                                            version=version, solidx='IG12',
                                            solmin=0, solmax=100)

@@ -82,7 +82,14 @@ coeff_dir = None          # Use default coefficient path
                             coeff_dir=coeff_dir,
                             foF2_coeff=foF2_coeff,
                             hmF2_model=hmF2_model,
-                            coord=coord)
+                            coord=coord,
+                            no_Es_old_output=False)
+# In version 0.1.6, the sh.IRI_monthly_mean_par function did not return the
+# sporadic E layer dict
+# To return the Es dict along with the others, make sure to toggle
+# no_Es_old_output=False
+# This argument is deprecated in version 0.1.7 and will be removed in
+# version 0.2+
 
 # Plot results for F2 region at time stamp UT=10
 # Make sure alon and alat contains lon_plot and lat_plot

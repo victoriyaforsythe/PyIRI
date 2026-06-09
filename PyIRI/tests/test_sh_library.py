@@ -26,7 +26,8 @@ def test_fo_1day_interpolation():
                                             20,
                                             40,
                                             0,
-                                            IG12_2_F107(40))
+                                            IG12_2_F107(40),
+                                            no_Es_old_output=False)
 
     Nm_fn_output = []
     Nm_from_fo = []
@@ -64,7 +65,7 @@ def test_IRI_density_1day_runs():
     N_V = len(aalt)
 
     F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
-        year, mth, day, aUT, alon, alat, aalt, F107)
+        year, mth, day, aUT, alon, alat, aalt, F107, no_Es_old_output=False)
 
     assert EDP.shape == (N_T, N_V, N_G)
     assert F2['Nm'].shape == (N_T, N_G)
@@ -87,7 +88,7 @@ def test_IRI_monthly_mean_par_runs():
     N_G = len(alon)
 
     F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
-        year, mth, aUT, alon, alat)
+        year, mth, aUT, alon, alat, no_Es_old_output=False)
 
     assert F2['Nm'].shape == (N_T, N_G, 2)
     assert sun['lat'].shape == (N_T,)
@@ -117,54 +118,53 @@ def test_IRI_density_1day_for_monthly_mean_values():
 
     # Giving IG12=0 as input to IRI_density_1day
     F2min, F1min, Emin, _, sunmin, magmin, _ = sh.IRI_density_1day(
-        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(0))
+        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(0),
+        no_Es_old_output=False)
 
     # Giving IG12=100 as input to IRI_density_1day
     F2max, F1max, Emax, _, sunmax, magmax, _ = sh.IRI_density_1day(
-        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(100))
+        year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(100),
+        no_Es_old_output=False)
 
     # Reference values for IG12=0/100 obtained from IRI_monthly_mean_par
     F2m, F1m, Em, _, sunm, magm = sh.IRI_monthly_mean_par(
-        year, mth, aUT, alon, alat)
+        year, mth, aUT, alon, alat, no_Es_old_output=False)
 
     # Check that IRI_density_1day with IG12=0/100 as input returns the same
     # parameter values as IRI_monthly_mean_par
-    groups = [
-        (F2m, F2min, F2max, 'F2'), (F1m, F1min, F1max, 'F1'),
-        (Em, Emin, Emax, 'E'),
-    ]  # Skip Es because interpolated for R12=10-180
+    groups = [(F2m, F2min, F2max, 'F2'), (F1m, F1min, F1max, 'F1'),
+              (Em, Emin, Emax, 'E'),]
+    # Skip Es because interpolated for R12=10-180
 
     for monthly, dmin, dmax, name in groups:
         for key in monthly:
             arr = monthly[key]
 
-            np.testing.assert_array_almost_equal(
-                arr[..., 0], dmin[key], decimal=3,
-                err_msg=f"{name}.{key} min mismatch (IG12=0)"
-            )
-            np.testing.assert_array_almost_equal(
-                arr[..., 1], dmax[key], decimal=3,
-                err_msg=f"{name}.{key} max mismatch (IG12=100)"
-            )
+            np.testing.assert_array_almost_equal(arr[..., 0], dmin[key],
+                                                 decimal=3, err_msg=(f"{name}."
+                                                 + f"{key} min mismatch "
+                                                 + "(IG12=0)"))
+            np.testing.assert_array_almost_equal(arr[..., 1], dmax[key],
+                                                 decimal=3, err_msg=(f"{name}."
+                                                 + f"{key} max mismatch "
+                                                 + "(IG12=100)"))
 
     # Check that sun and mag are the same regardless of solar activity
-    groups = [
-        (sunm, sunmin, sunmax, 'sun'), (magm, magmin, magmax, 'mag')
-    ]
+    groups = [(sunm, sunmin, sunmax, 'sun'), (magm, magmin, magmax, 'mag')]
 
     # Check that IRI_density_1day with IG12=0/100 as input returns the same
     # parameter values as IRI_monthly_mean_par
     for monthly, dmin, dmax, name in groups:
         for key in monthly:
 
-            np.testing.assert_array_almost_equal(
-                monthly[key], dmin[key], decimal=3,
-                err_msg=f"{name}.{key} min mismatch (IG12=0)"
-            )
-            np.testing.assert_array_almost_equal(
-                monthly[key], dmax[key], decimal=3,
-                err_msg=f"{name}.{key} max mismatch (IG12=100)"
-            )
+            np.testing.assert_array_almost_equal(monthly[key], dmin[key],
+                                                 decimal=3, err_msg=(f"{name}."
+                                                 + f"{key} min mismatch "
+                                                 + "(IG12=0)"))
+            np.testing.assert_array_almost_equal(monthly[key], dmax[key],
+                                                 decimal=3, err_msg=(f"{name}."
+                                                 + f"{key} max mismatch "
+                                                 + "(IG12=100)"))
 
 
 def test_EDP_builder_continuous():
@@ -382,7 +382,8 @@ def test_run_iri_reg_grid():
             year, month, day, F107,
             hr_res=hr_res, lat_res=lat_res, lon_res=lon_res, alt_res=alt_res,
             alt_min=alt_min, alt_max=alt_max, coord=coord, coeff_dir=coeff_dir,
-            foF2_coeff=foF2_coeff, hmF2_model=hmF2_model)
+            foF2_coeff=foF2_coeff, hmF2_model=hmF2_model,
+            no_Es_old_output=False)
 
     N_lat = int(180 / lat_res + 1)
     N_lon = int(360 / lon_res + 1)
@@ -433,7 +434,8 @@ def test_run_seas_iri_reg_grid():
             year, month, solidx='IG12',
             hr_res=hr_res, lat_res=lat_res, lon_res=lon_res, alt_res=alt_res,
             alt_min=alt_min, alt_max=alt_max, coord=coord, coeff_dir=coeff_dir,
-            foF2_coeff=foF2_coeff, hmF2_model=hmF2_model)
+            foF2_coeff=foF2_coeff, hmF2_model=hmF2_model,
+            no_Es_old_output=False)
 
     N_lat = int(180 / lat_res + 1)
     N_lon = int(360 / lon_res + 1)
@@ -529,22 +531,23 @@ def test_IRI_density_1day_runs_GEO(foF2_coeff, hmF2_model):
         coeff_dir=coeff_dir,
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
-        coord=coord
+        coord=coord,
+        no_Es_old_output=False
     )
 
     expected_shape = (len(aUT), len(alon))
     actual_shape = F2['fo'].shape
 
-    assert actual_shape == expected_shape, (
-        f"foF2 shape mismatch: expected {expected_shape}, got {actual_shape}"
-    )
+    assert actual_shape == expected_shape, ("foF2 shape mismatch: expected "
+                                            + f"{expected_shape}, got "
+                                            + f"{actual_shape}")
 
     expected_shape = (len(aUT), len(aalt), len(alon))
     actual_shape = EDP.shape
 
-    assert actual_shape == expected_shape, (
-        f"EDP shape mismatch: expected {expected_shape}, got {actual_shape}"
-    )
+    assert actual_shape == expected_shape, ("EDP shape mismatch: expected "
+                                            + f"{expected_shape}, got "
+                                            + f"{actual_shape}")
 
 
 @pytest.mark.parametrize("foF2_coeff", ['URSI', 'CCIR'])
@@ -578,32 +581,31 @@ def test_IRI_density_1day_runs_MLT(foF2_coeff, hmF2_model):
         coeff_dir=coeff_dir,
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
-        coord=coord
+        coord=coord,
+        no_Es_old_output=False
     )
 
     expected_shape = (len(aUT), len(alon))
     actual_shape = F2['fo'].shape
 
-    assert actual_shape == expected_shape, (
-        f"foF2 shape mismatch: expected {expected_shape}, got {actual_shape}"
-    )
+    assert actual_shape == expected_shape, ("foF2 shape mismatch: expected "
+                                            + f"{expected_shape}, got "
+                                            + f"{actual_shape}")
 
     expected_shape = (len(aUT), len(aalt), len(alon))
     actual_shape = EDP.shape
 
-    assert actual_shape == expected_shape, (
-        f"EDP shape mismatch: expected {expected_shape}, got {actual_shape}"
-    )
+    assert actual_shape == expected_shape, ("EDP shape mismatch: expected "
+                                            + f"{expected_shape}, got "
+                                            + f"{actual_shape}")
 
 
 @pytest.mark.parametrize(
     "inp, c, exp_shape",
-    [
-        (np.array([0., 12.]), 2, (2, 3)),
-        ([1, 2, 3, 4], 3, (4, 5)),
-        ((5.5, 6.6), 4, (2, 7)),
-        (12.0, 1, (1, 1)),
-    ],
+    [(np.array([0., 12.]), 2, (2, 3)),
+     ([1, 2, 3, 4], 3, (4, 5)),
+     ((5.5, 6.6), 4, (2, 7)),
+     (12.0, 1, (1, 1)),],
     ids=["array", "list", "tuple", "scalar"]
 )
 def test_shape_dtype_FS(inp, c, exp_shape):
@@ -910,11 +912,9 @@ def test_IRI_sh_params_empty_hmF2():
 
 @pytest.mark.parametrize(
     "coord, exp_shape",
-    [
-        ('MLT', (2, 3)),
-        ('QD', (3,)),
-        ('GEO', (3,)),
-    ]
+    [('MLT', (2, 3)),
+     ('QD', (3,)),
+     ('GEO', (3,)),]
 )
 def test_IRI_monthly_mean_par_dimensions(coord, exp_shape):
     """Tests IRI_monthly_mean_par function for output shape depending on coord.
@@ -944,7 +944,8 @@ def test_IRI_monthly_mean_par_dimensions(coord, exp_shape):
         solidx='R12',
         solmin=10,
         solmax=100,
-        coord=coord
+        coord=coord,
+        no_Es_old_output=False
     )
 
     # Ionospheric parameters stacked: (N_T, N_G, 2)
