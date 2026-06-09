@@ -316,7 +316,7 @@ def test_deprecated_function_warns():
     The function solar_interpolate_R12 is deprecated. Usage must return a
     deprecation warning.
     """
-    with pytest.warns(DeprecationWarning, match="solar_interpolate_R12"):
+    with pytest.warns(FutureWarning, match="Use solar_interpolate"):
         main.solar_interpolate_R12([1, 2], [3, 4], 50.0)
 
 
@@ -328,7 +328,7 @@ def test_deprecated_argument_warns():
     deprecation warning.
     """
     F = {'a': np.ones((3, 1, 2))}
-    with pytest.warns(DeprecationWarning,
+    with pytest.warns(FutureWarning,
                       match="use_R12 is deprecated"):
         main.solar_interpolation_of_dictionary(F, 100, use_R12=True)
 

@@ -524,7 +524,7 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
         warnings.warn(
             "output_quartiles is deprecated and will be removed in a future"
             " version. Use output_deciles instead.",
-            DeprecationWarning,
+            FutureWarning,
             stacklevel=2)
     else:
         output_quartiles = False
@@ -2812,7 +2812,7 @@ def solar_interpolate_R12(F_min, F_max, R12):
     warnings.warn("This function is deprecated and will be removed in version "
                   + "0.2+. Use solar_interpolate() with args solidx='R12', "
                   + "solmin=10, solmax=180 instead.",
-                  DeprecationWarning, stacklevel=2)
+                  FutureWarning, stacklevel=2)
 
     F = solar_interpolate(F_min, F_max, R12_2_F107(R12), solidx='R12',
                           solmin=10, solmax=180)
@@ -2878,7 +2878,7 @@ def solar_interpolation_of_dictionary(F, F107, solidx='IG12', solmin=0,
                       + "solidx='R12', solmin=10, solmax=180. use_R12=False "
                       + "behavior corresponds to the default solidx='IG12', "
                       + "solmin=0, solmax=100.",
-                      DeprecationWarning, stacklevel=2)
+                      FutureWarning, stacklevel=2)
         solidx = 'R12'
         solmin = 10
         solmax = 180

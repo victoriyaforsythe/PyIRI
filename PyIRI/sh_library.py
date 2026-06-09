@@ -184,7 +184,7 @@ def IRI_sh_params(year, month, aUT, alon, alat,
 def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
                          solmin=0, solmax=100, coeff_dir=None,
                          foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO',
-                         no_Es_old_output=True):
+                         old_output=None):
     """Output ionospheric parameters for a particular day.
 
     Parameters
@@ -226,11 +226,12 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
     coord : str
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
-    no_Es_old_output : bool
-        .. deprecated:: 0.1.7
-                This argument is deprecated and will be removed in version 0.2+.
-                If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=True)
+    old_output : bool
+        If True, excludes the Es dictionary from outputs to match version 0.1.6
+        behavior (6 outputs). If False, includes the Es dictionary (7 outputs).
+        When not specified (None), currently defaults to True with a
+        FutureWarning, but the default will change to False in version 0.2+.
+        Pass True or False explicitly to suppress the warning.
 
     Returns
     -------
@@ -294,6 +295,19 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
     Weather, 24, e2025SW004853. doi:10.1029/2025SW004853
 
     """
+    if old_output is None:
+        warnings.warn(
+            "The default value of old_output in function IRI_monthly_mean_par "
+            "will change from True to False in version 0.2+, which will return "
+            "7 outputs (including the Es dict) instead of 6 (excluding the Es "
+            "dict). Pass old_output=False to adopt the new behavior now, or "
+            "old_output=True to keep the 6-output behavior and suppress this "
+            "warning.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        old_output = True
+
     # Set coefficient file path if none given
     if coeff_dir is None:
         coeff_dir = PyIRI.coeff_dir
@@ -318,7 +332,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
         coord=coord,
-        no_Es_old_output=False
+        old_output=False
     )
 
     F2max, F1max, Emax, Esmax, sun, mag, _ = IRI_density_1day(
@@ -328,7 +342,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
         coord=coord,
-        no_Es_old_output=False
+        old_output=False
     )
 
     F2 = {k: np.stack([F2min[k], F2max[k]], axis=-1) for k in F2min}
@@ -336,11 +350,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
     E = {k: np.stack([Emin[k], Emax[k]], axis=-1) for k in Emin}
     Es = {k: np.stack([Esmin[k], Esmax[k]], axis=-1) for k in Esmin}
 
-    if no_Es_old_output:
-        warnings.warn("no_Es_old_output is deprecated and will be removed in "
-                      + "version 0.2+. Add the Es dict to your list of outputs"
-                      + " to avoid errors in the future.",
-                      DeprecationWarning, stacklevel=2)
+    if old_output:
         return F2, F1, E, sun, mag
     else:
         return F2, F1, E, Es, sun, mag
@@ -348,7 +358,7 @@ def IRI_monthly_mean_par(year, month, aUT, alon, alat, solidx='IG12',
 
 def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
                      coeff_dir=None, foF2_coeff='URSI',
-                     hmF2_model='SHU2015', coord='GEO', no_Es_old_output=True):
+                     hmF2_model='SHU2015', coord='GEO', old_output=None):
     """Output ionospheric parameters for a particular day.
 
     Parameters
@@ -388,11 +398,12 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     coord : str
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
-    no_Es_old_output : bool
-        .. deprecated:: 0.1.7
-                This argument is deprecated and will be removed in version 0.2+.
-                If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=True)
+    old_output : bool
+        If True, excludes the Es dictionary from outputs to match version 0.1.6
+        behavior (6 outputs). If False, includes the Es dictionary (7 outputs).
+        When not specified (None), currently defaults to True with a
+        FutureWarning, but the default will change to False in version 0.2+.
+        Pass True or False explicitly to suppress the warning.
 
     Returns
     -------
@@ -459,6 +470,19 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     Weather, 24, e2025SW004853. doi:10.1029/2025SW004853
 
     """
+    if old_output is None:
+        warnings.warn(
+            "The default value of old_output in function IRI_density_1day will "
+            "change from True to False in version 0.2+, which will return 7 "
+            "outputs (including the Es dict) instead of 6 (excluding the Es "
+            "dict). Pass old_output=False to adopt the new behavior now, or "
+            "old_output=True to keep the 6-output behavior and suppress this "
+            "warning.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        old_output = True
+
     # Set coefficient file path if none given
     if coeff_dir is None:
         coeff_dir = PyIRI.coeff_dir
@@ -624,18 +648,14 @@ def IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107,
     # Construct density
     EDP = EDP_builder_continuous(F2, F1, E, aalt)
 
-    if no_Es_old_output:
-        warnings.warn("no_Es_old_output is deprecated and will be removed in "
-                      + "version 0.2+. Add the Es dict to your list of outputs"
-                      + " to avoid errors in the future.",
-                      DeprecationWarning, stacklevel=2)
+    if old_output:
         return F2, F1, E, sun, mag, EDP
     else:
         return F2, F1, E, Es, sun, mag, EDP
 
 
 def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
-                            coord='GEO'):
+                            coord='GEO', warn_me=True):
     """Output monthly mean sporadic E layer using spherical harmonics.
 
     .. deprecated:: 0.1.7
@@ -666,6 +686,9 @@ def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
     coord : str
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
+    warn_me : bool
+        If set to True, will warn users that the function is deprecated.
+        (default=True)
 
     Returns
     -------
@@ -690,10 +713,11 @@ def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
     Space Weather.
 
     """
-    warnings.warn("This function is deprecated and will be removed in version "
-                  + "0.2+. The sporadic E layer is now inluded in the list of "
-                  + "outputs of the function IRI_monthly_mean_par.",
-                  DeprecationWarning, stacklevel=2)
+    if warn_me is True:
+        warnings.warn("This function is deprecated and will be removed in "
+                      "version 0.2+. The sporadic E layer is now inluded in the"
+                      " list of outputs of the function IRI_monthly_mean_par.",
+                      FutureWarning, stacklevel=2)
 
     # Set coefficient file path if none given
     if coeff_dir is None:
@@ -737,7 +761,7 @@ def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
         raise ValueError("Coordinate system must be 'GEO', 'QD', or 'MLT'.")
 
     # Extract coefficient matrices and resonstruct ionospheric parameters
-    C = load_Es_coeff_matrix(month, coeff_dir)
+    C = load_Es_coeff_matrix(month, coeff_dir, warn_me=False)
 
     n_FS_r = C.shape[1]
     n_FS_c = n_FS_r // 2 + 1
@@ -771,7 +795,7 @@ def sporadic_E_monthly_mean(year, month, aUT, alon, alat, coeff_dir=None,
 
 
 def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
-                    coord='GEO'):
+                    coord='GEO', warn_me=True):
     """Output sporadic E layer parameters for a particular day.
 
     .. deprecated:: 0.1.7
@@ -832,7 +856,7 @@ def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
     warnings.warn("This function is deprecated and will be removed in version "
                   + "0.2+. The sporadic E layer is now inluded in the list of "
                   + "outputs of the function IRI_density_1day.",
-                  DeprecationWarning, stacklevel=2)
+                  FutureWarning, stacklevel=2)
 
     # Set coefficient file path if none given
     if coeff_dir is None:
@@ -847,9 +871,9 @@ def sporadic_E_1day(year, month, day, aUT, alon, alat, F107, coeff_dir=None,
     t_before, t_after, fr1, fr2 = ml.day_of_the_month_corr(year, month, day)
 
     Es_1 = sporadic_E_monthly_mean(t_before.year, t_before.month, aUT, alon,
-                                   alat, coeff_dir, coord)
+                                   alat, coeff_dir, coord, warn_me=False)
     Es_2 = sporadic_E_monthly_mean(t_after.year, t_after.month, aUT, alon,
-                                   alat, coeff_dir, coord)
+                                   alat, coeff_dir, coord, warn_me=False)
 
     Es = ml.fractional_correction_of_dictionary(fr1, fr2, Es_1, Es_2)
 
@@ -961,7 +985,7 @@ def create_reg_grid_geo_or_mag(hr_res=1, lat_res=1, lon_res=1, alt_res=10,
 def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
                      lat_res=1, lon_res=1, alt_res=10, alt_min=0, alt_max=700,
                      foF2_coeff='URSI', hmF2_model='SHU2015', coord='GEO',
-                     no_Es_old_output=True):
+                     old_output=None):
     """Run IRI for a single day on a regular grid.
 
     Parameters
@@ -999,11 +1023,12 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
     coord : str
         Coordinate system. Options are 'GEO' for geographic, 'QD' for quasi-
         dipole, and 'MLT' for magnetic local time. (default='GEO')
-    no_Es_old_output : bool
-        .. deprecated:: 0.1.7
-                This argument is deprecated and will be removed in version 0.2+.
-                If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=True)
+    old_output : bool
+        If True, excludes the Es dictionary from outputs to match version 0.1.6
+        behavior (6 outputs). If False, includes the Es dictionary (7 outputs).
+        When not specified (None), currently defaults to True with a
+        FutureWarning, but the default will change to False in version 0.2+.
+        Pass True or False explicitly to suppress the warning.
 
     Returns
     -------
@@ -1078,6 +1103,19 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
     create_reg_grid_geo_or_mag
 
     """
+    if old_output is None:
+        warnings.warn(
+            "The default value of old_output in function run_iri_reg_grid will "
+            "change from True to False in version 0.2+, which will return 7 "
+            "outputs (including the Es dict) instead of 6 (excluding the Es "
+            "dict). Pass old_output=False to adopt the new behavior now, or "
+            "old_output=True to keep the 6-output behavior and suppress this "
+            "warning.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        old_output = True
+
     # Set coefficient file path if none given
     if coeff_dir is None:
         coeff_dir = PyIRI.coeff_dir
@@ -1090,13 +1128,9 @@ def run_iri_reg_grid(year, month, day, F107, coeff_dir=None, hr_res=1,
     # Run IRI for one day
     F2, F1, E, Es, sun, mag, EDP = IRI_density_1day(
         year, month, day, aUT, alon, alat, aalt, F107, coeff_dir,
-        foF2_coeff, hmF2_model, coord, no_Es_old_output=False)
+        foF2_coeff, hmF2_model, coord, old_output=False)
 
-    if no_Es_old_output:
-        warnings.warn("no_Es_old_output is deprecated and will be removed in "
-                      + "version 0.2+. Add the Es dict to your list of outputs"
-                      + " to avoid errors in the future.",
-                      DeprecationWarning, stacklevel=2)
+    if old_output:
         return (alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun,
                 mag, EDP)
     else:
@@ -1108,7 +1142,7 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
                           lon_res=1, alt_res=10, alt_min=0, alt_max=700,
                           foF2_coeff='URSI', hmF2_model='SHU2015',
                           coord='GEO', solidx='IG12', solmin=0, solmax=100,
-                          no_Es_old_output=True):
+                          old_output=None):
     """Run IRI for monthly mean parameters on a regular grid.
 
     Parameters
@@ -1149,11 +1183,12 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
         User selected solar min. (default=0)
     solmax : int or float
         User selected solar max. (default=100)
-    no_Es_old_output : bool
-        .. deprecated:: 0.1.7
-                This argument is deprecated and will be removed in version 0.2+.
-                If set to True, removes the Es dictionary from the list of
-                outputs to conform with version 0.1.6 scripts. (default=True)
+    old_output : bool
+        If True, excludes the Es dictionary from outputs to match version 0.1.6
+        behavior (6 outputs). If False, includes the Es dictionary (7 outputs).
+        When not specified (None), currently defaults to True with a
+        FutureWarning, but the default will change to False in version 0.2+.
+        Pass True or False explicitly to suppress the warning.
 
     Returns
     -------
@@ -1225,6 +1260,19 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
     create_reg_grid_geo_or_mag
 
     """
+    if old_output is None:
+        warnings.warn(
+            "The default value of old_output in function run_seas_iri_reg_grid "
+            "will change from True to False in version 0.2+, which will return"
+            "7 outputs (including the Es dict) instead of 6 (excluding the Es "
+            "dict). Pass old_output=False to adopt the new behavior now, or "
+            "old_output=True to keep the 6-output behavior and suppress this "
+            "warning.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        old_output = True
+
     # Set coefficient file path if none given
     if coeff_dir is None:
         coeff_dir = PyIRI.coeff_dir
@@ -1243,13 +1291,9 @@ def run_seas_iri_reg_grid(year, month, coeff_dir=None, hr_res=1, lat_res=1,
                                                    solidx=solidx,
                                                    solmin=solmin,
                                                    solmax=solmax,
-                                                   no_Es_old_output=False)
+                                                   old_output=False)
 
-    if no_Es_old_output:
-        warnings.warn("no_Es_old_output is deprecated and will be removed in "
-                      + "version 0.2+. Add the Es dict to your list of outputs"
-                      + " to avoid errors in the future.",
-                      DeprecationWarning, stacklevel=2)
+    if old_output:
         return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, sun, mag
     else:
         return alon, alat, alon_2d, alat_2d, aalt, aUT, F2, F1, E, Es, sun, mag
@@ -1318,7 +1362,7 @@ def load_coeff_matrices(month, coeff_dir=None, foF2_coeff='URSI',
     return C
 
 
-def load_Es_coeff_matrix(month, coeff_dir=None):
+def load_Es_coeff_matrix(month, coeff_dir=None, warn_me=True):
     """Load sporadic E layer coefficient matrix from its NetCDF file.
 
     .. deprecated:: 0.1.7
@@ -1333,6 +1377,9 @@ def load_Es_coeff_matrix(month, coeff_dir=None):
     coeff_dir: str
         Directory where the coefficient files are stored. If None, uses the
         default coefficient files stored in PyIRI.coeff_dir. (default=None)
+    warn_me : bool
+        Used to warn users of deprecated function in case they use the function
+        directly instead of nested inside other deprecated functions.
 
     Returns
     -------
@@ -1343,11 +1390,12 @@ def load_Es_coeff_matrix(month, coeff_dir=None):
         Shape (N_IG, N_FS, N_SH)
 
     """
-    warnings.warn("This function is deprecated and will be removed in version "
-                  + "0.2+. The sporadic E layer coefficients are now loaded "
-                  + "alongside other parameter coefficients in "
-                  + "load_coeff_matrices.",
-                  DeprecationWarning, stacklevel=2)
+    if warn_me is True:
+        warnings.warn("This function is deprecated and will be removed in "
+                      "version 0.2+. The sporadic E layer coefficients are now"
+                      "loaded alongside other parameter coefficients in "
+                      "load_coeff_matrices.",
+                      FutureWarning, stacklevel=2)
 
     # Set coefficient file path if none given
     if coeff_dir is None:

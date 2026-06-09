@@ -11,6 +11,66 @@ from PyIRI.main_library import IG12_2_F107
 import PyIRI.sh_library as sh
 
 
+def test_deprecated_argument_default_warns():
+    """Test deprecation of default argument old_output.
+
+    The argument old_output will change default from True to False in version
+    0.2+. Usage of related functions must return a warning.
+    """
+    year = 2020
+    month = 12
+    day = 10
+    aUT = 0
+    alon = 10
+    alat = 10
+    aalt = 100
+    F107 = 124
+
+    hr_res = 24
+    lat_res = 90
+    lon_res = 180
+    alt_res = 100
+    alt_min = 100
+    alt_max = 200
+
+    with pytest.warns(FutureWarning,
+                      match="IRI_monthly_mean_par"):
+        sh.IRI_monthly_mean_par(year, month, aUT, alon, alat)
+    with pytest.warns(FutureWarning,
+                      match="IRI_density_1day"):
+        sh.IRI_density_1day(year, month, day, aUT, alon, alat, aalt, F107)
+    with pytest.warns(FutureWarning,
+                      match="run_iri_reg_grid"):
+        sh.run_iri_reg_grid(year, month, day, F107, hr_res=hr_res,
+                            lat_res=lat_res, lon_res=lon_res, alt_res=alt_res,
+                            alt_min=alt_min, alt_max=alt_max)
+    with pytest.warns(FutureWarning,
+                      match="run_seas_iri_reg_grid"):
+        sh.run_seas_iri_reg_grid(year, month, hr_res=hr_res, lat_res=lat_res,
+                                 lon_res=lon_res, alt_res=alt_res,
+                                 alt_min=alt_min, alt_max=alt_max)
+
+
+def test_sporadic_E_monthly_mean_deprecated_function_warns():
+    """Test deprecated sporadic_E_monthly_mean.
+
+    The function sporadic_E_monthly_mean is deprecated. Usage must return a
+    deprecation warning.
+    """
+    with pytest.warns(FutureWarning, match="IRI_monthly_mean_par"):
+        sh.sporadic_E_monthly_mean(2020, 12, 0, 10, 10)
+
+
+def test_sporadic_E_1day_deprecated_function_warns():
+    """Test deprecated sporadic_E_density_1day.
+
+    The function sporadic_E_density_1day is deprecated. Usage must return a
+    deprecation warning.
+    """
+    with pytest.warns(FutureWarning, match="IRI_density_1day"):
+        sh.sporadic_E_1day(2020, 12, 10, 0, 10, 10, 124)
+
+
 def test_fo_1day_interpolation():
     """Test linear interpolation of fo.
 
@@ -27,7 +87,7 @@ def test_fo_1day_interpolation():
                                             40,
                                             0,
                                             IG12_2_F107(40),
-                                            no_Es_old_output=False)
+                                            old_output=False)
 
     Nm_fn_output = []
     Nm_from_fo = []
@@ -65,7 +125,7 @@ def test_IRI_density_1day_runs():
     N_V = len(aalt)
 
     F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
-        year, mth, day, aUT, alon, alat, aalt, F107, no_Es_old_output=False)
+        year, mth, day, aUT, alon, alat, aalt, F107, old_output=False)
 
     assert EDP.shape == (N_T, N_V, N_G)
     assert F2['Nm'].shape == (N_T, N_G)
@@ -88,7 +148,7 @@ def test_IRI_monthly_mean_par_runs():
     N_G = len(alon)
 
     F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
-        year, mth, aUT, alon, alat, no_Es_old_output=False)
+        year, mth, aUT, alon, alat, old_output=False)
 
     assert F2['Nm'].shape == (N_T, N_G, 2)
     assert sun['lat'].shape == (N_T,)
@@ -119,16 +179,16 @@ def test_IRI_density_1day_for_monthly_mean_values():
     # Giving IG12=0 as input to IRI_density_1day
     F2min, F1min, Emin, _, sunmin, magmin, _ = sh.IRI_density_1day(
         year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(0),
-        no_Es_old_output=False)
+        old_output=False)
 
     # Giving IG12=100 as input to IRI_density_1day
     F2max, F1max, Emax, _, sunmax, magmax, _ = sh.IRI_density_1day(
         year, mth, day, aUT, alon, alat, aalt, IG12_2_F107(100),
-        no_Es_old_output=False)
+        old_output=False)
 
     # Reference values for IG12=0/100 obtained from IRI_monthly_mean_par
     F2m, F1m, Em, _, sunm, magm = sh.IRI_monthly_mean_par(
-        year, mth, aUT, alon, alat, no_Es_old_output=False)
+        year, mth, aUT, alon, alat, old_output=False)
 
     # Check that IRI_density_1day with IG12=0/100 as input returns the same
     # parameter values as IRI_monthly_mean_par
@@ -383,7 +443,7 @@ def test_run_iri_reg_grid():
             hr_res=hr_res, lat_res=lat_res, lon_res=lon_res, alt_res=alt_res,
             alt_min=alt_min, alt_max=alt_max, coord=coord, coeff_dir=coeff_dir,
             foF2_coeff=foF2_coeff, hmF2_model=hmF2_model,
-            no_Es_old_output=False)
+            old_output=False)
 
     N_lat = int(180 / lat_res + 1)
     N_lon = int(360 / lon_res + 1)
@@ -435,7 +495,7 @@ def test_run_seas_iri_reg_grid():
             hr_res=hr_res, lat_res=lat_res, lon_res=lon_res, alt_res=alt_res,
             alt_min=alt_min, alt_max=alt_max, coord=coord, coeff_dir=coeff_dir,
             foF2_coeff=foF2_coeff, hmF2_model=hmF2_model,
-            no_Es_old_output=False)
+            old_output=False)
 
     N_lat = int(180 / lat_res + 1)
     N_lon = int(360 / lon_res + 1)
@@ -532,7 +592,7 @@ def test_IRI_density_1day_runs_GEO(foF2_coeff, hmF2_model):
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
         coord=coord,
-        no_Es_old_output=False
+        old_output=False
     )
 
     expected_shape = (len(aUT), len(alon))
@@ -582,7 +642,7 @@ def test_IRI_density_1day_runs_MLT(foF2_coeff, hmF2_model):
         foF2_coeff=foF2_coeff,
         hmF2_model=hmF2_model,
         coord=coord,
-        no_Es_old_output=False
+        old_output=False
     )
 
     expected_shape = (len(aUT), len(alon))
@@ -945,7 +1005,7 @@ def test_IRI_monthly_mean_par_dimensions(coord, exp_shape):
         solmin=10,
         solmax=100,
         coord=coord,
-        no_Es_old_output=False
+        old_output=False
     )
 
     # Ionospheric parameters stacked: (N_T, N_G, 2)
