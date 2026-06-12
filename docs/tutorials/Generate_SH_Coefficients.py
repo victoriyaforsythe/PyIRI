@@ -1,5 +1,15 @@
 """Generating Spherical Harmonic Coefficients from IRI (or PyIRI) Grids.
 
+---------------------------------------------------------------------------
+IMPORTANT - READ BEFORE RUNNING
+---------------------------------------------------------------------------
+This script is not a PyIRI tutorial.
+
+It is a reference routine for extracting ionospheric parameter coefficients
+via the IRI model. This process may take considerable time and should only
+be run for the sake of a coefficient update.
+---------------------------------------------------------------------------
+
 This script details the SH coefficient extraction routine used by PyIRI for
 expressing the foF2, hmF2, B0, B1, M3000F2, and foEs parameters.
 
@@ -69,36 +79,142 @@ transparency; for proper running, it is recommended to use parallelization on a
 cluster.
 """
 
-from apexpy import Apex
+try:
+    from apexpy import Apex
+except ImportError:
+    raise ImportError("This script requires the apexpy module, which is a "
+                      "Python wrapper for the Apex Fortran library. The apexpy "
+                      "module is only necessary to run this ionospheric "
+                      "parameter coefficient derivation routine; it is not "
+                      "necessary to run the PyIRI model.")
+import argparse
 import datetime as dt
-import iricore
+try:
+    import iricore
+except ImportError:
+    raise ImportError("This script requires the iricore module, which is a "
+                      "Python wrapper for the IRI Fortran model. The "
+                      "iricore module is only necessary to run this "
+                      "ionospheric parameter coefficient derivation routine; "
+                      "it is not necessary to run the PyIRI model.")
 import netCDF4 as nc
 import numpy as np
+import os
 import pandas as pd
+import PyIRI
+import PyIRI.edp_update as edp
 import PyIRI.main_library as ml
-import pyshtools as pysh
+try:
+    import pyshtools as pysh
+except ImportError:
+    raise ImportError("This script requires the pyshtools module, which is a "
+                      "Python wrapper for the SHTOOLS Fortran library. The "
+                      "pyshtools module is only necessary to run this "
+                      "ionospheric parameter coefficient derivation routine; "
+                      "it is not necessary to run the PyIRI model.")
+import sys
 from tqdm import tqdm
+
+# ---------------------------------------------------------------------
+# Input parameters
+# ---------------------------------------------------------------------
+parser = argparse.ArgumentParser(
+    description=(
+        "************************************************************\n"
+        "  WARNING: This is not a PyIRI tutorial.\n"
+        "************************************************************\n\n"
+        "This script derives ionospheric parameter coefficient files\n"
+        "using a Python wrapper to the original IRI Fortran model.\n"
+        "It should only be run for the sake of coefficient updates.\n\n"
+    ),
+    formatter_class=argparse.RawDescriptionHelpFormatter
+)
+
+parser.add_argument(
+    "--param",
+    type=str,
+    help=("Ionospheric parameter to extract coefficients for. Options are: "
+          "foF2_CCIR, foF2_URSI, hmF2_SHU2015, hmF2_AMTB2013, B0, B1, M3000F2, "
+          "foEs")
+)
+
+parser.add_argument(
+    "--year",
+    type=int,
+    help=("Year to run the IRI model for.")
+)
+
+parser.add_argument(
+    "--dmin",
+    type=float,
+    help=("Timestep in minutes.")
+)
+
+parser.add_argument(
+    "--ddeg",
+    type=float,
+    help=("Spatial grid resolution in degrees.")
+)
+
+parser.add_argument(
+    "--iri-grids-save-dir",
+    type=str,
+    help="Path to the directory where IRI parameter grids will be saved."
+)
+
+parser.add_argument(
+    "--coeffs-save-dir",
+    type=str,
+    help="Path to the directory where coefficient files will be saved."
+)
+
+args = parser.parse_args()
+
+missing = []
+if args.param is None:
+    missing.append("--param")
+if args.year is None:
+    missing.append("--year")
+if args.ddeg is None:
+    missing.append("--ddeg")
+if args.dmin is None:
+    missing.append("--dmin")
+if args.iri_grids_save_dir is None:
+    missing.append("--iri-grids-save-dir")
+if args.coeffs_save_dir is None:
+    missing.append("--coeffs-save-dir")
+
+if missing:
+    print("\nMissing required inputs: " + ", ".join(missing) + "\n")
+    parser.print_help()
+    sys.exit(1)
+
+if args.param not in ['foF2_CCIR', 'foF2_URSI', 'hmF2_SHU2015', 'M3000F2',
+                      'hmF2_AMTB2013', 'B0', 'B1', 'foEs']:
+    raise ValueError(f"Invalid input parameter: {args.param}. "
+                     "Options are:\n"
+                     "foF2_CCIR, foF2_URSI, hmF2_SHU2015, hmF2_AMTB2013, B0, "
+                     "B1, M3000F2, foEs")
+
+for name, path_str in [("--iri-grids-save-dir", args.iri_grids_save_dir),
+                       ("--coeffs-save-dir", args.coeffs_save_dir)]:
+    if not os.path.exists(path_str):
+        raise ValueError(f"{name} does not exist: {path_str}")
+    if not os.path.isdir(path_str):
+        raise ValueError(f"{name} is not a directory: {path_str}")
+
+param = args.param
+iri_grids_save_dir = os.path.normpath(args.iri_grids_save_dir)
+coeffs_save_dir = os.path.normpath(args.coeffs_save_dir)
+year = args.year
+ddeg = args.ddeg
+dmin = args.dmin
 
 # -----------------------------------------------------------------------------
 # Create parameter grids using iricore
 
 # ------------------------------------
-# Set dir path to save IRI grids and dir path to save coeff files
-# Set to None as default, will not run unless given proper paths by user
-iri_grids_save_dir = None
-coeffs_save_dir = None
-if iri_grids_save_dir is None or coeffs_save_dir is None:
-    raise ValueError("This script is not a typical tutorial. It is provided "
-                     + "as a reference to extract SH coefficients from IRI "
-                     + "grids, which is a lengthy process. To run it, please "
-                     + "provide proper paths for the iri_grids_save_dir "
-                     + "directory (wherein IRI grids will be stored) and for "
-                     + "the coeffs_save_dir directory (wherein coefficient"
-                     + "files will be saved).")
-
-# ------------------------------------
 # Create a regular QDLat-MLT grid
-ddeg = 3
 aMLT = np.arange(0, 24 * 15 + ddeg, ddeg) / 15
 aQDLat = np.arange(90, -90 - ddeg, -ddeg)
 MLT_grid_2d, QDLat_grid_2d = np.meshgrid(aMLT, aQDLat)
@@ -108,10 +224,8 @@ MLT_grid_1d = MLT_grid_2d.reshape(MLT_grid_2d.size)
 
 # ------------------------------------
 # Create UT arrays
-year = 2020
 months = np.arange(1, 13)
 day = 15
-dmin = 15
 
 apdtime_12mo = pd.to_datetime([dt.datetime(year, month, day)
                                + dt.timedelta(minutes=i * dmin)
@@ -122,137 +236,190 @@ aUT_12mo = (apdtime_12mo.hour + apdtime_12mo.minute / 60.
 
 # ------------------------------------
 # Convert magnetic to geographic
-'''WARNING: This section takes >7 minutes to run and is provided as a
-reference.'''
+grid_name = os.path.join(iri_grids_save_dir, f"aGeo_grid_1d_{year}.npy")
 
-aGLon_grid_1d = np.zeros((apdtime_12mo.size, QDLat_grid_1d.size))
-aGLat_grid_1d = np.zeros((apdtime_12mo.size, QDLat_grid_1d.size))
+if os.path.exists(grid_name):
+    arr = np.load(grid_name)
+    aGLat_grid_1d = arr[0]
+    aGLon_grid_1d = arr[1]
+    print("Found existing geographic grids.")
 
-for it in tqdm(range(0, apdtime_12mo.size)):
-    A = Apex(apdtime_12mo[it])
-    GLat_grid_1d, GLon_grid_1d = A.convert(QDLat_grid_1d,
-                                           MLT_grid_1d,
-                                           'mlt', 'geo', height=0.,
-                                           datetime=apdtime_12mo[it])
-    aGLat_grid_1d[it, :] = GLat_grid_1d
-    aGLon_grid_1d[it, :] = GLon_grid_1d
+else:
+    print("No geographic grids found. Running coordinate conversion:")
+    aGLon_grid_1d = np.zeros((apdtime_12mo.size, QDLat_grid_1d.size))
+    aGLat_grid_1d = np.zeros((apdtime_12mo.size, QDLat_grid_1d.size))
 
-# -----------------------------------------------------------------------------
-# Evaluate iricore at each timestamp and geographic location
-'''WARNING: This section takes 12 hours to run and is provided as a reference.
-'''
+    for it in tqdm(range(0, apdtime_12mo.size)):
+        A = Apex(apdtime_12mo[it])
+        GLat_grid_1d, GLon_grid_1d = A.convert(QDLat_grid_1d,
+                                               MLT_grid_1d,
+                                               'mlt', 'geo', height=0.,
+                                               datetime=apdtime_12mo[it])
+        aGLat_grid_1d[it, :] = GLat_grid_1d
+        aGLon_grid_1d[it, :] = GLon_grid_1d
+    aGeo_grid_1d = np.stack((aGLat_grid_1d, aGLon_grid_1d), axis=0)
+    np.save(grid_name, aGeo_grid_1d)
+    print(f"Saved geographic grids to {grid_name}")
 
-# ------------------------------------
-# Choose parameter to evaluate
-# Choice of parameter is foF2_CCIR, foF2_URSI, hmF2_SHU2015, hmF2_AMTB2013,
-# B0, B1, or M3000F2
-# hmF2_BSE1979 is calculated from M3000F2 and therefore not evaluated
-# for foEs, replace iricore with PyIRI.edp_update.IRI_density_1day()
-param = 'foF2_CCIR'
-
-# ------------------------------------
-# Get correct solar index based on selected parameter
-params_IG12 = ['foF2_CCIR', 'foF2_URSI', 'hmF2_SHU2015']
-params_R12 = ['M3000F2', 'hmF2_AMTB2013', 'B0', 'B1', 'foEs']
-if param in params_IG12:
-    solar = 'IG12'
-elif param in params_R12:
-    solar = 'R12'
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Create ionospheric parameter grids
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # ------------------------------------
-# Get default IRI flags
-jf = iricore.get_jf()
+# Check for pre-existing grids
+miss_mo = [mo for mo in range(1, 13)
+           if not os.path.isfile(os.path.join(iri_grids_save_dir,
+                                              f"{param}_{mo:02d}_{year}.npy"))]
 
-# ------------------------------------
-# Initilialize parameter array
-# We save monthly to avoid crashing memory
-n_pos = QDLat_grid_1d.size
-n_time = apdtime_12mo.size // 12
-aParam = np.empty((2, apdtime_12mo.size // 12, n_pos))
-
-# ------------------------------------
-# Choose start month and select associated timestamp
-# Start month selection is in case memory crashed halfway through the year
-start_mo = 1
-mo = start_mo
-iut_mo = 0
-iut_start = (start_mo - 1) * 24 * int(60 / dmin)
-
-# ------------------------------------
-# Run iricore
-
-# ------------------------------------
-# Loop over time
-for iut in range(iut_start, apdtime_12mo.size):
-    # ------------------------------------
-    # Select timestamp-dependent geographic grid
-    UT = aUT_12mo[iut]
-    dtime = apdtime_12mo[iut]
-    GLat_grid_1d = aGLat_grid_1d[iut, :]
-    GLon_grid_1d = aGLon_grid_1d[iut, :]
+if not miss_mo:
+    print("Existing ionospheric parameter grids found for all 12 months.")
+else:
+    print("Not all ionospheric parameter grids found. Calculating missing "
+          f"months: {miss_mo}")
 
     # ------------------------------------
-    # Save at the end of each month
-    if dtime.month > mo:
-        np.save(f'{coeffs_save_dir}/{param}_{mo:02d}.npy', aParam)
-        print(f'Saved {param}_{mo:02d}.npy')
-        mo += 1
-        iut_mo = 0
-        aParam = np.empty((2, apdtime_12mo.size // 12, n_pos))
+    # Initilialize parameter array
+    # We save monthly to avoid crashing memory
+    n_pos = QDLat_grid_1d.size
+    n_time = apdtime_12mo.size // 12
 
     # ------------------------------------
-    # Adapt the model to the chosen parameter
-    if param == 'foF2_CCIR':
-        ioarr = 0
-        jf[4] = True
-    elif param == 'foF2_URSI':
-        ioarr = 0
-        jf[4] = False
-    elif param == 'hmF2_SHU2015':
-        ioarr = 1
-        jf[38] = False
-        jf[39] = False
-    elif param == 'hmF2_AMTB2013':
-        ioarr = 1
-        jf[38] = False
-        jf[39] = True
-    elif param == 'B0':
-        ioarr = 9
-    elif param == 'B1':
-        ioarr = 34
-    elif param == 'M3000F2':
-        ioarr = 35
+    # Get correct solar index based on selected parameter
+    params_IG12 = ['foF2_CCIR', 'foF2_URSI', 'hmF2_SHU2015']
+    params_R12 = ['M3000F2', 'hmF2_AMTB2013', 'B0', 'B1', 'foEs']
+    if param in params_IG12:
+        solar = 'IG12'
+    elif param in params_R12:
+        solar = 'R12'
+
+    if param != 'foEs':
+        # ------------------------------------
+        # Get default IRI flags
+        jf = iricore.get_jf()
+
+        # ------------------------------------
+        # Adapt the model to the chosen parameter
+        if param == 'foF2_CCIR':
+            ioarr = 0
+            jf[4] = True
+        elif param == 'foF2_URSI':
+            ioarr = 0
+            jf[4] = False
+        elif param == 'hmF2_SHU2015':
+            ioarr = 1
+            jf[38] = False
+            jf[39] = False
+        elif param == 'hmF2_AMTB2013':
+            ioarr = 1
+            jf[38] = False
+            jf[39] = True
+        elif param == 'B0':
+            ioarr = 9
+        elif param == 'B1':
+            ioarr = 34
+        elif param == 'M3000F2':
+            ioarr = 35
 
     # ------------------------------------
-    # Run the model twice for IG12/R12=0 and IG12/R12=100
-    if solar == 'R12':
-        iri_out_0 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
-                                GLon_grid_1d, version=20, oarr32=0,
-                                jf=jf)
-        iri_out_100 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
-                                  GLon_grid_1d, version=20, oarr32=100,
-                                  jf=jf)
+    # Run iricore or PyIRI
+    for mo in miss_mo:
+        iut_start = (mo - 1) * n_time
+        iut_end = mo * n_time
+        aParam = np.empty((2, n_time, n_pos))
 
-    elif solar == 'IG12':
-        iri_out_0 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
-                                GLon_grid_1d, version=20, oarr38=0,
-                                jf=jf, oarr40=ml.IG12_2_F107(0))
-        iri_out_100 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
-                                  GLon_grid_1d, version=20, oarr38=100,
-                                  jf=jf, oarr40=ml.IG12_2_F107(100))
+        # ------------------------------------
+        # Loop over time
+        for iut_mo, iut in enumerate(range(iut_start, iut_end)):
+            # ------------------------------------
+            # Select timestamp-dependent geographic grid
+            UT = aUT_12mo[iut]
+            dtime = apdtime_12mo[iut]
+            GLat_grid_1d = aGLat_grid_1d[iut, :]
+            GLon_grid_1d = aGLon_grid_1d[iut, :]
 
-    aParam[0, iut_mo] = iri_out_0.oarr[:, ioarr]
-    aParam[1, iut_mo] = iri_out_100.oarr[:, ioarr]
+            # ------------------------------------
+            # Run the model twice for IG12/R12=0 and IG12/R12=100
+            if param != 'foEs':
+                if solar == 'R12':
+                    iri_out_0 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
+                                            GLon_grid_1d, version=20, oarr32=0,
+                                            jf=jf)
+                    iri_out_1 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
+                                            GLon_grid_1d, version=20,
+                                            oarr32=100, jf=jf)
 
-    iut_mo += 1
+                elif solar == 'IG12':
+                    iri_out_0 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
+                                            GLon_grid_1d, version=20, oarr38=0,
+                                            jf=jf, oarr40=ml.IG12_2_F107(0))
+                    iri_out_1 = iricore.iri(dtime, [0, 10, 10], GLat_grid_1d,
+                                            GLon_grid_1d, version=20,
+                                            oarr38=100, jf=jf,
+                                            oarr40=ml.IG12_2_F107(100))
 
-# ------------------------------------
-# Save the last month
-np.save(f'{iri_grids_save_dir}/{param}_{mo:02d}.npy', aParam)
+                aParam[0, iut_mo] = ml.den2freq(iri_out_0.oarr[:, ioarr])
+                aParam[1, iut_mo] = ml.den2freq(iri_out_1.oarr[:, ioarr])
+
+            elif param == 'foEs':
+                F107_0 = ml.R12_2_F107(0)
+                F107_1 = ml.R12_2_F107(100)
+
+                _, _, _, Es_0, _, _, _ = edp.IRI_density_1day(dtime.year,
+                                                              dtime.month,
+                                                              dtime.day,
+                                                              np.array(UT),
+                                                              GLon_grid_1d,
+                                                              GLat_grid_1d,
+                                                              np.array([0]),
+                                                              F107_0,
+                                                              PyIRI.coeff_dir)
+                _, _, _, Es_1, _, _, _ = edp.IRI_density_1day(dtime.year,
+                                                              dtime.month,
+                                                              dtime.day,
+                                                              np.array(UT),
+                                                              GLon_grid_1d,
+                                                              GLat_grid_1d,
+                                                              np.array([0]),
+                                                              F107_1,
+                                                              PyIRI.coeff_dir)
+
+                aParam[0, iut_mo] = Es_0['fo'][0, :]
+                aParam[1, iut_mo] = Es_1['fo'][0, :]
+
+        # ------------------------------------
+        # Save for each month
+        grid_name_mo = os.path.join(iri_grids_save_dir,
+                                    f'{param}_{mo:02d}_{year}.npy')
+        np.save(grid_name_mo, aParam)
+        print(f'Saved {grid_name_mo}')
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Extract coefficients from grids
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def flatten_SH_coeff(P, N):
-    """Flatten the SH coefficients."""
+    """Flatten real spherical harmonic (SH) coefficient arrays.
+
+    Parameters
+    ----------
+    P : np.ndarray
+        Positive-order SH coefficient array.
+        Shape (n_time, lmax + 1, lmax + 1)
+    N : np.ndarray
+        Negative-order SH coefficient array.
+        Shape (n_time, lmax + 1, lmax + 1)
+
+    Returns
+    -------
+    np.ndarray
+        Flattened SH coefficient array.
+        Shape (n_time, (lmax + 1)**2)
+    """
     n_time = P.shape[0]
     lmax = P.shape[1] - 1
 
@@ -272,7 +439,20 @@ def flatten_SH_coeff(P, N):
 
 
 def complex_to_real_FS_coeff(complex_coeffs):
-    """Convert from complex to real FS coefficients."""
+    """Convert complex to real Fourier Series (FS) coefficient array.
+
+    Parameters
+    ----------
+    complex_coeffs : np.ndarray
+        Complex FS coefficient array.
+        Shape (n_freqs, n_pos)
+
+    Returns
+    -------
+    np.ndarray
+        Real FS coefficient array.
+        Shape (2 * n_freqs - 1, n_pos)
+    """
     n_freqs, n_pos = complex_coeffs.shape
 
     real_coeffs = np.empty((2 * n_freqs - 1, n_pos), dtype=float)
@@ -288,21 +468,10 @@ def complex_to_real_FS_coeff(complex_coeffs):
     return real_coeffs
 
 
-ddeg = 3
-aMLT = np.arange(0, 24 * 15 + ddeg, ddeg) / 15
-aQDLat = np.arange(90, -90 - ddeg, -ddeg)
-MLT_grid_2d, QDLat_grid_2d = np.meshgrid(aMLT, aQDLat)
-
-QDLat_grid_1d = QDLat_grid_2d.reshape(QDLat_grid_2d.size)
-MLT_grid_1d = MLT_grid_2d.reshape(MLT_grid_2d.size)
-
-year = 2020
-
+# -----------------------------------------------------------------------------
+# For coefficient file documentation
 solars = ['IG12', 'R12']
 solars_verbose = ['Ionosonde Global index (IG)', 'Sunspot Number (R)']
-
-# -----------------------------------------------------------------------------
-# Extract the coefficients
 
 # ------------------------------------
 # Determine lmax
@@ -316,7 +485,6 @@ n_pos = QDLat_grid_1d.size
 
 # ------------------------------------
 # Truncate the max degree of FS reconstruction (derived experimentally)
-aMo = np.arange(1, 13)
 n_FS_c = 6
 n_FS_r = n_FS_c * 2 - 1
 
@@ -337,7 +505,9 @@ for imo in tqdm(range(12)):
 
     mo = imo + 1
 
-    aParam = np.load(f'{iri_grids_save_dir}/{param}_{mo:02d}.npy')
+    grid_name_mo = os.path.join(iri_grids_save_dir,
+                                f'{param}_{mo:02d}_{year}.npy')
+    aParam = np.load(grid_name_mo)
 
     # ------------------------------------
     # Loop over IG12 = 0 and IG12 = 100
@@ -392,7 +562,8 @@ for imo in tqdm(range(12)):
 
 # ------------------------------------
 # Open the output netcdf file
-data = nc.Dataset(f'{coeffs_save_dir}/{param}.nc', 'w')
+coeff_file_name = os.path.join(coeffs_save_dir, f'{param}_{year}.nc')
+data = nc.Dataset(coeff_file_name, 'w')
 
 # ------------------------------------
 # Set the dimensions
@@ -407,12 +578,12 @@ data.createDimension('j_SH', n_SH)
 i_FS = data.createVariable('i_FS', 'int', ('i_FS'))
 i_FS.units = 'N/A'
 i_FS.description = ('Real Fourier Series (FS) coefficient number (0 to '
-                    + 'n_FS - 1).')
+                    'n_FS - 1).')
 
 j_SH = data.createVariable('j_SH', 'int', ('j_SH'))
 j_SH.units = 'N/A'
 j_SH.description = ('Real Spherical Harmonic (SH) coefficient number (0 to '
-                    + 'n_SH - 1).')
+                    'n_SH - 1).')
 
 solar_idx = data.createVariable(f'{solar}', 'float64', (f'{solar}'))
 solar_idx.units = 'N/A'
@@ -426,23 +597,23 @@ C_mat = data.createVariable('Coefficients', 'float64', (f'{solar}', 'Month',
                                                         'i_FS', 'j_SH'))
 C_mat.units = 'N/A'
 C_mat.description = ('Each row i contains the n_SH Spherical Harmonic (SH) '
-                     + 'coefficients used to reconstruct the ith Fourier Series'
-                     + '(FS) coefficient. The SH coefficients of row i are '
-                     + 'flattened so that the SH mode of degree l and order m '
-                     + 'is in column j = l * (l + 1) + m. To reconstruct the '
-                     + 'ith FS coefficient a_i at coordinates (theta, phi) '
-                     + 'from the corresponding row of SH coefficients {g_[i,0],'
-                     + ' ..., g_[i,n_SH-1]}, use the SH reconstruction formula:'
-                     + ' a_i(theta, phi) = sum(g_[i,j] * Y_j(theta, phi)) where'
-                     + ' j=[0, n_SH-1] is the mode number (i.e., column) and '
-                     + 'Y_j is the associated SH function. To reconstruct the '
-                     + 'ionospheric parameter value P(t, theta, phi) at time t '
-                     + 'and coordinates (theta, phi), use the FS reconstruction'
-                     + ' formula: P(t, theta, phi) = a_0(theta, phi) + '
-                     + 'sum(a_[2i-1](theta, phi) * cos(2pi/24 * i * t) + '
-                     + 'a_[2i](theta, phi) * sin(2pi/24 * i * t)) where i=[0, '
-                     + 'n_FS-1]. The coefficients were calculated over the year'
-                     + f' {year}.')
+                     'coefficients used to reconstruct the ith Fourier Series '
+                     '(FS) coefficient. The SH coefficients of row i are '
+                     'flattened so that the SH mode of degree l and order m '
+                     'is in column j = l * (l + 1) + m. To reconstruct the '
+                     'ith FS coefficient a_i at coordinates (theta, phi) '
+                     'from the corresponding row of SH coefficients {g_[i,0], '
+                     '..., g_[i,n_SH-1]}, use the SH reconstruction formula: '
+                     'a_i(theta, phi) = sum(g_[i,j] * Y_j(theta, phi)) where '
+                     'j=[0, n_SH-1] is the mode number (i.e., column) and '
+                     'Y_j is the associated SH function. To reconstruct the '
+                     'ionospheric parameter value P(t, theta, phi) at time t '
+                     'and coordinates (theta, phi), use the FS reconstruction '
+                     'formula: P(t, theta, phi) = a_0(theta, phi) + '
+                     'sum(a_[2i-1](theta, phi) * cos(2pi/24 * i * t) + '
+                     'a_[2i](theta, phi) * sin(2pi/24 * i * t)) where i=[0, '
+                     'n_FS-1]. The coefficients were calculated over the year '
+                     f'{year}.')
 
 # ------------------------------------
 # Populate with the data
@@ -460,4 +631,4 @@ data.Title = f'{param_name} FS/SH coefficients'
 # ------------------------------------
 # Close the file
 data.close()
-print(f'File {coeffs_save_dir}/{param}.nc was written.')
+print(f'File {coeff_file_name} was written.')

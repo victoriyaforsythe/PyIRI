@@ -1,6 +1,16 @@
 """Generating Apex Coordinate Spherical Harmonic Coefficients (1900-2030).
 
-This notebook reproduces the Apex coordinate transformation coefficients used
+---------------------------------------------------------------------------
+IMPORTANT - READ BEFORE RUNNING
+---------------------------------------------------------------------------
+This script is not a PyIRI tutorial.
+
+It is a reference routine for extracting Apex magnetic coordinate coefficients
+via the ApexPy library. This process may take considerable time and should only
+be run for the sake of a coefficient update.
+---------------------------------------------------------------------------
+
+This script reproduces the Apex coordinate transformation coefficients used
 by PyIRI for converting between geographic (GEO) and quasi-dipole (QD)
 coordinates and back.
 
@@ -22,7 +32,7 @@ Purpose:
 ---
 
 Update Schedule:
-- Every year: Re-run this notebook to extend the coefficient set by one year.
+- Every year: Re-run this script to extend the coefficient set by one year.
 - Every 5 years: Re-generate the entire 1900-present dataset after a new IGRF
   model release.
 
@@ -55,29 +65,79 @@ Notes:
   conventions used in PyIRI.
 """
 
-from apexpy import Apex
+import argparse
+try:
+    from apexpy import Apex
+except ImportError:
+    raise ImportError("This script requires the apexpy module, which is a "
+                      "Python wrapper for the Apex Fortran library. The apexpy "
+                      "module is only necessary to run this Apex coefficient "
+                      "derivation routine; it is not necessary to run the PyIRI"
+                      " model.")
 import datetime as dt
 import os
 
-import netCDF4 as nc  # future use
+import netCDF4 as nc
 import numpy as np
 import pandas as pd
-import pyshtools as pysh
+try:
+    import pyshtools as pysh
+except ImportError:
+    raise ImportError("This script requires the pyshtools module, which is a "
+                      "Python wrapper for the SHTOOLS Fortran library. The "
+                      "pyshtools module is only necessary to run this Apex "
+                      "coefficient derivation routine; it is not necessary to "
+                      "run the PyIRI model.")
+import sys
 from tqdm import tqdm
+
+# ---------------------------------------------------------------------
+# Input saving directory
+# ---------------------------------------------------------------------
+parser = argparse.ArgumentParser(
+    description=(
+        "************************************************************\n"
+        "  WARNING: This is not a PyIRI tutorial.\n"
+        "************************************************************\n\n"
+        "This script regenerates Apex coefficient files using ApexPy.\n"
+        "It should only be run for the sake of coefficient updates.\n\n"
+    ),
+    formatter_class=argparse.RawDescriptionHelpFormatter
+)
+
+parser.add_argument(
+    "--save-dir",
+    type=str,
+    help="Path to the directory where coefficient files will be saved.",
+)
+
+parser.add_argument(
+    "--end-year",
+    type=int,
+    help="Upper year range 1900-YYYY.",
+    default=dt.datetime.now(dt.timezone.utc).year,
+)
+
+args = parser.parse_args()
+
+if args.save_dir is None:
+    print("\nYou did not provide a saving directory.\n")
+    parser.print_help()
+    sys.exit(1)
+
+if not os.path.exists(args.save_dir):
+    raise ValueError(f"Directory does not exist: {args.save_dir}")
+if not os.path.isdir(args.save_dir):
+    raise ValueError(f"This is not a directory: {args.save_dir}")
+
+save_dir = os.path.normpath(args.save_dir)
+end_year = args.end_year
 
 # ---------------------------------------------------------------------
 # Parameters
 # ---------------------------------------------------------------------
-save_dir = None
-if save_dir is None:
-    raise ValueError("This script is not a typical tutorial. It is provided "
-                     + "as a reference to extract Apex coefficients using "
-                     + "ApexPy, which is a lengthy process. To run it, please "
-                     + "provide proper paths for the save_dir directory "
-                     + "wherein Apex coefficients will be saved.")
-
 ddeg = 1  # grid resolution in degrees
-ayear = np.arange(1900, 2026)
+ayear = np.arange(1900, end_year + 1)
 
 # ---------------------------------------------------------------------
 # Build GEO latitude–longitude grid (1° resolution)
@@ -149,15 +209,17 @@ def flatten_SH_coeff(P, N):
     Parameters
     ----------
     P : np.ndarray
-        Positive-order SH coefficients of shape (n_time, lmax + 1, lmax + 1).
+        Positive-order SH coefficient array.
+        Shape (n_time, lmax + 1, lmax + 1)
     N : np.ndarray
-        Negative-order SH coefficients of the same shape.
+        Negative-order SH coefficient array.
+        Shape (n_time, lmax + 1, lmax + 1)
 
     Returns
     -------
     np.ndarray
-        Flattened SH coefficient array of shape (n_time, n_SH),
-        where n_SH = (lmax + 1)**2.
+        Flattened SH coefficient array.
+        Shape (n_time, (lmax + 1)**2)
     """
     n_time, lmax_p1, _ = P.shape
 
@@ -199,7 +261,7 @@ for key in grid:
 # ---------------------------------------------------------------------
 # Write NetCDF output
 # ---------------------------------------------------------------------
-nc_path = os.path.join(save_dir, "Apex.nc")
+nc_path = os.path.join(save_dir, f"Apex_1900_{end_year}.nc")
 with nc.Dataset(nc_path, "w") as data:
     # Dimensions
     data.createDimension("Year", atime.size)

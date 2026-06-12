@@ -23,12 +23,13 @@ Make sure you have the following PyIRI modules:
 # Import libraries
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 from pathlib import Path
 import PyIRI
 import PyIRI.edp_update as ml  # Legacy PyIRI formalism (Fourier + empirical)
 import PyIRI.sh_library as sh  # Updated PyIRI using spherical harmonics
 
-out_dir = Path(__file__).parent.parent / "figures"
+plot_dir = os.path.join(Path(PyIRI.__file__).parent.parent, "docs/figures")
 
 # Specify date
 year = 2020
@@ -142,8 +143,9 @@ ax_plot.plot(aUT, Es['B_top'][:, ind_grid], label='$B_{bot}^{Es}$', c='blue')
 ax_plot.legend(loc='upper left', prop={'size': 7})
 
 # Save figure
-plt.savefig(out_dir / 'PyIRI_sh_diurnal.png', format='png',
+plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_diurnal.png'), format='png',
             bbox_inches='tight')
+print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_diurnal.png")}")
 
 # Plot electron density as a function of time
 fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
@@ -160,8 +162,9 @@ cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Electron Density (m$^{-3}$)')
 
 # Save figure
-plt.savefig(out_dir / 'PyIRI_sh_EDP_diurnal.png', format='png',
+plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_EDP_diurnal.png'), format='png',
             bbox_inches='tight')
+print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_EDP_diurnal.png")}")
 
 # ----------------------------------------
 # Run PyIRI (Legacy version)
@@ -230,8 +233,9 @@ ax_plot.plot(aUT, Es['B_top'][:, ind_grid], label='$B_{bot}^{Es}$', c='blue')
 ax_plot.legend(loc='upper left', prop={'size': 7})
 
 # Save figure
-plt.savefig(out_dir / 'PyIRI_legacy_diurnal.png', format='png',
+plt.savefig(os.path.join(plot_dir, 'PyIRI_legacy_diurnal.png'), format='png',
             bbox_inches='tight')
+print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_legacy_diurnal.png")}")
 
 # Plot electron density as a function of time
 fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
@@ -248,5 +252,7 @@ cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Electron Density (m$^{-3}$)')
 
 # Save figure
-plt.savefig(out_dir / 'PyIRI_legacy_EDP_diurnal.png', format='png',
-            bbox_inches='tight')
+plt.savefig(os.path.join(plot_dir, 'PyIRI_legacy_EDP_diurnal.png'),
+            format='png', bbox_inches='tight')
+print(f"Figure saved at {os.path.join(plot_dir,
+                                      "PyIRI_legacy_EDP_diurnal.png")}")
