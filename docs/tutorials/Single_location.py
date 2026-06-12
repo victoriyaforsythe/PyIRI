@@ -143,9 +143,9 @@ ax_plot.plot(aUT, Es['B_top'][:, ind_grid], label='$B_{bot}^{Es}$', c='blue')
 ax_plot.legend(loc='upper left', prop={'size': 7})
 
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_diurnal.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_diurnal.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_diurnal.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot electron density as a function of time
 fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
@@ -162,9 +162,9 @@ cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Electron Density (m$^{-3}$)')
 
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_EDP_diurnal.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_EDP_diurnal.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_EDP_diurnal.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # ----------------------------------------
 # Run PyIRI (Legacy version)
@@ -233,9 +233,9 @@ ax_plot.plot(aUT, Es['B_top'][:, ind_grid], label='$B_{bot}^{Es}$', c='blue')
 ax_plot.legend(loc='upper left', prop={'size': 7})
 
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_legacy_diurnal.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_legacy_diurnal.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_legacy_diurnal.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot electron density as a function of time
 fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
@@ -252,7 +252,6 @@ cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Electron Density (m$^{-3}$)')
 
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_legacy_EDP_diurnal.png'),
-            format='png', bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir,
-                                      "PyIRI_legacy_EDP_diurnal.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_legacy_EDP_diurnal.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")

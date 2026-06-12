@@ -124,9 +124,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$F2 (MHz)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_foF2.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_foF2.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_foF2.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot hmF2
@@ -146,9 +146,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$hm$F2 (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_hmF2.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_hmF2.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_hmF2.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot B0
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -167,9 +167,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$B0$ (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_B0.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_B0.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_B0.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot B1
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -188,9 +188,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$B1$ (unitless)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_B1.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_B1.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_B1.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot B_top
@@ -210,9 +210,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$B_{top}$ (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_B_top.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_B_top.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_B_top.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot probability of F1 to occurre
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -231,9 +231,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('Probability of F1')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_P.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_P.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_P.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot thickness of F1
@@ -253,9 +253,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('B$_{bot}^{F1}$ (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_B_F1_bot.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_B_F1_bot.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_B_F1_bot.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot foF1
@@ -275,9 +275,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$F1 (MHz)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_foF1.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_foF1.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_foF1.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot hmF1
@@ -297,9 +297,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$hm$F1 (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_hmF1.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_hmF1.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_hmF1.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot foE
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -318,9 +318,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$E (MHz)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_foE.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_foE.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_foE.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot foEs
 fig, ax = plt.subplots(1, 1, sharex=True, sharey=True, figsize=(5, 3),
@@ -339,9 +339,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('$fo$Es (MHz)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_foEs.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_foEs.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_foEs.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Calculate vTEC from EDP array
 TEC = PyIRI.main_library.edp_to_vtec(EDP, aalt, min_alt=0.0, max_alt=202000.0)
@@ -363,9 +363,9 @@ ax.scatter(sun['lon'][ind_time], sun['lat'][ind_time],
 cbar = fig.colorbar(mesh, ax=ax)
 cbar.set_label('vTEC (TECU)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_vTEC.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_vTEC.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_vTEC.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Select location to plot EDP
 lon_plot = 10
@@ -387,6 +387,6 @@ x = np.reshape(EDP[ind], aalt.shape)
 ax.plot(x, aalt, c='black', linewidth=1)
 plt.title(f'{lon_plot}° Lon, {lat_plot}° Lat, {UT_plot} UT')
 # Save figure
-plt.savefig(os.path.join(plot_dir, "PyIRI_sh_EDP.png"), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_EDP.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_EDP.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")

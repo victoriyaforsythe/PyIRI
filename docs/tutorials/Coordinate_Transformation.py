@@ -130,7 +130,6 @@ ax_plot.set_xlabel('QD Lon (°)')
 ax_plot.set_ylabel('QD Lat (°)')
 
 # Save to file
-plt.savefig(os.path.join(plot_dir, "Apex_Coordinate_Transformation.png"),
-            format='png', bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir,
-                                      "Apex_Coordinate_Transformation.png")}")
+fig_name = os.path.join(plot_dir, "Apex_Coordinate_Transformation.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")

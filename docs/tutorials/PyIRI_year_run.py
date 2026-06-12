@@ -187,7 +187,6 @@ ax_plot.plot(timearray[t1:t2], NmF2_solar[t1:t2, iloc], c='green',
 ax_plot.legend(loc='upper left', prop={'size': 10})
 
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_Continuous_Time_Series.png'),
-            format='png', bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir,
-                                      "PyIRI_Continuous_Time_Series.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_Continuous_Time_Series.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")

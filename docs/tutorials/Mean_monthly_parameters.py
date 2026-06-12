@@ -124,9 +124,9 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$fo$F2 (MHz)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_foF2_min_max.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_foF2_min_max.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_foF2_min_max.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot hmF2 min and max
@@ -153,9 +153,9 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$hm$F2 (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_hmF2_min_max.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_hmF2_min_max.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_hmF2_min_max.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot B0 min and max
@@ -182,9 +182,9 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$B0$ (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_B0_min_max.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_B0_min_max.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_B0_min_max.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot B1 min and max
@@ -211,9 +211,9 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$B1$ (unitless)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_B1_min_max.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_B1_min_max.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_B1_min_max.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 
 # Plot B_top min and max
@@ -240,9 +240,9 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$B_{top}$ (km)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_B_top_min_max.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_B_top_min_max.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_B_top_min_max.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot foE min and max
 fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
@@ -268,9 +268,9 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$fo$E (MHz)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_foE_min_max.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_foE_min_max.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_foE_min_max.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
 
 # Plot foEs min and max
 fig, ax = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(8, 3),
@@ -296,6 +296,6 @@ for isol in range(0, 2):
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label('$fo$Es (MHz)')
 # Save figure
-plt.savefig(os.path.join(plot_dir, 'PyIRI_sh_foEs_min_max.png'), format='png',
-            bbox_inches='tight')
-print(f"Figure saved at {os.path.join(plot_dir, "PyIRI_sh_foEs_min_max.png")}")
+fig_name = os.path.join(plot_dir, "PyIRI_sh_foEs_min_max.png")
+plt.savefig(fig_name, format='png', bbox_inches='tight')
+print(f"Figure saved at {fig_name}")
