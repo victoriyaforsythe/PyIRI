@@ -111,8 +111,8 @@ abc = ['(a)', '(b)']
 atitle = ['Solar Min', 'Solar Max']
 for isol in range(0, 2):
     ax[isol].set_facecolor('grey')
-    ax[isol].set_xlabel('Geo Lon (°)')
-    ax[isol].set_ylabel('Geo Lat (°)')
+    ax[isol].set_xlabel(r'Geo Lon ($^\circ$)')
+    ax[isol].set_ylabel(r'Geo Lat ($^\circ$)')
     if isol == 1:
         ax[1].set_ylabel(' ')
     z = np.reshape(F2['fo'][ind_time, ind_grid, isol], alon_2d.shape)
@@ -140,8 +140,8 @@ abc = ['(a)', '(b)']
 atitle = ['Solar Min', 'Solar Max']
 for isol in range(0, 2):
     ax[isol].set_facecolor('grey')
-    ax[isol].set_xlabel('Geo Lon (°)')
-    ax[isol].set_ylabel('Geo Lat (°)')
+    ax[isol].set_xlabel(r'Geo Lon ($^\circ$)')
+    ax[isol].set_ylabel(r'Geo Lat ($^\circ$)')
     if isol == 1:
         ax[1].set_ylabel(' ')
     z = np.reshape(F2['hm'][ind_time, ind_grid, isol], alon_2d.shape)
@@ -169,8 +169,8 @@ abc = ['(a)', '(b)']
 atitle = ['Solar Min', 'Solar Max']
 for isol in range(0, 2):
     ax[isol].set_facecolor('grey')
-    ax[isol].set_xlabel('Geo Lon (°)')
-    ax[isol].set_ylabel('Geo Lat (°)')
+    ax[isol].set_xlabel(r'Geo Lon ($^\circ$)')
+    ax[isol].set_ylabel(r'Geo Lat ($^\circ$)')
     if isol == 1:
         ax[1].set_ylabel(' ')
     z = np.reshape(F2['B0'][ind_time, ind_grid, isol], alon_2d.shape)
@@ -198,8 +198,8 @@ abc = ['(a)', '(b)']
 atitle = ['Solar Min', 'Solar Max']
 for isol in range(0, 2):
     ax[isol].set_facecolor('grey')
-    ax[isol].set_xlabel('Geo Lon (°)')
-    ax[isol].set_ylabel('Geo Lat (°)')
+    ax[isol].set_xlabel(r'Geo Lon ($^\circ$)')
+    ax[isol].set_ylabel(r'Geo Lat ($^\circ$)')
     if isol == 1:
         ax[1].set_ylabel(' ')
     z = np.reshape(F2['B1'][ind_time, ind_grid, isol], alon_2d.shape)
@@ -227,8 +227,8 @@ abc = ['(a)', '(b)']
 atitle = ['Solar Min', 'Solar Max']
 for isol in range(0, 2):
     ax[isol].set_facecolor('grey')
-    ax[isol].set_xlabel('Geo Lon (°)')
-    ax[isol].set_ylabel('Geo Lat (°)')
+    ax[isol].set_xlabel(r'Geo Lon ($^\circ$)')
+    ax[isol].set_ylabel(r'Geo Lat ($^\circ$)')
     if isol == 1:
         ax[1].set_ylabel(' ')
     z = np.reshape(F2['B_top'][ind_time, ind_grid, isol], alon_2d.shape)
@@ -255,8 +255,8 @@ abc = ['(a)', '(b)']
 atitle = ['Solar Min', 'Solar Max']
 for isol in range(0, 2):
     ax[isol].set_facecolor('grey')
-    ax[isol].set_xlabel('Geo Lon (°)')
-    ax[isol].set_ylabel('Geo Lat (°)')
+    ax[isol].set_xlabel(r'Geo Lon ($^\circ$)')
+    ax[isol].set_ylabel(r'Geo Lat ($^\circ$)')
     if isol == 1:
         ax[1].set_ylabel(' ')
     z = np.reshape(E['fo'][ind_time, ind_grid, isol], alon_2d.shape)
@@ -283,8 +283,8 @@ abc = ['(a)', '(b)']
 atitle = ['Solar Min', 'Solar Max']
 for isol in range(0, 2):
     ax[isol].set_facecolor('grey')
-    ax[isol].set_xlabel('Geo Lon (°)')
-    ax[isol].set_ylabel('Geo Lat (°)')
+    ax[isol].set_xlabel(r'Geo Lon ($^\circ$)')
+    ax[isol].set_ylabel(r'Geo Lat ($^\circ$)')
     if isol == 1:
         ax[1].set_ylabel(' ')
     z = np.reshape(Es['fo'][ind_time, ind_grid, isol], alon_2d.shape)

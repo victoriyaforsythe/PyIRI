@@ -100,8 +100,8 @@ ax_plot.set_xlim([0, 360])
 ax_plot.set_ylim([-90, 90])
 ax_plot.set_xticks(np.arange(0, 360 + 45, 45))
 ax_plot.set_yticks(np.arange(-90, 90 + 45, 45))
-ax_plot.set_xlabel('Geo Lon (°)')
-ax_plot.set_ylabel('Geo Lat (°)')
+ax_plot.set_xlabel(r'Geo Lon ($^\circ$)')
+ax_plot.set_ylabel(r'Geo Lat ($^\circ$)')
 
 # Define the QD grid that you wish to be transformed to the Geo cooedinates
 ddeg = 1
