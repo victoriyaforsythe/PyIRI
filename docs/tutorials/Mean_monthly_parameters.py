@@ -66,10 +66,10 @@ hr_res = 0.25
 aUT = np.arange(0, 24, hr_res)
 
 # Coefficient sources and model options
-foF2_coeff = 'CCIR'       # Options: 'CCIR' or 'URSI'
-hmF2_model = 'SHU2015'    # Options: 'SHU2015', 'AMTB2013', 'BSE1979'
-coord = 'GEO'             # Coordinate system: 'GEO', 'QD', or 'MLT'
-coeff_dir = None          # Use default coefficient path
+foF2_coeff = 'CCIR'  # Options: 'CCIR' or 'URSI'
+hmF2_model = 'SHU2015'  # Options: 'SHU2015', 'AMTB2013', 'BSE1979'
+coord = 'GEO'  # Coordinate system: 'GEO', 'QD', or 'MLT'
+coeff_dir = None  # Use default coefficient path
 
 # ----------------------------------------
 # Run PyIRI (Spherical Harmonics version)
