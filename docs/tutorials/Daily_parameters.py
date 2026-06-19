@@ -74,10 +74,10 @@ alt_max = 700
 aalt = np.arange(alt_min, alt_max, alt_res)
 
 # Coefficient sources and model options
-foF2_coeff = 'CCIR'       # Options: 'CCIR' or 'URSI'
-hmF2_model = 'SHU2015'    # Options: 'SHU2015', 'AMTB2013', 'BSE1979'
-coord = 'GEO'             # Coordinate system: 'GEO', 'QD', or 'MLT'
-coeff_dir = None          # Use default coefficient path
+foF2_coeff = 'CCIR'  # Options: 'CCIR' or 'URSI'
+hmF2_model = 'SHU2015'  # Options: 'SHU2015', 'AMTB2013', 'BSE1979'
+coord = 'GEO'  # Coordinate system: 'GEO', 'QD', or 'MLT'
+coeff_dir = None  # Use default coefficient path
 
 # ----------------------------------------
 # Run PyIRI (Spherical Harmonics version)
