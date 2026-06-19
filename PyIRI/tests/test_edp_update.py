@@ -154,7 +154,6 @@ def test_IRI_density_1day_for_monthly_mean_values():
     # parameter values as IRI_monthly_mean_par
     for monthly, dmin, dmax, name in groups:
         for key in monthly:
-
             np.testing.assert_array_almost_equal(
                 monthly[key], dmin[key], decimal=3,
                 err_msg=f"{name}.{key} min mismatch (IG12=0)"
