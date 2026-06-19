@@ -563,72 +563,70 @@ for imo in tqdm(range(12)):
 # ------------------------------------
 # Open the output netcdf file
 coeff_file_name = os.path.join(coeffs_save_dir, f'{param}_{year}.nc')
-data = nc.Dataset(coeff_file_name, 'w')
+with nc.Dataset(coeff_file_name, 'w') as data:
 
-# ------------------------------------
-# Set the dimensions
-n_FS = n_FS_r
-data.createDimension(f'{solar}', 2)
-data.createDimension('Month', 12)
-data.createDimension('i_FS', n_FS)
-data.createDimension('j_SH', n_SH)
+    # ------------------------------------
+    # Set the dimensions
+    n_FS = n_FS_r
+    data.createDimension(f'{solar}', 2)
+    data.createDimension('Month', 12)
+    data.createDimension('i_FS', n_FS)
+    data.createDimension('j_SH', n_SH)
 
-# ------------------------------------
-# Set up variables
-i_FS = data.createVariable('i_FS', 'int', ('i_FS'))
-i_FS.units = 'N/A'
-i_FS.description = ('Real Fourier Series (FS) coefficient number (0 to '
-                    'n_FS - 1).')
+    # ------------------------------------
+    # Set up variables
+    i_FS = data.createVariable('i_FS', 'int', ('i_FS'))
+    i_FS.units = 'N/A'
+    i_FS.description = ('Real Fourier Series (FS) coefficient number (0 to '
+                        'n_FS - 1).')
 
-j_SH = data.createVariable('j_SH', 'int', ('j_SH'))
-j_SH.units = 'N/A'
-j_SH.description = ('Real Spherical Harmonic (SH) coefficient number (0 to '
-                    'n_SH - 1).')
+    j_SH = data.createVariable('j_SH', 'int', ('j_SH'))
+    j_SH.units = 'N/A'
+    j_SH.description = ('Real Spherical Harmonic (SH) coefficient number (0 to '
+                        'n_SH - 1).')
 
-solar_idx = data.createVariable(f'{solar}', 'float64', (f'{solar}'))
-solar_idx.units = 'N/A'
-solar_idx.description = (f'12-month running mean of the {solar_verbose}.')
+    solar_idx = data.createVariable(f'{solar}', 'float64', (f'{solar}'))
+    solar_idx.units = 'N/A'
+    solar_idx.description = (f'12-month running mean of the {solar_verbose}.')
 
-Month = data.createVariable('Month', 'int', ('Month'))
-Month.units = 'N/A'
-Month.description = 'Month of the year.'
+    Month = data.createVariable('Month', 'int', ('Month'))
+    Month.units = 'N/A'
+    Month.description = 'Month of the year.'
 
-C_mat = data.createVariable('Coefficients', 'float64', (f'{solar}', 'Month',
-                                                        'i_FS', 'j_SH'))
-C_mat.units = 'N/A'
-C_mat.description = ('Each row i contains the n_SH Spherical Harmonic (SH) '
-                     'coefficients used to reconstruct the ith Fourier Series '
-                     '(FS) coefficient. The SH coefficients of row i are '
-                     'flattened so that the SH mode of degree l and order m '
-                     'is in column j = l * (l + 1) + m. To reconstruct the '
-                     'ith FS coefficient a_i at coordinates (theta, phi) '
-                     'from the corresponding row of SH coefficients {g_[i,0], '
-                     '..., g_[i,n_SH-1]}, use the SH reconstruction formula: '
-                     'a_i(theta, phi) = sum(g_[i,j] * Y_j(theta, phi)) where '
-                     'j=[0, n_SH-1] is the mode number (i.e., column) and '
-                     'Y_j is the associated SH function. To reconstruct the '
-                     'ionospheric parameter value P(t, theta, phi) at time t '
-                     'and coordinates (theta, phi), use the FS reconstruction '
-                     'formula: P(t, theta, phi) = a_0(theta, phi) + '
-                     'sum(a_[2i-1](theta, phi) * cos(2pi/24 * i * t) + '
-                     'a_[2i](theta, phi) * sin(2pi/24 * i * t)) where i=[0, '
-                     'n_FS-1]. The coefficients were calculated over the year '
-                     f'{year}.')
+    C_mat = data.createVariable('Coefficients', 'float64', (f'{solar}', 'Month',
+                                                            'i_FS', 'j_SH'))
+    C_mat.units = 'N/A'
+    C_mat.description = ('Each row i contains the n_SH Spherical Harmonic (SH) '
+                         'coefficients used to reconstruct the ith Fourier '
+                         'Series (FS) coefficient. The SH coefficients of row '
+                         'i are flattened so that the SH mode of degree l and '
+                         'order m is in column j = l * (l + 1) + m. To '
+                         'reconstruct the ith FS coefficient a_i at '
+                         'coordinates (theta, phi) from the corresponding row '
+                         'of SH coefficients {g_[i,0], ..., g_[i,n_SH-1]}, use '
+                         'the SH reconstruction formula: a_i(theta, phi) = '
+                         'sum(g_[i,j] * Y_j(theta, phi)) where j=[0, n_SH-1] '
+                         'is the mode number (i.e., column) and Y_j is the '
+                         'associated SH function. To reconstruct the '
+                         'ionospheric parameter value P(t, theta, phi) at time '
+                         't and coordinates (theta, phi), use the FS '
+                         'reconstruction formula: P(t, theta, phi) = '
+                         'a_0(theta, phi) + sum(a_[2i-1](theta, phi) * '
+                         'cos(2pi/24 * i * t) + a_[2i](theta, phi) * '
+                         'sin(2pi/24 * i * t)) where i=[0, n_FS-1]. The '
+                         f'coefficients were calculated over the year {year}.')
 
-# ------------------------------------
-# Populate with the data
-solar_idx[:] = [0, 100]
-Month[:] = np.arange(1, 13)
-i_FS[:] = np.arange(0, n_FS)
-j_SH[:] = np.arange(0, n_SH)
-C_mat[:, :, :, :] = C
+    # ------------------------------------
+    # Populate with the data
+    solar_idx[:] = [0, 100]
+    Month[:] = np.arange(1, 13)
+    i_FS[:] = np.arange(0, n_FS)
+    j_SH[:] = np.arange(0, n_SH)
+    C_mat[:, :, :, :] = C
 
-# ------------------------------------
-# Add title
-param_name = param.replace('_', ' ')
-data.Title = f'{param_name} FS/SH coefficients'
+    # ------------------------------------
+    # Add title
+    param_name = param.replace('_', ' ')
+    data.Title = f'{param_name} FS/SH coefficients'
 
-# ------------------------------------
-# Close the file
-data.close()
 print(f'File {coeff_file_name} was written.')
