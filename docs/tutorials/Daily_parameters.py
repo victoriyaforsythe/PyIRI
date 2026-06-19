@@ -46,7 +46,7 @@ from pathlib import Path
 import PyIRI
 import PyIRI.sh_library as sh  # Updated PyIRI using spherical harmonics
 
-plot_dir = os.path.join(Path(PyIRI.__file__).parent.parent, "docs/figures")
+plot_dir = os.path.join(Path(PyIRI.__file__).parent.parent, "docs", "figures")
 
 # Specify date
 year = 2020
