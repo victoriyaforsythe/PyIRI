@@ -71,7 +71,7 @@ from pathlib import Path
 import PyIRI
 from PyIRI.sh_library import Apex
 
-plot_dir = os.path.join(Path(PyIRI.__file__).parent.parent, "docs/figures")
+plot_dir = os.path.join(Path(PyIRI.__file__).parent.parent, "docs", "figures")
 
 # Define datetime object
 dtime = dt.datetime(year=2020, month=1, day=1)
