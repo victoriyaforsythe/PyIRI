@@ -78,7 +78,7 @@ hr_res = 1
 aUT = np.arange(0, 24, hr_res)
 ```
 
-Compute F2, F1, and E‑region parameters using the **new spherical harmonics coefficients**:
+Compute F2, F1, E‑region, and sporadic E layer parameters using the **new spherical harmonics coefficients**:
 
 ```python
 hmF2_model = 'SHU2015'   # Also available: 'AMTB2013', 'BSE1979'
@@ -86,12 +86,19 @@ foF2_coeff = 'URSI'      # Also available: 'CCIR'
 coord = 'GEO'            # Also available: 'QD' for Quasi-Dipole Lon and Quasi-Dipole Lat inputs
                          #                 'MLT' for MLT and Quasi-Dipole Lat inputs
 
-f2, f1, e_peak, sun, mag = sh.IRI_monthly_mean_par(
+F2, F1, E, Es, sun, mag = sh.IRI_monthly_mean_par(
     year, month, aUT, alon, alat,
     coeff_dir=None,
     foF2_coeff=foF2_coeff,
     hmF2_model=hmF2_model,
-    coord=coord)
+    coord=coord,
+    solidx='IG12',
+    solmin=0,
+    solmax=100,
+    no_Es_old_output=False)
+# In version 0.1.6, the sh.IRI_monthly_mean_par function did not return the sporadic E layer dict
+# To return the Es dict along with the others, make sure to toggle no_Es_old_output=False
+# This argument is deprecated in version 0.1.7 and will be removed in version 0.2+
 ```
 
 <div align="center">
@@ -106,7 +113,7 @@ Alternatively, the original URSI or CCIR climatological coefficients can be used
 
 ```python
 ccir_or_ursi = 0  # 0 = CCIR, 1 = URSI
-f2, f1, e_peak, es_peak, sun, mag = ml.IRI_monthly_mean_par(
+F2, F1, E, Es, sun, mag = ml.IRI_monthly_mean_par(
     year, month, aUT, alon, alat,
     PyIRI.coeff_dir, ccir_or_ursi)
 ```
@@ -139,12 +146,16 @@ day = 1
 Run PyIRI (with spherical harmonic coefficients):
 
 ```python
-F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
+F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     coeff_dir=None,
     foF2_coeff=foF2_coeff,
     hmF2_model=hmF2_model,
-    coord=coord)
+    coord=coord,
+    no_Es_old_output=False)
+# In version 0.1.6, the sh.IRI_density_1day function did not return the sporadic E layer dict
+# To return the Es dict along with the others, make sure to toggle no_Es_old_output=False
+# This argument is deprecated in version 0.1.7 and will be removed in version 0.2+
 ```
 
 <div align="center">
@@ -156,7 +167,7 @@ F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
 Or, use the original CCIR/URSI version for compatibility:
 
 ```python
-f2, f1, e_peak, es_peak, sun, mag, edp = ml.IRI_density_1day(
+F2, F1, E, Es, sun, mag, EDP = ml.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     PyIRI.coeff_dir, ccir_or_ursi)
 ```
@@ -190,12 +201,16 @@ alat = 20.
 Run PyIRI (with spherical harmonic coefficients):
 
 ```python
-F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
+F2, F1, E, Es, sun, mag, EDP = sh.IRI_density_1day(
     year, month, day, aUT, alon, alat, aalt, F107,
     coeff_dir=None,
     foF2_coeff=foF2_coeff,
     hmF2_model=hmF2_model,
-    coord=coord)
+    coord=coord,
+    no_Es_old_output=False)
+# In version 0.1.6, the sh.IRI_monthly_mean_par function did not return the sporadic E layer dict
+# To return the Es dict along with the others, make sure to toggle no_Es_old_output=False
+# This argument is deprecated in version 0.1.7 and will be removed in version 0.2+)
 ```
 
 <div align="center">
@@ -205,58 +220,16 @@ F2, F1, E, sun, mag, EDP = sh.IRI_density_1day(
 
 ---
 
-## Example: Sporadic E
-
-Sporadic E fields require more spherical harmonic coefficients and were therefore decoupled from the main call:
-
-Run PyIRI Es (with spherical harmonic coefficients) for solar min and solar max:
-
-```python
-Es = sh.sporadic_E_monthly_mean(year,
-                                month,
-                                aUT,
-                                alon,
-                                alat,
-                                coeff_dir=None,
-                                coord='GEO')
-```
-
-<div align="center">
-  <img src="docs/figures/PyIRI_sh_foEs_min_max.png" width="80%">
-</div>
-
-Run PyIRI Es (with spherical harmonic coefficients) for a given day and F10.7 input:
-
-```python
-Es = sh.sporadic_E_1day(year,
-                        month,
-                        day,
-                        aUT,
-                        alon,
-                        alat,
-                        F107,
-                        coeff_dir=None,
-                        coord='GEO')
-```
-
-<div align="center">
-  <img src="docs/figures/PyIRI_sh_foEs.png" width="45%">
-</div>
-
-
-
----
-
 ## Tutorials
 
 Comprehensive Jupyter notebooks are available in [`docs/tutorials`](https://github.com/victoriyaforsythe/PyIRI/tree/main/docs/tutorials):
 
-- `Mean_monthly_parameters.ipynb`
 - `Daily_parameters.ipynb`
 - `Single_location.ipynb`
 - `Coordinate_Transformation.ipynb`
 - `PyIRI_year_run.ipynb`
 - `Generate_Apex_Coefficients.ipynb`
+- `Generate_SH_coefficients.ipynb`
 
 ---
 
