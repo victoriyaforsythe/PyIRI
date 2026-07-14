@@ -276,28 +276,28 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
         'hm' is height of the F2 peak in km.
         'B_topi is top thickness of the F2 region in km.
         'B_bot' is bottom thickness of the F2 region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     F1 : dict
         'Nm' is peak density of F1 region in m-3.
         'fo' is critical frequency of F1 region in MHz.
         'P' is the probability occurrence of F1 region, unitless.
         'hm' is height of the F1 peak in km.
         'B_bot' is bottom thickness of the F1 region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     E : dict
         'Nm' is peak density of E region in m-3.
         'fo' is critical frequency of E region in MHz.
         'hm' is height of the E peak in km.
         'B_top' is bottom thickness of the E region in km.
         'B_bot' is bottom thickness of the E region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     Es : dict
         'Nm' is peak density of Es region in m-3.
         'fo' is critical frequency of Es region in MHz.
         'hm' is height of the Es peak in km.
         'B_top' is bottom thickness of the Es region in km.
         'B_bot' is bottom thickness of the Es region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     sun : dict
         'lon' is longitude of subsolar point in degrees.
         'lat' is latitude of subsolar point in degrees.
@@ -352,7 +352,8 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F2 = solar_interpolation_of_dictionary(F2, F107)
     F1 = solar_interpolation_of_dictionary(F1, F107)
     E = solar_interpolation_of_dictionary(E, F107)
-    Es = solar_interpolation_of_dictionary(Es, F107, use_R12=True)
+    Es = solar_interpolation_of_dictionary(Es, F107, solidx='R12', solmin=10,
+                                           solmax=180)
 
     # Correct for linear interpolation in fo
     F2['Nm'] = freq2den(F2['fo'])
@@ -523,7 +524,7 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
         warnings.warn(
             "output_quartiles is deprecated and will be removed in a future"
             " version. Use output_deciles instead.",
-            DeprecationWarning,
+            FutureWarning,
             stacklevel=2)
     else:
         output_quartiles = False
@@ -1666,7 +1667,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
     R12_min_max = np.array([IG12_2_R12(aIG[0]), IG12_2_R12(aIG[1])])
 
     # E
-    hmE = 110. + np.zeros((M3000.shape))
+    hmE = np.full(shape=M3000.shape, fill_value=110.)
 
     # F2
     # based on BSE-1979 IRI Option developed by Bilitza et al. (1979)
@@ -1699,7 +1700,7 @@ def hm_IRI(M3000, foE, foF2, modip, aIG):
     hmF2 = 1490.0 / (M3000 + DM) - 176.0
 
     # Es
-    hmEs = 100. + np.zeros((M3000.shape))
+    hmEs = np.full(shape=M3000.shape, fill_value=100.)
 
     return hmF2, hmE, hmEs
 
@@ -1779,16 +1780,16 @@ def thickness(foF2, M3000, hmF2, hmE, mth, aIG):
     B_F2_top = (100. * x + 150.) / (0.041163 * x**2 - 0.183981 * x + 1.424472)
 
     # B_E_top..................................................................
-    B_E_top = 7. + np.zeros((NmF2.shape))
+    B_E_top = np.full(shape=NmF2.shape, fill_value=7.)
 
     # B_E_bot..................................................................
-    B_E_bot = 5. + np.zeros((NmF2.shape))
+    B_E_bot = np.full(shape=NmF2.shape, fill_value=5.)
 
     # B_Es_top.................................................................
-    B_Es_top = 1. + np.zeros((NmF2.shape))
+    B_Es_top = np.full(shape=NmF2.shape, fill_value=1.)
 
     # B_Es_bot.................................................................
-    B_Es_bot = 1. + np.zeros((NmF2.shape))
+    B_Es_bot = np.full(shape=NmF2.shape, fill_value=1.)
 
     return B_F2_bot, B_F2_top, B_E_bot, B_E_top, B_Es_bot, B_Es_top
 
@@ -1939,173 +1940,213 @@ def freq2den(freq):
     return dens
 
 
+def den2freq(dens):
+    """Convert ionospheric plasma density to frequency.
+
+    Parameters
+    ----------
+    dens : array-like
+        Plasma density in m-3.
+
+    Returns
+    -------
+    freq : array-like
+        Ionospheric frequency in MHz.
+
+    Notes
+    -----
+    This function converts plasma density to ionospheric frequency.
+
+    """
+    freq = np.sqrt(dens / 1.24e10)
+
+    return freq
+
+
 def R12_2_F107(R12):
-    """Convert R12 to F10.7 coefficients.
+    """Convert R12 to F10.7.
 
     Parameters
     ----------
     R12 : float or array-like
-        12-month sunspot number.
+        12-month running mean of the sunspot number R.
 
     Returns
     -------
     F107 : float or array-like
-        Solar flux at 10.7 in SFU.
+        Solar radio flux at 10.7 cm (2800 MHz) in SFU.
 
     Notes
     -----
-    This function converts R12 to F10.7.
+    This function converts R12 to F10.7 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
-    F107 = 63.7 + 0.728 * R12 + 8.9E-4 * R12**2
+    F107 = 63.75 + 0.728 * R12 + 8.9E-4 * R12**2
 
     return F107
 
 
 def F107_2_R12(F107):
-    """Convert F10.7 to R12 coefficients.
+    """Convert F10.7 to R12.
 
     Parameters
     ----------
     F107 : float or array-like
-        Solar flux at 10.7 in SFU.
+        Solar radio flux at 10.7 cm (2800 MHz) in SFU.
 
     Returns
     -------
     R12 : float or array-like
-        12-month sunspot number.
+        12-month running mean of the sunspot number R.
 
     Notes
     -----
-    This function converts F10.7 to R12.
+    This function converts F10.7 to R12 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
     a = 8.9E-4
     b = 0.728
-    c = 63.7 - F107
-    x = quadratic([a, b, c])[0]
+    c = 63.75 - F107
+    R12 = quadratic([a, b, c])[0]
 
-    return x
+    return R12
 
 
-def R12_2_IG12(R12):
-    """Convert R12 to IG12 coefficients.
+def R12_2_IG12(R12, version=2):
+    """Convert R12 to IG12.
 
     Parameters
     ----------
     R12 : float or array-like
-        Sunspot number coefficient R12.
+        12-month running mean of the sunspot number R.
+
+    version : int
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
     IG12 : float or array-like
-        Ionosonde Global Coefficient.
+        12-month running mean of the Ionosonde Global index IG.
 
     Notes
     -----
-    This function converts R12 to IG12.
+    This function converts R12 to IG12 based on the IRI-2020 source code, cf.
+    irisub.for.
 
     """
-    IG12 = 12.349 + 1.468 * R12 - 0.00268 * R12**2
+    if version not in [1, 2]:
+        raise ValueError("Sunspot number series version unknown (input="
+                         + f"{version}). Options are version=1 (pre-2015 "
+                         + "correction) or version=2 (post-2015 correction).")
+    if version == 2:
+        IG12 = -11.5634 + 1.5332 * R12 - 0.0031 * R12**2
+    elif version == 1:
+        IG12 = -12.349154 + 1.4683266 * R12 - 2.67690893e-03 * R12**2
 
     return IG12
 
 
-def IG12_2_R12(IG12):
-    """Convert IG12 to R12 coefficients.
+def IG12_2_R12(IG12, version=2):
+    """Convert IG12 to R12.
 
     Parameters
     ----------
     IG12 : float or array-like
-        Ionosonde Global coefficient.
+        12-month running mean of the Ionosonde Global index IG.
+
+    version : int
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
     R12 : float or array-like
-        Sunspot number coefficient R12.
+        12-month running mean of the sunspot number R.
 
     Notes
     -----
-    This function converts IG12 to R12.
-
-    References
-    ----------
-    Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60.
+    This function converts IG12 to R12 based on the IRI-2020 source code, cf.
+    irisub.for.
 
     """
-    a = -0.00268
-    b = 1.468
-    c = 12.349 - IG12
+    if version not in [1, 2]:
+        raise ValueError("Sunspot number series version unknown (input="
+                         + f"{version}). Options are version=1 (pre-2015 "
+                         + "correction) or version=2 (post-2015 correction).")
 
-    x = quadratic([a, b, c])[0]
-    return x
+    if version == 2:
+        a = -0.0031
+        b = 1.5332
+        c = -11.5634 - IG12
+    elif version == 1:
+        a = -2.67690893e-03
+        b = 1.4683266
+        c = -12.349154 - IG12
+
+    R12 = quadratic([a, b, c])[0]
+    return R12
 
 
-def F107_2_IG12(F107):
-    """Convert F10.7 to IG12 coefficients.
+def F107_2_IG12(F107, version=2):
+    """Convert F10.7 to IG12.
 
     Parameters
     ----------
     F107 : float or array-like
-        Solar flux F10.7 coefficient in SFU.
+        Solar radio flux at 10.7 cm (2800 MHz) in SFU.
+
+    version : int
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
     IG12 : float or array-like
-        Ionosonde Global coefficient.
+        12-month running mean of the Ionosonde Global index IG.
 
     Notes
     -----
-    This function converts F10.7 to IG12.
-
-    References
-    ----------
-    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-
-    Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60.
+    This function converts F10.7 to IG12 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
     R12 = F107_2_R12(F107)
-    IG12 = R12_2_IG12(R12)
+    IG12 = R12_2_IG12(R12, version=version)
 
     return IG12
 
 
-def IG12_2_F107(IG12):
+def IG12_2_F107(IG12, version=2):
     """Convert IG12 to F10.7 coefficients.
 
     Parameters
     ----------
     IG12 : float or array-like
-        Ionosonde Global coefficient.
+        12-month running mean of the Ionosonde Global index IG.
+
+    version : int
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
     F107 : float or array-like
-        Solar flux F10.7 coefficient in SFU.
+        Solar radio flux at 10.7 cm (2800 MHz) [sfu].
 
     Notes
     -----
-    This function converts IG12 to F10.7.
-
-    References
-    ----------
-    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
-    International Reference Ionosphere Modeling Implemented in Python,
-    Space Weather.
-
-    Bilitza et al. (2022), The International Reference Ionosphere
-    model: A review and description of an ionospheric benchmark, Reviews
-    of Geophysics, 60.
+    This function converts IG12 to F10.7 based on the IRI-2020 source code, cf.
+    irisub.for. PyIRI does not differentiate between F10.7_d, daily value,
+    F10.7_81, 81-day average, and F10.7_365, 365-day average.
 
     """
-    R12 = IG12_2_R12(IG12)
+    R12 = IG12_2_R12(IG12, version=version)
     F107 = R12_2_F107(R12)
 
     return F107
@@ -2145,7 +2186,7 @@ def quadratic(coeff):
 
 
 def epstein_function_array(A1, hm, B, x):
-    """Construct density Epstein profile for any layer (except topside of F2).
+    """Construct density Epstein profile for any layer, except topside of F2.
 
     Parameters
     ----------
@@ -2270,7 +2311,7 @@ def drop_function(x):
     if nelem > 1:
         y = 1. - (x / (nelem - 1.))**n
     else:
-        y = np.zeros((x.size)) + 1.
+        y = np.full(shape=x.size, fill_value=1.)
 
     return y
 
@@ -2667,7 +2708,8 @@ def fractional_correction_of_dictionary(fraction1, fraction2, F_before,
     return F_new
 
 
-def solar_interpolate(F_min, F_max, F107):
+def solar_interpolate(F_min, F_max, F107, solidx='IG12', solmin=0, solmax=100,
+                      version=2):
     """Interpolate given array to provided F10.7 level.
 
     Parameters
@@ -2677,7 +2719,17 @@ def solar_interpolate(F_min, F_max, F107):
     F_max : array-like
         Any given array of parameters that corresponds to solar max.
     F107 : float
-        Given solar flux index in SFU.
+        Solar radio flux at 10.7 cm (2800 MHz) to interpolate to [sfu].
+    solidx : str
+        User choice of solar index. Choices are F107, IG12, and R12.
+        (default='IG12')
+    solmin : int or float
+        User choice of solar minimum. (default=0)
+    solmax : int or float
+        User choice of solar maximum. (default=100)
+    version : int
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
 
     Returns
     -------
@@ -2686,10 +2738,8 @@ def solar_interpolate(F_min, F_max, F107):
 
     Notes
     -----
-    This function interpolates it between to a given F10.7. The
-    reference points are set in terms of IG12 coefficients of 0 and 100.
-    The F10.7 is first converted to IG12 and then the interpolation is
-    occurred.
+    This function interpolates it to a given F10.7. The reference points
+    are set in terms of solar index values of solmin and solmax.
 
     References
     ----------
@@ -2702,22 +2752,34 @@ def solar_interpolate(F_min, F_max, F107):
     of Geophysics, 60.
 
     """
-    # min and max of IG12 Ionospheric Global Index
-    IG12_min = 0.
-    IG12_max = 100.
+    if solidx not in ['IG12', 'R12', 'F107']:
+        raise ValueError(f"Solar index unknown (input={solidx}). Please select "
+                         + "IG12, R12, or F107.")
+    if solidx == 'IG12':
+        sol = F107_2_IG12(F107, version=version)
+    elif solidx == 'R12':
+        sol = F107_2_R12(F107)
+    elif solidx == 'F107':
+        sol = F107
 
-    IG12 = F107_2_IG12(F107)
+    # Convert to numpy float arrays
+    F_min = to_numpy_array(F_min)
+    F_max = to_numpy_array(F_max)
 
-    # linear interpolation of the whole matrix:
-    # https://en.wikipedia.org/wiki/Linear_interpolation
-    F = (F_min * (IG12_max - IG12) / (IG12_max - IG12_min)
-         + F_max * (IG12 - IG12_min) / (IG12_max - IG12_min))
+    # Linear interpolation
+    F = (F_min * (solmax - sol) / (solmax - solmin)
+         + F_max * (sol - solmin) / (solmax - solmin))
 
     return F
 
 
 def solar_interpolate_R12(F_min, F_max, R12):
     """Interpolate given array to provided R12 level.
+
+    .. deprecated:: 0.1.7
+        This function is deprecated and will be removed in version 0.2+. Use
+        solar_interpolate() with args solidx='R12', solmin=10, and solmax=180
+        instead.
 
     Parameters
     ----------
@@ -2747,19 +2809,19 @@ def solar_interpolate_R12(F_min, F_max, R12):
     US GPO, Washington, DC.
 
     """
-    # min and max of IG12 Ionospheric Global Index
-    R12_min = 10.
-    R12_max = 180.
+    warnings.warn("This function is deprecated and will be removed in version "
+                  + "0.2+. Use solar_interpolate() with args solidx='R12', "
+                  + "solmin=10, solmax=180 instead.",
+                  FutureWarning, stacklevel=2)
 
-    # linear interpolation of the whole matrix:
-    # https://en.wikipedia.org/wiki/Linear_interpolation
-    F = (F_min * (R12_max - R12) / (R12_max - R12_min)
-         + F_max * (R12 - R12_min) / (R12_max - R12_min))
+    F = solar_interpolate(F_min, F_max, R12_2_F107(R12), solidx='R12',
+                          solmin=10, solmax=180)
 
     return F
 
 
-def solar_interpolation_of_dictionary(F, F107, use_R12=False):
+def solar_interpolation_of_dictionary(F, F107, solidx='IG12', solmin=0,
+                                      solmax=100, version=2, use_R12=False):
     """Interpolate given dictionary to provided F10.7.
 
     Parameters
@@ -2768,10 +2830,22 @@ def solar_interpolation_of_dictionary(F, F107, use_R12=False):
         Dictionary of parameters with 2 levels of solar activity
         specified as 1st dimension.
     F107 : float
-        Interpolate to this particular level of F10.7.
+        Solar radio flux at 10.7 cm (2800 MHz) to interpolate to [sfu].
+    solidx : str
+        User choice of solar index. Choices are F107, IG12, and R12.
+        (default='IG12')
+    solmin : int or float
+        User choice of solar minimum. (default=0)
+    solmax : int or float
+        User choice of solar maximum. (default=100)
+    version : int
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
     use_R12 : bool
-        Convert F10.7 to R12 and use R12 to perform the interpolation
-        (default = False)
+        .. deprecated:: 0.1.7
+            This argument is deprecated and will be removed in version 0.2+. To
+            invoke the same behavior, use solidx='R12', solmin=10, and
+            solmax=180. (default=False)
 
     Returns
     -------
@@ -2782,15 +2856,6 @@ def solar_interpolation_of_dictionary(F, F107, use_R12=False):
     -----
     This function looks at each key in the dictionary and interpolates
     it between solar min and solar max to the given F10.7 value.
-
-    By default, the reference points are set in terms of IG12 coefficients
-    of 0 and 100. The F10.7 is first converted to IG12 and then the
-    interpolation is occurred.
-
-    If use_R12 is set to 'True', F10.7 is converted to a corresponding R12
-    index and this is used to interpolate the provided dictionary. The R12
-    reference points corresponding to solar min and max are R12=10 and 180
-    as specified by Leftin, 1968. (This is required for foEs interpolation)
 
     References
     ----------
@@ -2807,18 +2872,96 @@ def solar_interpolation_of_dictionary(F, F107, use_R12=False):
     US GPO, Washington, DC.
 
     """
+    if use_R12 is True:
+        warnings.warn("use_R12 is deprecated and will be removed in version "
+                      + "0.2+. To replicate use_R12=True behavior, use "
+                      + "solidx='R12', solmin=10, solmax=180. use_R12=False "
+                      + "behavior corresponds to the default solidx='IG12', "
+                      + "solmin=0, solmax=100.",
+                      FutureWarning, stacklevel=2)
+        solidx = 'R12'
+        solmin = 10
+        solmax = 180
+
     # Make dictionary with same elements as initial array
-    F_new = F
+    F_new = F.copy()
 
     for key in F:
         F_key = F[key]
         F_key = np.swapaxes(F_key, 0, 2)
 
-        if use_R12:
-            R12 = F107_2_R12(F107)
-            F_new[key] = solar_interpolate_R12(F_key[0, :], F_key[1, :], R12)
+        F_new[key] = solar_interpolate(F_key[0, :], F_key[1, :], F107,
+                                       version=version, solidx=solidx,
+                                       solmin=solmin, solmax=solmax)
+
+        F_new[key] = np.swapaxes(F_new[key], 0, 1)
+
+    return F_new
+
+
+def solar_interpolation_of_dictionary_F2(F, F107, hmF2_model, version=2):
+    """Interpolate given F2 dictionary to provided F10.7.
+
+    Parameters
+    ----------
+    F : dict
+        Dictionary of F2 parameters with 2 levels of solar activity
+        specified as 3rd dimension.
+    F107 : float
+        Solar radio flux at 10.7 cm (2800 MHz) to interpolate to [sfu].
+    hmF2_model : str
+        Model used for hmF2. Choices are SHU2015, AMTB2013, and BSE1979.
+    version : int
+        Sunspot number series version. Version 2 assumes the post-2015
+        correction. (default=2)
+
+    Returns
+    -------
+    F_new : dict
+        F2 Parameters interpolated to the given F10.7.
+
+    Notes
+    -----
+    This function looks at each key in the F2 layer dictionary and interpolates
+    it between solar min and solar max to the given F10.7 value using either
+    R12 or IG12 linear interpolation.
+
+    By default, the reference points are set in terms of IG12/R12 coefficients
+    of 0 and 100. The F10.7 is first converted to IG12/R12 and then the
+    interpolation is occurred.
+
+    IG12 interpolation is used for the parameters foF2 (CCIR and URSI) and
+    hmF2 SHUBIN-2015, whereas R12 is used for the parameters M(3000)F2,
+    B0, B1, and hmF2 AMTB-2013.
+
+    References
+    ----------
+    Forsythe et al. (2023), PyIRI: Whole-Globe Approach to the
+    International Reference Ionosphere Modeling Implemented in Python,
+    Space Weather.
+
+    Bilitza et al. (2022), The International Reference Ionosphere
+    model: A review and description of an ionospheric benchmark, Reviews
+    of Geophysics, 60.
+
+    """
+    # Make dictionary with same elements as initial array
+    F_new = F.copy()
+
+    for key in F:
+        F_key = F[key]
+        F_key = np.swapaxes(F_key, 0, 2)
+
+        if (key in ['fo', 'B_top', 'B_bot'] or (
+                key == 'hm' and hmF2_model == 'SHU2015')):
+            F_new[key] = solar_interpolate(F_key[0, :], F_key[1, :], F107,
+                                           version=version, solidx='IG12',
+                                           solmin=0, solmax=100)
+
         else:
-            F_new[key] = solar_interpolate(F_key[0, :], F_key[1, :], F107)
+            F_new[key] = solar_interpolate(F_key[0, :], F_key[1, :], F107,
+                                           version=version, solidx='R12',
+                                           solmin=0, solmax=100)
 
         F_new[key] = np.swapaxes(F_new[key], 0, 1)
 
@@ -2861,7 +3004,7 @@ def adjust_longitude(lon, type):
             lon[indb] = lon[indb] - 360.
 
         if type == 'to180':
-            # check that values in the array don't go over 360
+            # check that values in the array don't go over 180
             multiple = np.floor_divide(np.abs(lon), 360)
             lon = lon - multiple * 360 * np.sign(lon)
 
@@ -3241,29 +3384,6 @@ def edp_to_vtec(edp, aalt, min_alt=0.0, max_alt=202000.0):
     vtec = vtec.reshape((num_t, num_g)) * 1.0e-16
 
     return vtec
-
-
-def den2freq(dens):
-    """Convert ionospheric plasma density to frequency.
-
-    Parameters
-    ----------
-    dens : array-like
-        Plasma density in m-3.
-
-    Returns
-    -------
-    freq : array-like
-        Ionospheric frequency in MHz.
-
-    Notes
-    -----
-    This function converts plasma density to ionospheric frequency.
-
-    """
-    freq = np.sqrt(dens / 1.24e10)
-
-    return freq
 
 
 def decimal_year(dtime):

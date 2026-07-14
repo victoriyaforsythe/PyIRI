@@ -291,28 +291,28 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
         'hm' is height of the F2 peak in km.
         'B_topi is top thickness of the F2 region in km.
         'B_bot' is bottom thickness of the F2 region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     F1 : dict
         'Nm' is peak density of F1 region in m-3.
         'fo' is critical frequency of F1 region in MHz.
         'P' is the probability occurrence of F1 region, unitless.
         'hm' is height of the F1 peak in km.
         'B_bot' is bottom thickness of the F1 region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     E : dict
         'Nm' is peak density of E region in m-3.
         'fo' is critical frequency of E region in MHz.
         'hm' is height of the E peak in km.
         'B_top' is bottom thickness of the E region in km.
         'B_bot' is bottom thickness of the E region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     Es : dict
         'Nm' is peak density of Es region in m-3.
         'fo' is critical frequency of Es region in MHz.
         'hm' is height of the Es peak in km.
         'B_top' is bottom thickness of the Es region in km.
         'B_bot' is bottom thickness of the Es region in km.
-        Shape [N_T, N_G, 2].
+        Shape [N_T, N_G].
     sun : dict
         'lon' is longitude of subsolar point in degrees.
         'lat' is latitude of subsolar point in degrees.
@@ -367,7 +367,8 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     F2 = main.solar_interpolation_of_dictionary(F2, F107)
     F1 = main.solar_interpolation_of_dictionary(F1, F107)
     E = main.solar_interpolation_of_dictionary(E, F107)
-    Es = main.solar_interpolation_of_dictionary(Es, F107, use_R12=True)
+    Es = main.solar_interpolation_of_dictionary(Es, F107, solidx='R12',
+                                                solmin=10, solmax=180)
 
     # Correct for linear interpolation in fo
     F2['Nm'] = main.freq2den(F2['fo'])
