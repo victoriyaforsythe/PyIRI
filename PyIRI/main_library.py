@@ -412,27 +412,24 @@ def _read_ccir_ursi_arrays(mth, coeff_dir):
     cm = str(mth + 10)
 
     # F region coefficients:
-    file_F = open(os.path.join(coeff_dir, 'CCIR', 'ccir' + cm + '.asc'),
-                  mode='r')
-    fmt = FortranRecordReader('(1X,4E15.8)')
-    chunks = [fmt.read(line) for line in file_F]
+    with open(os.path.join(coeff_dir, 'CCIR', 'ccir' + cm + '.asc'),
+              mode='r') as file_F:
+        fmt = FortranRecordReader('(1X,4E15.8)')
+        chunks = [fmt.read(line) for line in file_F]
     full_array = np.concatenate(chunks, axis=None)
     array0_F_CCIR = full_array[0:-2]
-    file_F.close()
 
     # F region URSI coefficients:
-    file_F = open(os.path.join(coeff_dir, 'URSI', 'ursi' + cm + '.asc'),
-                  mode='r')
-    fmt = FortranRecordReader('(1X,4E15.8)')
-    chunks = [fmt.read(line) for line in file_F]
+    with open(os.path.join(coeff_dir, 'URSI', 'ursi' + cm + '.asc'),
+              mode='r') as file_F:
+        fmt = FortranRecordReader('(1X,4E15.8)')
+        chunks = [fmt.read(line) for line in file_F]
     array0_F_URSI = np.concatenate(chunks, axis=None)
-    file_F.close()
 
     # Sporadic E coefficients:
-    file_E = open(os.path.join(coeff_dir, 'Es', 'Es' + cm + '.asc'),
-                  mode='r')
-    array0_E = np.fromfile(file_E, sep=' ')
-    file_E.close()
+    with open(os.path.join(coeff_dir, 'Es', 'Es' + cm + '.asc'),
+              mode='r') as file_E:
+        array0_E = np.fromfile(file_E, sep=' ')
 
     # for FoF2 CCIR: reshape array to [nj, nk, 2] shape
     F = np.zeros((coef['nj']['F0F2'], coef['nk']['F0F2'], 2))
