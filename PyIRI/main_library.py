@@ -27,8 +27,8 @@ in ionospheric mapping by numerical methods.
 """
 
 import datetime as dt
-import functools
 from fortranformat import FortranRecordReader
+import functools
 import math
 import numpy as np
 import os
