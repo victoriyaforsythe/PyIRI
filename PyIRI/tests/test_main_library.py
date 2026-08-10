@@ -139,6 +139,47 @@ def test_IRI_monthly_mean_par_runs():
     assert sun['lat'].shape == (N_T,)
 
 
+@pytest.mark.parametrize('mth', range(1, 13))
+def test_read_ccir_ursi_coeff_all_months(mth):
+    """Test read_ccir_ursi_coeff for every month.
+
+    Coefficients must be fully populated finite floats of the shape set by
+    highest_power_of_extension, for every month's CCIR/URSI/Es file,
+    including the CCIR files' final, partially filled record.
+    """
+    coeff_dir = PyIRI.coeff_dir
+    coef = main.highest_power_of_extension()
+
+    F_CCIR, F_URSI, F_M3000, F_Es = main.read_ccir_ursi_coeff(
+        mth, coeff_dir)
+
+    assert F_CCIR.shape == (coef['nj']['F0F2'], coef['nk']['F0F2'], 2)
+    assert F_URSI.shape == (coef['nj']['F0F2'], coef['nk']['F0F2'], 2)
+    assert F_M3000.shape == (coef['nj']['M3000'], coef['nk']['M3000'], 2)
+    for arr in (F_CCIR, F_URSI, F_M3000, F_Es):
+        # CCIR/M3000 arrays are dtype=object (a pre-existing quirk from a
+        # None-padded partial line in the .asc files), so cast before
+        # checking finiteness.
+        assert np.isfinite(arr.astype(float)).all()
+
+
+def test_read_ccir_ursi_coeff_cache_does_not_leak_mutations():
+    """Test that caching in read_ccir_ursi_coeff does not alias arrays.
+
+    read_ccir_ursi_coeff caches the parsed coefficient arrays internally for
+    performance. Each call must still return an independent array so that a
+    caller mutating one result cannot corrupt another call's result.
+    """
+    coeff_dir = PyIRI.coeff_dir
+
+    first = main.read_ccir_ursi_coeff(3, coeff_dir)
+    first[0][:] = np.nan
+
+    second = main.read_ccir_ursi_coeff(3, coeff_dir)
+
+    assert not np.isnan(second[0].astype(float)).any()
+
+
 def test_IRI_density_1day_for_monthly_mean_values():
     """Test that IRI_density_1day returns expected values for IG12=0/100.
 
