@@ -2,6 +2,11 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+* Cached the CCIR/URSI/Es coefficient file parsing in `read_ccir_ursi_coeff`
+  so repeated calls for the same month/coeff_dir no longer re-read from
+  disk, fixing a major performance bottleneck.
+
 ## 0.1.7 (07-14-2026)
 * Updated the SH coefficient files of parameters hmF2 AMTB2013, B0, B1,
   M(3000)F2, and foEs to use R12=0-100 instead of IG12=0-100.
