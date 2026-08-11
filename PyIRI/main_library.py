@@ -1128,8 +1128,8 @@ def solzen_timearray_grid(year, mth, day, T0, alon, alat):
     aslat = np.zeros((T0.size))
     for i in range(0, T0.size):
         UT = T0[i]
-        hour = np.fix(UT)
-        minute = np.fix((UT - hour) * 60.)
+        hour = np.trunc(UT)
+        minute = np.truc((UT - hour) * 60.0)
         date_sd = dt.datetime(int(year), int(mth), int(day),
                               int(hour), int(minute))
         jday = juldat(date_sd)
@@ -1908,7 +1908,7 @@ def set_temporal_array(dUT):
 
     """
     aUT = np.arange(0, 24, dUT)
-    ahour = np.fix(aUT).astype(int)
+    ahour = np.trunc(aUT).astype(int)
     aminute = ((aUT - ahour) * 60.).astype(int)
     asecond = (aUT * 0).astype(int)
     atime_frame_strings = [str(ahour[it]).zfill(2) + str(aminute[it]).zfill(2)
