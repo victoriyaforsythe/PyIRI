@@ -1129,7 +1129,7 @@ def solzen_timearray_grid(year, mth, day, T0, alon, alat):
     for i in range(0, T0.size):
         UT = T0[i]
         hour = np.trunc(UT)
-        minute = np.truc((UT - hour) * 60.0)
+        minute = np.trunc((UT - hour) * 60.0)
         date_sd = dt.datetime(int(year), int(mth), int(day),
                               int(hour), int(minute))
         jday = juldat(date_sd)
