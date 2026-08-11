@@ -2,6 +2,9 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.X.X (XX-XX-2026)
+* Replaced numpy `fix` with `trunc` to follow the new numpy standards
+
 ## 0.1.7 (07-14-2026)
 * Updated the SH coefficient files of parameters hmF2 AMTB2013, B0, B1,
   M(3000)F2, and foEs to use R12=0-100 instead of IG12=0-100.
