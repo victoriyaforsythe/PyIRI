@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.1.8 (MM-DD-YYYY)
 * Cached the CCIR/URSI/Es coefficient file parsing in `read_ccir_ursi_coeff`
   so repeated calls for the same month/coeff_dir no longer re-read from
   disk, fixing a major performance bottleneck.
