@@ -46,7 +46,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "coveralls",
+  "coverage[toml]",
   "flake8",
   "flake8-docstrings",
   "hacking >= 1.0",
