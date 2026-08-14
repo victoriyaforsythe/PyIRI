@@ -68,3 +68,9 @@ Documentation = "https://pyiri.readthedocs.io/en/latest/"
 Source = "https://github.com/victoriyaforsythe/PyIRI"
 
 [tool.coverage.report]
+omit = ["$TMPDIR/*"]
+
+[tool.coverage.run]
+relative_files = true
+include = ["*/PyIRI/*",
+           "*/PyIRI/tests/*"]
