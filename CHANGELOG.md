@@ -3,6 +3,8 @@ All notable changes to this project are documented in this file. This project
 adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.X.X (XX-XX-2026)
+* Added support for newer Python versions, removed code supporting old versions
+* Updated GitHub Action versions
 * Replaced numpy `fix` with `trunc` to follow the new numpy standards
 * Cached the CCIR/URSI/Es coefficient file parsing in `read_ccir_ursi_coeff`
   so repeated calls for the same month/coeff_dir no longer re-read from
