@@ -28,6 +28,7 @@ in ionospheric mapping by numerical methods.
 
 import datetime as dt
 from fortranformat import FortranRecordReader
+import functools
 import math
 import numpy as np
 import os
@@ -375,6 +376,93 @@ def IRI_density_1day(year, mth, day, aUT, alon, alat, aalt, F107, coeff_dir,
     return F2, F1, E, Es, sun, mag, EDP
 
 
+@functools.lru_cache(maxsize=None)
+def _read_ccir_ursi_arrays(mth, coeff_dir):
+    """Read and reshape the raw CCIR, URSI, and Es coefficient arrays.
+
+    Parameters
+    ----------
+    mth : int
+        Month.
+    coeff_dir : str
+        Place where the coefficient files are.
+
+    Returns
+    -------
+    F_fof2_CCIR : array-like
+        CCIR coefficients for F2 frequency.
+    F_fof2_URSI : array-like
+        URSI coefficients for F2 frequency.
+    F_M3000 : array-like
+        CCIR coefficients for M3000.
+    F_E : array-like
+        Bradley coefficients for Es (median plus upper/lower deciles).
+
+    Notes
+    -----
+    This helper is cached because the coefficient files are static and keyed
+    only by month and coeff_dir, but are otherwise re-read from disk on every
+    call to `read_ccir_ursi_coeff`. Results are shared across calls, so
+    callers must copy before mutating.
+
+    """
+    coef = highest_power_of_extension()
+
+    # add 10 to the month because the file numeration goes from 11 to 22.
+    cm = str(mth + 10)
+
+    # F region coefficients:
+    with open(os.path.join(coeff_dir, 'CCIR', 'ccir' + cm + '.asc'),
+              mode='r') as file_F:
+        fmt = FortranRecordReader('(1X,4E15.8)')
+        chunks = [fmt.read(line) for line in file_F]
+    full_array = np.concatenate(chunks, axis=None)
+    array0_F_CCIR = full_array[0:-2]
+
+    # F region URSI coefficients:
+    with open(os.path.join(coeff_dir, 'URSI', 'ursi' + cm + '.asc'),
+              mode='r') as file_F:
+        fmt = FortranRecordReader('(1X,4E15.8)')
+        chunks = [fmt.read(line) for line in file_F]
+    array0_F_URSI = np.concatenate(chunks, axis=None)
+
+    # Sporadic E coefficients:
+    with open(os.path.join(coeff_dir, 'Es', 'Es' + cm + '.asc'),
+              mode='r') as file_E:
+        array0_E = np.fromfile(file_E, sep=' ')
+
+    # for FoF2 CCIR: reshape array to [nj, nk, 2] shape
+    F = np.zeros((coef['nj']['F0F2'], coef['nk']['F0F2'], 2))
+    array1 = array0_F_CCIR[0:F.size]
+    F_fof2_2_CCIR = np.reshape(array1, F.shape, order='F')
+
+    # for FoF2 URSI: reshape array to [nj, nk, 2] shape
+    F = np.zeros((coef['nj']['F0F2'], coef['nk']['F0F2'], 2))
+    array1 = array0_F_URSI[0:F.size]
+    F_fof2_2_URSI = np.reshape(array1, F.shape, order='F')
+
+    # for M3000: reshape array to [nj, nk, 2] shape
+    F = np.zeros((coef['nj']['M3000'], coef['nk']['M3000'], 2))
+    array2 = array0_F_CCIR[(F_fof2_2_CCIR.size)::]
+    F_M3000_2 = np.reshape(array2, F.shape, order='F')
+
+    # for Es:
+    # these number are the exact format for the files, even though some
+    # numbers will be zeroes.
+    nk = 76
+    H = 17
+    ns = 6
+
+    F = np.zeros((H, nk, ns))
+    # Each file starts with 60 indexes, we will not need them, therefore
+    # skip it
+    skip_coeff = np.zeros((6, 10))
+    array1 = array0_E[skip_coeff.size:(skip_coeff.size + F.size)]
+    F_E = np.reshape(array1, F.shape, order='F')
+
+    return F_fof2_2_CCIR, F_fof2_2_URSI, F_M3000_2, F_E
+
+
 def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
                          output_quartiles=None):
     """Read coefficients from CCIR, URSI, and Es.
@@ -454,69 +542,15 @@ def read_ccir_ursi_coeff(mth, coeff_dir, output_deciles=False,
     if (mth < 1) | (mth > 12):
         logger.error("Error: month is out of 1-12 range")
 
-    # add 10 to the month because the file numeration goes from 11 to 22.
-    cm = str(mth + 10)
+    F_fof2_CCIR, F_fof2_URSI, F_M3000, F_E = _read_ccir_ursi_arrays(
+        mth, coeff_dir)
+    # arrays are cached and shared across calls, so copy before handing them
+    # to the caller to preserve the previous fresh-array-per-call behavior
+    F_fof2_CCIR = F_fof2_CCIR.copy()
+    F_fof2_URSI = F_fof2_URSI.copy()
+    F_M3000 = F_M3000.copy()
+    F_E = F_E.copy()
 
-    # F region coefficients:
-    file_F = open(os.path.join(coeff_dir, 'CCIR', 'ccir' + cm + '.asc'),
-                  mode='r')
-    fmt = FortranRecordReader('(1X,4E15.8)')
-    full_array = []
-    for line in file_F:
-        line_vals = fmt.read(line)
-        full_array = np.concatenate((full_array, line_vals), axis=None)
-    array0_F_CCIR = full_array[0:-2]
-    file_F.close()
-
-    # F region URSI coefficients:
-    file_F = open(os.path.join(coeff_dir, 'URSI', 'ursi' + cm + '.asc'),
-                  mode='r')
-    fmt = FortranRecordReader('(1X,4E15.8)')
-    full_array = []
-    for line in file_F:
-        line_vals = fmt.read(line)
-        full_array = np.concatenate((full_array, line_vals), axis=None)
-    array0_F_URSI = full_array
-    file_F.close()
-
-    # Sporadic E coefficients:
-    file_E = open(os.path.join(coeff_dir, 'Es', 'Es' + cm + '.asc'),
-                  mode='r')
-    array0_E = np.fromfile(file_E, sep=' ')
-    file_E.close()
-
-    # for FoF2 CCIR: reshape array to [nj, nk, 2] shape
-    F = np.zeros((coef['nj']['F0F2'], coef['nk']['F0F2'], 2))
-    array1 = array0_F_CCIR[0:F.size]
-    F_fof2_2_CCIR = np.reshape(array1, F.shape, order='F')
-
-    # for FoF2 URSI: reshape array to [nj, nk, 2] shape
-    F = np.zeros((coef['nj']['F0F2'], coef['nk']['F0F2'], 2))
-    array1 = array0_F_URSI[0:F.size]
-    F_fof2_2_URSI = np.reshape(array1, F.shape, order='F')
-
-    # for M3000: reshape array to [nj, nk, 2] shape
-    F = np.zeros((coef['nj']['M3000'], coef['nk']['M3000'], 2))
-    array2 = array0_F_CCIR[(F_fof2_2_CCIR.size)::]
-    F_M3000_2 = np.reshape(array2, F.shape, order='F')
-
-    # for Es:
-    # these number are the exact format for the files, even though some
-    # numbers will be zeroes.
-    nk = 76
-    H = 17
-    ns = 6
-
-    F = np.zeros((H, nk, ns))
-    # Each file starts with 60 indexes, we will not need them, therefore
-    # skip it
-    skip_coeff = np.zeros((6, 10))
-    array1 = array0_E[skip_coeff.size:(skip_coeff.size + F.size)]
-    F_E = np.reshape(array1, F.shape, order='F')
-
-    F_fof2_CCIR = F_fof2_2_CCIR
-    F_fof2_URSI = F_fof2_2_URSI
-    F_M3000 = F_M3000_2
     F_Es_median = F_E[:, :, 2:4]
 
     # Deprecation warning if output_quartiles is used

@@ -4,6 +4,9 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.X.X (XX-XX-2026)
 * Replaced numpy `fix` with `trunc` to follow the new numpy standards
+* Cached the CCIR/URSI/Es coefficient file parsing in `read_ccir_ursi_coeff`
+  so repeated calls for the same month/coeff_dir no longer re-read from
+  disk, fixing a major performance bottleneck.
 
 ## 0.1.7 (07-14-2026)
 * Updated the SH coefficient files of parameters hmF2 AMTB2013, B0, B1,
