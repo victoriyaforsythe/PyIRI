@@ -51,10 +51,7 @@ jobs:
       run: python -c "import PyIRI; print(PyIRI.__version__)"
 
     - name: Test with pytest
-      run: |
-        coverage run --rcfile=pyproject.toml -m pytest
-        coverage report
-        coverage xml --rcfile=pyproject.toml
+      run: pytest --cov=PyIRI
 
     - name: Coveralls parallel
       uses: coverallsapp/github-action@v2
@@ -62,7 +59,6 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         flag-name: run=${{ join(matrix.*, '-') }}
         parallel: true
-        format: cobertura
 
   finish:
     name: Finish Coverage Analysis
