@@ -56,20 +56,18 @@ jobs:
     - name: Coveralls parallel
       uses: coverallsapp/github-action@v2
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
         flag-name: run=${{ join(matrix.*, '-') }}
         parallel: true
 
   finish:
     name: Finish Coverage Analysis
     needs: build
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
       uses: coverallsapp/github-action@v2
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
         parallel-finished: true
+        carryforward: "all"
 
 
