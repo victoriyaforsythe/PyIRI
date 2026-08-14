@@ -53,8 +53,8 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run --rcfile=pyproject.toml -m pytest
-	coverage report
-	coverage xml --rcfile=pyproject.toml
+        coverage report
+        coverage xml --rcfile=pyproject.toml
 
     - name: Coveralls parallel
       uses: coverallsapp/github-action@v2
